@@ -14,6 +14,8 @@ export function MenuBar({
   onNewDoc,
   onToggleFind,
   onToggleZen,
+  onToggleDemo,
+  demo,
   onSettingsChange,
   onOpenSettings,
 }: {
@@ -23,6 +25,8 @@ export function MenuBar({
   onNewDoc: () => void
   onToggleFind: () => void
   onToggleZen: () => void
+  onToggleDemo: () => void
+  demo: boolean
   onSettingsChange: (patch: Partial<Settings>) => void
   onOpenSettings: () => void
 }) {
@@ -101,6 +105,8 @@ export function MenuBar({
           <>
             <Item label="Zen mode" hint={`${mod}\\`} checked={settings.zen}
               onClick={onToggleZen} close={close} />
+            <Item label="Demo mode" hint={`${mod}⇧D`} checked={demo}
+              onClick={onToggleDemo} close={close} />
             <Item label="Autocorrect" checked={settings.autocorrect}
               onClick={() => onSettingsChange({ autocorrect: !settings.autocorrect })} close={close} />
             <Item label="Spellcheck" checked={settings.spellcheck}

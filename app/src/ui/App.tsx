@@ -2,7 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/core'
 import { buildCompletionFn } from '../ai'
 import { parseDictionary, type Dictionary } from '../core/autocorrect/dictionary'
+import { LiveStats } from '../core/stats/live'
 import { wordCount } from '../core/text/context'
+import { FxLayer } from '../fx/engine'
+import { SoundEngine } from '../sound'
 import wordsUrl from '../assets/en-words.txt?url'
 import { SmoothCaret } from '../editor/caret'
 import { createCursiveEditor, deriveTitle } from '../editor/setup'
@@ -15,6 +18,7 @@ import { createDoc, deleteDoc, getDoc, listDocs, saveDocContent, updateDocMeta }
 import { loadSettings, saveSettings } from '../store/settings'
 import { ensureFontLoaded, fontById } from '../themes/fonts'
 import { applyTheme, themeById } from '../themes'
+import { DemoOverlay } from './DemoOverlay'
 import { DocsPopover } from './DocsPopover'
 import { FindReplaceBar } from './FindReplaceBar'
 import { MenuBar } from './MenuBar'
@@ -34,9 +38,15 @@ export function App() {
   const [findOpen, setFindOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [words, setWords] = useState(0)
+  const [demo, setDemo] = useState(false)
 
   const mountRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLElement>(null)
+  const fxCanvasRef = useRef<HTMLCanvasElement>(null)
+  const fxRef = useRef<FxLayer | null>(null)
+  const statsRef = useRef(new LiveStats())
+  const soundRef = useRef(new SoundEngine())
+  const lastGeomRef = useRef({ x: 0, y: 0 })
   const caretRef = useRef<SmoothCaret | null>(null)
   const controllerRef = useRef<SuggestionController | null>(null)
   const completionRef = useRef<CompletionFn | null>(null)
@@ -68,6 +78,37 @@ export function App() {
       .catch(() => {})
   }, [])
 
+  /* ---------- fx layer + sound (created once, after first render with settings) ---------- */
+  useEffect(() => {
+    if (!settings || !fxCanvasRef.current || !scrollRef.current || fxRef.current) return
+    fxRef.current = new FxLayer(fxCanvasRef.current, scrollRef.current)
+    // combo decays on a slow tick even when the keys go quiet
+    const tick = window.setInterval(() => {
+      fxRef.current?.setCombo(statsRef.current.comboLevel(Date.now()))
+    }, 400)
+    const sound = soundRef.current
+    return () => {
+      window.clearInterval(tick)
+      fxRef.current?.destroy()
+      fxRef.current = null
+      sound.destroy()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings === null])
+
+  /* ---------- typing sounds: real keydowns, throttled inside the engine ---------- */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return
+      if (!editor?.isFocused) return
+      if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
+        soundRef.current.play(e.key === ' ' ? 'space' : e.key === 'Enter' ? 'return' : 'key')
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [editor])
+
   /* ---------- settings side-effects ---------- */
   useEffect(() => {
     if (!settings) return
@@ -78,6 +119,9 @@ export function App() {
       ? settings.customTheme
       : themeById(settings.themeId)
     applyTheme(theme)
+    fxRef.current?.readThemeColors()
+    fxRef.current?.setFlags(settings.fx)
+    soundRef.current.configure(settings.sound.pack, settings.sound.volume)
     const fontId = settings.fontOverride ?? theme.font
     root.style.setProperty('--font-editor', fontById(fontId).stack)
     void ensureFontLoaded(fontId)
@@ -119,7 +163,10 @@ export function App() {
         content: doc.content,
         spellcheck: settings.spellcheck,
         ghost: {
-          onAccept: () => controllerRef.current?.notifyAccepted(),
+          onAccept: () => {
+            controllerRef.current?.notifyAccepted()
+            fxRef.current?.pushAccept(lastGeomRef.current.x, lastGeomRef.current.y)
+          },
           onDismiss: () => controllerRef.current?.notifyDismissed(),
         },
         autocorrect: {
@@ -133,13 +180,28 @@ export function App() {
         },
         onSelectionUpdate: () => caretRef.current?.update(),
         onTransaction: (e, tr) => {
-          controllerRef.current?.handleTransaction(tr)
           caretRef.current?.update()
+          controllerRef.current?.handleTransaction(tr)
+          if (tr.docChanged) {
+            const now = Date.now()
+            statsRef.current.record(now)
+            const fx = fxRef.current
+            if (fx) {
+              fx.setCombo(statsRef.current.comboLevel(now))
+              fx.pushKey(lastGeomRef.current.x, lastGeomRef.current.y)
+            }
+          }
           void e
         },
       })
 
       caret = new SmoothCaret(scrollRef.current!, ed.view, settings.caret)
+      caret.onGeometry((g) => {
+        // fx canvas sits over the scroll viewport → convert content y to viewport y
+        const scrollTop = scrollRef.current?.scrollTop ?? 0
+        lastGeomRef.current = { x: g.x, y: g.y - scrollTop + g.height / 2 }
+        fxRef.current?.setCaret(lastGeomRef.current.x, lastGeomRef.current.y)
+      })
       controller = new SuggestionController(ed, {
         complete: (req) =>
           completionRef.current
@@ -208,6 +270,9 @@ export function App() {
       } else if (mod && e.key === '\\') {
         e.preventDefault()
         patchSettings({ zen: !(settings?.zen ?? false) })
+      } else if (mod && e.shiftKey && e.key.toLowerCase() === 'd') {
+        e.preventDefault()
+        setDemo((v) => !v)
       } else if (mod && e.shiftKey && (e.key === ',' || e.key === '<')) {
         e.preventDefault()
         patchSettings({ editorFontSize: Math.max(13, (settings?.editorFontSize ?? 17) - 1) })
@@ -271,7 +336,8 @@ export function App() {
   if (!settings) return <div className="app" />
 
   const activeDoc = docs.find((d) => d.id === activeId)
-  const zenClass = settings.zen ? ` zen${zenPeek ? ' zen-peek' : ''}` : ''
+  const zenClass =
+    settings.zen || demo ? ` zen${zenPeek && !demo ? ' zen-peek' : ''}${demo ? ' demo' : ''}` : ''
 
   return (
     <div className={`app${zenClass}`}>
@@ -294,6 +360,8 @@ export function App() {
             onNewDoc={() => void newDoc()}
             onToggleFind={() => setFindOpen((v) => !v)}
             onToggleZen={() => patchSettings({ zen: !settings.zen })}
+            onToggleDemo={() => setDemo((v) => !v)}
+            demo={demo}
             onSettingsChange={patchSettings}
             onOpenSettings={() => setSettingsOpen(true)}
           />
@@ -310,11 +378,15 @@ export function App() {
         {findOpen && editor && <FindReplaceBar editor={editor} onClose={() => setFindOpen(false)} />}
       </header>
 
-      <main className="app-editor-scroll" ref={scrollRef}>
-        <div className="editor-page">
-          <div ref={mountRef} />
-        </div>
-      </main>
+      <div className="editor-stage">
+        <main className="app-editor-scroll" ref={scrollRef}>
+          <div className="editor-page">
+            <div ref={mountRef} />
+          </div>
+        </main>
+        <canvas className="fx-canvas" ref={fxCanvasRef} aria-hidden="true" />
+        {demo && <DemoOverlay stats={statsRef.current} />}
+      </div>
 
       <footer className="app-statusbar">
         <StatusBar

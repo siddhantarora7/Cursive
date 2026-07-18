@@ -2,8 +2,140 @@ import { useState } from 'react'
 import type { ByokProvider, Settings } from '../store/db'
 import { getByokKey, setByokKey } from '../store/settings'
 import { DEFAULT_MODELS } from '../ai/direct'
-import { BUILTIN_THEMES } from '../themes'
+import { decodeThemeString, encodeThemeString } from '../core/theme/codec'
+import { THEME_VARS, type Theme } from '../core/theme/types'
+import { BUILTIN_THEMES, themeById } from '../themes'
+import { FONTS } from '../themes/fonts'
 import { Icon } from './icons'
+
+function cssToHex(css: string): string {
+  const el = document.createElement('div')
+  el.style.color = css
+  el.style.display = 'none'
+  document.body.appendChild(el)
+  const m = getComputedStyle(el).color.match(/(\d+)[, ]+(\d+)[, ]+(\d+)/)
+  el.remove()
+  if (!m) return '#888888'
+  return (
+    '#' + [m[1], m[2], m[3]].map((n) => Number(n).toString(16).padStart(2, '0')).join('')
+  )
+}
+
+const VAR_LABELS: Record<string, string> = {
+  bg: 'Background',
+  surface: 'Panels',
+  ink: 'Text',
+  muted: 'Secondary text',
+  faint: 'Faint',
+  accent: 'Accent',
+  caret: 'Caret',
+  ghost: 'Ghost text',
+  selection: 'Selection',
+  link: 'Links',
+  border: 'Borders',
+  danger: 'Danger',
+}
+
+function ThemeBuilder({
+  settings,
+  onChange,
+}: {
+  settings: Settings
+  onChange: (patch: Partial<Settings>) => void
+}) {
+  const [shareDraft, setShareDraft] = useState('')
+  const [shareState, setShareState] = useState<'idle' | 'copied' | 'bad'>('idle')
+  const active: Theme =
+    settings.themeId === 'custom' && settings.customTheme
+      ? settings.customTheme
+      : themeById(settings.themeId)
+
+  const patchCustom = (patch: Partial<Theme>, vars?: Partial<Theme['vars']>) => {
+    const base: Theme = {
+      ...active,
+      id: 'custom',
+      name: 'Custom',
+      ...patch,
+      vars: { ...active.vars, ...vars },
+    }
+    onChange({ themeId: 'custom', customTheme: base, themeChosen: true })
+  }
+
+  return (
+    <div className="builder">
+      <div className="builder-grid">
+        {THEME_VARS.map((v) => (
+          <label key={v} className="builder-row">
+            <input
+              type="color"
+              value={cssToHex(active.vars[v])}
+              onChange={(e) => {
+                // color inputs can't carry alpha; selection gets a fixed one back
+                const value = v === 'selection' ? `${e.target.value}55` : e.target.value
+                patchCustom({}, { [v]: value })
+              }}
+            />
+            {VAR_LABELS[v]}
+          </label>
+        ))}
+      </div>
+      <div className="builder-row-wide">
+        <label>Font
+          <select value={active.font} onChange={(e) => patchCustom({ font: e.target.value })}>
+            {FONTS.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
+          </select>
+        </label>
+        <label>Caret
+          <select
+            value={active.caretStyle}
+            onChange={(e) => patchCustom({ caretStyle: e.target.value as Theme['caretStyle'] })}
+          >
+            <option value="bar">Bar</option>
+            <option value="block">Block</option>
+            <option value="underline">Underline</option>
+          </select>
+        </label>
+      </div>
+      <div className="share-row">
+        <button
+          type="button"
+          className="btn-small"
+          onClick={async () => {
+            await navigator.clipboard.writeText(encodeThemeString(active))
+            setShareState('copied')
+            window.setTimeout(() => setShareState('idle'), 1500)
+          }}
+        >
+          {shareState === 'copied' ? 'Copied!' : 'Copy share string'}
+        </button>
+        <input
+          placeholder="cv1.… paste to import"
+          value={shareDraft}
+          className={shareState === 'bad' ? 'bad' : ''}
+          onChange={(e) => {
+            setShareDraft(e.target.value)
+            setShareState('idle')
+          }}
+          onKeyDown={(e) => {
+            if (e.key !== 'Enter') return
+            const theme = decodeThemeString(shareDraft.trim())
+            if (!theme) {
+              setShareState('bad')
+              return
+            }
+            onChange({
+              themeId: 'custom',
+              customTheme: { ...theme, id: 'custom' },
+              themeChosen: true,
+            })
+            setShareDraft('')
+          }}
+        />
+      </div>
+      {shareState === 'bad' && <small className="field-hint">That string didn't decode — check it copied fully.</small>}
+    </div>
+  )
+}
 
 const PROVIDERS: Array<{ id: ByokProvider; label: string }> = [
   { id: 'anthropic', label: 'Anthropic' },
@@ -53,6 +185,7 @@ export function SettingsPanel({
   onClose: () => void
 }) {
   const [keyDraft, setKeyDraft] = useState(() => getByokKey(settings.byokProvider))
+  const [builderOpen, setBuilderOpen] = useState(settings.themeId === 'custom')
 
   const pickProvider = (p: ByokProvider) => {
     onChange({ byokProvider: p, byokModel: '' })
@@ -110,7 +243,62 @@ export function SettingsPanel({
                 {t.name}
               </button>
             ))}
+            {settings.customTheme && (
+              <button
+                type="button"
+                className={`theme-card${settings.themeId === 'custom' ? ' selected' : ''}`}
+                onClick={() => onChange({ themeId: 'custom', themeChosen: true })}
+              >
+                <span
+                  className="theme-preview"
+                  style={{ background: settings.customTheme.vars.bg, borderColor: settings.customTheme.vars.border }}
+                >
+                  <span className="theme-preview-ink" style={{ background: settings.customTheme.vars.ink }} />
+                  <span className="theme-preview-ink short" style={{ background: settings.customTheme.vars.muted }} />
+                  <span className="theme-preview-caret" style={{ background: settings.customTheme.vars.caret }} />
+                </span>
+                Custom
+              </button>
+            )}
           </div>
+          <button type="button" className="btn-small builder-toggle" onClick={() => setBuilderOpen(!builderOpen)}>
+            {builderOpen ? 'Hide theme builder' : 'Customize theme…'}
+          </button>
+          {builderOpen && <ThemeBuilder settings={settings} onChange={onChange} />}
+        </section>
+
+        <section>
+          <h3>Effects</h3>
+          <Switch label="Keystroke sparks" checked={settings.fx.sparks}
+            onChange={(v) => onChange({ fx: { ...settings.fx, sparks: v } })} />
+          <Switch label="Combo streak glow" hint="warms up as your WPM climbs"
+            checked={settings.fx.streak}
+            onChange={(v) => onChange({ fx: { ...settings.fx, streak: v } })} />
+          <Switch label="Screen shake" hint="tiny, only at high combo"
+            checked={settings.fx.shake}
+            onChange={(v) => onChange({ fx: { ...settings.fx, shake: v } })} />
+        </section>
+
+        <section>
+          <h3>Sound</h3>
+          <label>Typing sounds
+            <select
+              value={settings.sound.pack}
+              onChange={(e) => onChange({ sound: { ...settings.sound, pack: e.target.value as Settings['sound']['pack'] } })}
+            >
+              <option value="off">Off</option>
+              <option value="thock">Thock</option>
+              <option value="typewriter">Typewriter</option>
+              <option value="pop">Pop</option>
+            </select>
+          </label>
+          {settings.sound.pack !== 'off' && (
+            <label className="slider-label">Volume
+              <input type="range" min={0} max={100}
+                value={Math.round(settings.sound.volume * 100)}
+                onChange={(e) => onChange({ sound: { ...settings.sound, volume: Number(e.target.value) / 100 } })} />
+            </label>
+          )}
         </section>
 
         <section>

@@ -30,12 +30,25 @@ button, input, select, textarea { font: inherit; color: inherit; }
   background: var(--c-bg);
 }
 .app-chrome-top { flex: none; }
+.editor-stage {
+  flex: 1;
+  position: relative; /* fx canvas + demo overlay pin to the visible viewport */
+  display: flex;
+  min-height: 0;
+}
 .app-editor-scroll {
   flex: 1;
   overflow-y: auto;
-  position: relative; /* positioning context for caret + fx layers */
+  position: relative; /* positioning context for the smooth caret */
   scrollbar-width: thin;
   scrollbar-color: var(--c-faint) transparent;
+}
+.zen .app-editor-scroll { scrollbar-width: none; }
+.fx-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
 }
 .app-statusbar { flex: none; }
 

@@ -37,6 +37,8 @@ export interface Settings {
   spellcheck: boolean
   autocorrect: boolean
   zen: boolean
+  fx: { sparks: boolean; streak: boolean; shake: boolean }
+  sound: { pack: 'off' | 'thock' | 'typewriter' | 'pop'; volume: number }
   /** true once the user explicitly picked a theme */
   themeChosen: boolean
 }
@@ -55,6 +57,8 @@ export const DEFAULT_SETTINGS: Settings = {
   spellcheck: true,
   autocorrect: true,
   zen: false,
+  fx: { sparks: true, streak: true, shake: false },
+  sound: { pack: 'off', volume: 0.6 },
   themeChosen: false,
 }
 
