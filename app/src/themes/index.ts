@@ -3,8 +3,34 @@ import { THEME_VARS } from '../core/theme/types'
 import { ensureFontLoaded, fontById } from './fonts'
 
 /**
- * Midnight — the launch default. The caret carries the brand: calm teal
- * (seed oklch(0.72 0.10 188)) on near-black. More packs ship in Phase 2.
+ * Paper — the launch default. Warm paper white, ink text, the teal brand
+ * caret carried over from the seed at a depth that holds AA on light ground.
+ */
+export const paper: Theme = {
+  id: 'paper',
+  name: 'Paper',
+  dark: false,
+  font: 'jetbrains-mono',
+  caretStyle: 'bar',
+  vars: {
+    bg: 'oklch(0.977 0.006 95)',
+    surface: 'oklch(0.955 0.008 95)',
+    ink: 'oklch(0.25 0.015 75)',
+    muted: 'oklch(0.45 0.02 80)',
+    faint: 'oklch(0.60 0.015 85)',
+    accent: 'oklch(0.52 0.10 188)',
+    caret: 'oklch(0.58 0.125 188)',
+    ghost: 'oklch(0.62 0.02 85)',
+    selection: 'oklch(0.72 0.10 188 / 0.25)',
+    link: 'oklch(0.46 0.09 210)',
+    border: 'oklch(0.885 0.010 92)',
+    danger: 'oklch(0.52 0.18 25)',
+  },
+}
+
+/**
+ * Midnight — the dark pack: the same teal caret on near-black
+ * (seed oklch(0.72 0.10 188)). More packs ship in Phase 2.
  */
 export const midnight: Theme = {
   id: 'midnight',
@@ -28,10 +54,10 @@ export const midnight: Theme = {
   },
 }
 
-export const BUILTIN_THEMES: Theme[] = [midnight]
+export const BUILTIN_THEMES: Theme[] = [paper, midnight]
 
 export function themeById(id: string): Theme {
-  return BUILTIN_THEMES.find((t) => t.id === id) ?? midnight
+  return BUILTIN_THEMES.find((t) => t.id === id) ?? paper
 }
 
 /** Write a theme onto the document. Everything downstream reads CSS variables only. */

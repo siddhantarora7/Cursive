@@ -5,7 +5,10 @@ const KEY = 'settings'
 export async function loadSettings(): Promise<Settings> {
   const stored = await (await getDb()).get('settings', KEY)
   // merge so new fields get defaults after upgrades
-  return { ...DEFAULT_SETTINGS, ...stored }
+  const settings = { ...DEFAULT_SETTINGS, ...stored }
+  // the default flipped to light; follow it unless the user explicitly chose a theme
+  if (!settings.themeChosen) settings.themeId = DEFAULT_SETTINGS.themeId
+  return settings
 }
 
 export async function saveSettings(settings: Settings): Promise<void> {

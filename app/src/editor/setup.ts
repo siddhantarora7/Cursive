@@ -9,6 +9,7 @@ import Superscript from '@tiptap/extension-superscript'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Placeholder } from '@tiptap/extensions'
+import { Autocorrect, type AutocorrectOptions } from './extensions/autocorrect'
 import { Find } from './extensions/find'
 import { GhostText, type GhostTextOptions } from './extensions/ghost-text'
 import type { PMJson } from '../store/db'
@@ -18,6 +19,7 @@ export interface CreateEditorOptions {
   content: PMJson | null
   spellcheck: boolean
   ghost: GhostTextOptions
+  autocorrect: AutocorrectOptions
   onUpdate: (editor: Editor) => void
   onSelectionUpdate: (editor: Editor) => void
   onTransaction: (editor: Editor, transaction: Transaction) => void
@@ -46,6 +48,7 @@ export function createCursiveEditor(opts: CreateEditorOptions): Editor {
       TaskItem.configure({ nested: true }),
       Placeholder.configure({ placeholder: 'Start typing…' }),
       Find,
+      Autocorrect.configure(opts.autocorrect),
       GhostText.configure(opts.ghost),
     ],
     editorProps: {

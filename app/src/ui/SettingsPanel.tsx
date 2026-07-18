@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ByokProvider, Settings } from '../store/db'
 import { getByokKey, setByokKey } from '../store/settings'
 import { DEFAULT_MODELS } from '../ai/direct'
+import { BUILTIN_THEMES } from '../themes'
 import { Icon } from './icons'
 
 const PROVIDERS: Array<{ id: ByokProvider; label: string }> = [
@@ -10,6 +11,31 @@ const PROVIDERS: Array<{ id: ByokProvider; label: string }> = [
   { id: 'openai', label: 'OpenAI' },
   { id: 'openrouter', label: 'OpenRouter' },
 ]
+
+function Switch({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string
+  hint?: string
+  checked: boolean
+  onChange: (v: boolean) => void
+}) {
+  return (
+    <label className="switch-row">
+      <span className="switch-text">
+        {label}
+        {hint && <small>{hint}</small>}
+      </span>
+      <span className={`switch${checked ? ' on' : ''}`}>
+        <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+        <span className="switch-thumb" />
+      </span>
+    </label>
+  )
+}
 
 export function SettingsPanel({
   settings,
@@ -33,6 +59,29 @@ export function SettingsPanel({
     setKeyDraft(getByokKey(p))
   }
 
+  const aiModes = [
+    {
+      id: 'free' as const,
+      title: 'Free',
+      meta: quota
+        ? `${Math.max(0, quota.limit - quota.used)} of ${quota.limit} left today`
+        : '150 suggestions a day',
+      note: 'Runs through our proxy on free model tiers — those providers may train on the snippet sent (≤ ~1,000 characters before your cursor). Your document itself never leaves this browser.',
+    },
+    {
+      id: 'byok' as const,
+      title: 'Your own key',
+      meta: 'unlimited',
+      note: 'The key lives only in this browser and goes straight to your provider — never to our servers.',
+    },
+    {
+      id: 'off' as const,
+      title: 'Off',
+      meta: 'just the editor',
+      note: null,
+    },
+  ]
+
   return (
     <div className="settings-scrim" onPointerDown={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <aside className="settings-panel" role="dialog" aria-label="Settings">
@@ -44,35 +93,46 @@ export function SettingsPanel({
         </header>
 
         <section>
-          <h3><Icon name="sparkle" size={14} /> Suggestions</h3>
-          <label className="radio">
-            <input type="radio" name="aimode" checked={settings.aiMode === 'free'}
-              onChange={() => onChange({ aiMode: 'free' })} />
-            <span>
-              <strong>Free</strong> — {quota ? `${Math.max(0, quota.limit - quota.used)} of ${quota.limit} left today` : '150 suggestions/day'}
-              <small className="disclosure">
-                Free suggestions run through our proxy on free model tiers; those providers may
-                use the text sent (up to ~1,000 characters before your cursor) to train their
-                models. Your document itself never leaves this browser.
-              </small>
-            </span>
-          </label>
-          <label className="radio">
-            <input type="radio" name="aimode" checked={settings.aiMode === 'byok'}
-              onChange={() => onChange({ aiMode: 'byok' })} />
-            <span>
-              <strong>Your own key</strong> — unlimited
-              <small className="disclosure">
-                Your key is stored only in this browser and sent directly to the provider —
-                never to our servers. Your provider's data policy applies.
-              </small>
-            </span>
-          </label>
-          <label className="radio">
-            <input type="radio" name="aimode" checked={settings.aiMode === 'off'}
-              onChange={() => onChange({ aiMode: 'off' })} />
-            <span><strong>Off</strong> — just the editor</span>
-          </label>
+          <h3>Appearance</h3>
+          <div className="theme-grid">
+            {BUILTIN_THEMES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                className={`theme-card${settings.themeId === t.id ? ' selected' : ''}`}
+                onClick={() => onChange({ themeId: t.id, themeChosen: true })}
+              >
+                <span className="theme-preview" style={{ background: t.vars.bg, borderColor: t.vars.border }}>
+                  <span className="theme-preview-ink" style={{ background: t.vars.ink }} />
+                  <span className="theme-preview-ink short" style={{ background: t.vars.muted }} />
+                  <span className="theme-preview-caret" style={{ background: t.vars.caret }} />
+                </span>
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section>
+          <h3>Suggestions</h3>
+          <div className="option-cards" role="radiogroup" aria-label="Suggestion mode">
+            {aiModes.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                role="radio"
+                aria-checked={settings.aiMode === m.id}
+                className={`option-card${settings.aiMode === m.id ? ' selected' : ''}`}
+                onClick={() => onChange({ aiMode: m.id })}
+              >
+                <span className="option-title">
+                  {m.title}
+                  <span className="option-meta">{m.meta}</span>
+                </span>
+                {m.note && <span className="option-note">{m.note}</span>}
+              </button>
+            ))}
+          </div>
 
           {settings.aiMode === 'byok' && (
             <div className="byok-box">
@@ -91,45 +151,43 @@ export function SettingsPanel({
               </label>
             </div>
           )}
-        </section>
 
-        <section>
-          <h3>This document</h3>
-          <label>Intent
+          <label className="intent-label">Document intent
             <textarea
-              rows={3}
-              placeholder={'e.g. "college essay, direct tone, no em dashes" — sent with every suggestion request'}
+              rows={2}
+              placeholder="college essay, direct tone, no em dashes"
               value={intent}
               onChange={(e) => onIntentChange(e.target.value)}
             />
+            <small className="field-hint">Sent with every suggestion for this document.</small>
           </label>
+        </section>
+
+        <section>
+          <h3>Editor</h3>
+          <Switch label="Autocorrect" hint="fixes slips like waht → what as you type; Backspace undoes one"
+            checked={settings.autocorrect} onChange={(v) => onChange({ autocorrect: v })} />
+          <Switch label="Spellcheck" hint="the browser's red underlines"
+            checked={settings.spellcheck} onChange={(v) => onChange({ spellcheck: v })} />
         </section>
 
         <section>
           <h3>Feel</h3>
-          <label>Caret smoothing
+          <label className="slider-label">Caret smoothing
             <input type="range" min={0} max={100}
               value={Math.round(settings.caret.smoothing * 100)}
               onChange={(e) => onChange({ caret: { ...settings.caret, smoothing: Number(e.target.value) / 100 } })} />
+            <span className="slider-ends"><span>instant</span><span>floaty</span></span>
           </label>
-          <label className="check">
-            <input type="checkbox" checked={settings.caret.blink}
-              onChange={(e) => onChange({ caret: { ...settings.caret, blink: e.target.checked } })} />
-            Caret blink
-          </label>
-          <label className="check">
-            <input type="checkbox" checked={settings.spellcheck}
-              onChange={(e) => onChange({ spellcheck: e.target.checked })} />
-            Spellcheck
-          </label>
+          <Switch label="Caret blink" checked={settings.caret.blink}
+            onChange={(v) => onChange({ caret: { ...settings.caret, blink: v } })} />
         </section>
 
         <section className="settings-privacy">
-          <h3>Privacy</h3>
           <p>
-            Documents live in this browser (IndexedDB) and nowhere else. The only data that
-            ever leaves is the suggestion context described above, at suggestion time. No
-            accounts, no analytics, no server-side storage.
+            Documents live in this browser (IndexedDB) and nowhere else. The only data that ever
+            leaves is the suggestion context described above, at suggestion time. No accounts,
+            no analytics, no server-side storage.
           </p>
         </section>
       </aside>

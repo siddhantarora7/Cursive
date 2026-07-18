@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/core'
 import { buildCompletionFn } from '../ai'
+import { parseDictionary, type Dictionary } from '../core/autocorrect/dictionary'
 import { wordCount } from '../core/text/context'
+import wordsUrl from '../assets/en-words.txt?url'
 import { SmoothCaret } from '../editor/caret'
 import { createCursiveEditor, deriveTitle } from '../editor/setup'
 import {
@@ -12,7 +14,7 @@ import type { DocRecord, Settings } from '../store/db'
 import { createDoc, deleteDoc, getDoc, listDocs, saveDocContent, updateDocMeta } from '../store/docs'
 import { loadSettings, saveSettings } from '../store/settings'
 import { ensureFontLoaded, fontById } from '../themes/fonts'
-import { themeById } from '../themes'
+import { applyTheme, themeById } from '../themes'
 import { DocsPopover } from './DocsPopover'
 import { FindReplaceBar } from './FindReplaceBar'
 import { MenuBar } from './MenuBar'
@@ -38,6 +40,8 @@ export function App() {
   const caretRef = useRef<SmoothCaret | null>(null)
   const controllerRef = useRef<SuggestionController | null>(null)
   const completionRef = useRef<CompletionFn | null>(null)
+  const dictRef = useRef<Dictionary | null>(null)
+  const autocorrectRef = useRef(true)
   const intentRef = useRef('')
   const saveTimer = useRef(0)
   const zenPeekTimer = useRef(0)
@@ -45,7 +49,7 @@ export function App() {
 
   intentRef.current = intent
 
-  /* ---------- boot: settings + docs ---------- */
+  /* ---------- boot: settings + docs + autocorrect dictionary ---------- */
   useEffect(() => {
     void (async () => {
       const s = await loadSettings()
@@ -55,6 +59,13 @@ export function App() {
       setDocs(list)
       setActiveId(list[0]!.id)
     })()
+    // lazy: the 82k-word list never blocks first paint or first keystroke
+    void fetch(wordsUrl)
+      .then((r) => r.text())
+      .then((text) => {
+        dictRef.current = parseDictionary(text)
+      })
+      .catch(() => {})
   }, [])
 
   /* ---------- settings side-effects ---------- */
@@ -66,11 +77,13 @@ export function App() {
     const theme = settings.themeId === 'custom' && settings.customTheme
       ? settings.customTheme
       : themeById(settings.themeId)
+    applyTheme(theme)
     const fontId = settings.fontOverride ?? theme.font
     root.style.setProperty('--font-editor', fontById(fontId).stack)
     void ensureFontLoaded(fontId)
     completionRef.current = buildCompletionFn(settings)
     controllerRef.current?.setEnabled(completionRef.current !== null)
+    autocorrectRef.current = settings.autocorrect
     caretRef.current?.setConfig(settings.caret)
     editor?.setOptions({
       editorProps: {
@@ -108,6 +121,10 @@ export function App() {
         ghost: {
           onAccept: () => controllerRef.current?.notifyAccepted(),
           onDismiss: () => controllerRef.current?.notifyDismissed(),
+        },
+        autocorrect: {
+          isEnabled: () => autocorrectRef.current,
+          getDictionary: () => dictRef.current,
         },
         onUpdate: (e) => {
           window.clearTimeout(saveTimer.current)

@@ -101,6 +101,8 @@ export function MenuBar({
           <>
             <Item label="Zen mode" hint={`${mod}\\`} checked={settings.zen}
               onClick={onToggleZen} close={close} />
+            <Item label="Autocorrect" checked={settings.autocorrect}
+              onClick={() => onSettingsChange({ autocorrect: !settings.autocorrect })} close={close} />
             <Item label="Spellcheck" checked={settings.spellcheck}
               onClick={() => onSettingsChange({ spellcheck: !settings.spellcheck })} close={close} />
             <div className="docs-divider" />

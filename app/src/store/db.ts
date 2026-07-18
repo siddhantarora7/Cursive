@@ -35,12 +35,15 @@ export interface Settings {
   /** model override per provider; '' → adapter default */
   byokModel: string
   spellcheck: boolean
+  autocorrect: boolean
   zen: boolean
+  /** true once the user explicitly picked a theme */
+  themeChosen: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   version: 1,
-  themeId: 'midnight',
+  themeId: 'paper',
   customTheme: null,
   fontOverride: null,
   editorFontSize: 17,
@@ -50,7 +53,9 @@ export const DEFAULT_SETTINGS: Settings = {
   byokProvider: 'anthropic',
   byokModel: '',
   spellcheck: true,
+  autocorrect: true,
   zen: false,
+  themeChosen: false,
 }
 
 interface CursiveDB extends DBSchema {
