@@ -9,7 +9,9 @@ phase plan in `ARCHITECTURE.md`, it lives here — not in code.
   (originally excluded): local Damerau-ED1 correction at word boundaries against a
   frequency-ranked dictionary, with flash feedback, Backspace-to-revert, and a
   session ignore list. Possible later upgrades: edit-distance-2 via true SymSpell
-  deletes, user dictionary, multi-language.
+  deletes, user dictionary, multi-language, and retroactive re-correction of past
+  words using following-word context (bigrams) — currently lone letters are fixed
+  immediately at the boundary by unigram frequency instead.
 - **Full offline launch (service worker / PWA install).** v1 is local-first once
   loaded; installability and offline boot are a later polish item.
 - **Image/table/math/dictate/print toolbar items** — Phase 4 by plan, not before.
