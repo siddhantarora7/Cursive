@@ -82,7 +82,7 @@ One ProseMirror plugin (`ghostText`) owning:
 
 The policy is a pure state machine: `(event, state, now) → { state', action }` where events are `typed | moved | idle-tick | response | error | accept | dismiss` and actions are `none | request(context) | cancel`. Rules it encodes (all unit-tested, all constants in one config object):
 
-- Request only after **400 ms** of no input **and** ≥ 3 words before the caret **and** caret at a word boundary **and** not mid-composition, not in a code block.
+- Request only after **400 ms** of no input **and** ≥ 3 words before the caret **and** not mid-composition, not in a code block. **Mid-word triggering is deliberate**: completing the word being typed is a core demo moment. The context slice ends exactly at the caret (partial word included); the quality filter verifies the suggestion is a plausible continuation of the partial word (or starts with a space when the word looks complete) and drops it otherwise.
 - Context: ≤ ~1,000 chars before the caret (sliced at a word boundary) + the document-intent string as system context. Nothing after the caret, nothing else, ever.
 - Completion: ≤ 12 words (`max_tokens` ≈ 40 plus client-side truncation at the 12th word boundary), temperature ≈ 0.3, stop sequences `\n\n`.
 - **Quality filter — a bad suggestion is worse than none.** Drop silently if: empty/whitespace; repeats the tail of the context; starts by re-typing the current word incorrectly; contains markdown/formatting junk or model chatter ("Sure, here"); is a single punctuation mark. Normalize leading-space against context so we never render `wordword`.
@@ -221,3 +221,17 @@ Selection + `Cmd/Ctrl+K` → floating instruction input → provider returns rew
 ## 12. Privacy posture (summary; PRIVACY page is the canonical text)
 
 Sent to AI endpoints, only at suggestion time: ≤ ~1,000 chars before caret + intent (+ selection & ~500 chars for prompt-to-edit). Nothing stored server-side, no accounts, no analytics on content. Free tier: upstream providers may train on inputs — disclosed at the point of choice. BYOK: keys in localStorage only; direct-to-provider where CORS allows; pass-through proxy never stores or logs keys or content.
+
+---
+
+## 13. Phase 0 review decisions (2026-07-17)
+
+1. Menu bar deferred to the end of Phase 1, trimmed to menus with real items.
+2. Docs list is a popover doc-switcher, not a sidebar.
+3. Free-tier caps: per-client 150/day **and** per-IP ceiling ~400/day.
+4. Suggestions trigger mid-word (see §2) — completing the current word is the point. Autocorrect stays out of v1 (ROADMAP).
+5. Native browser spellcheck stays **on** by default (toggle in settings).
+6. First-run default theme: **midnight** (dark, teal `oklch(0.72 0.10 188)` caret/accent).
+7. Desktop-first: mobile usable but not a polish target for v1.
+8. Basic Zen mode (chrome fade) ships in Phase 1; full treatment in Phase 2.
+9. Slim bottom status strip: word count + caps meter (+ live WPM in Phase 3); fades in Zen.
