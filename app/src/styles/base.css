@@ -1,0 +1,162 @@
+/* ============ reset ============ */
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { height: 100%; }
+body {
+  height: 100%;
+  font-family: 'Public Sans Variable', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--c-bg);
+  color: var(--c-ink);
+}
+#root { height: 100%; }
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+
+:root {
+  --font-editor: ui-monospace, monospace;
+  --editor-font-size: 1.0625rem;
+  --editor-line-height: 1.7;
+  --editor-max-width: 44rem;
+  --chrome-fade: 180ms;
+}
+
+/* ============ app shell ============ */
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.app-chrome-top { flex: none; }
+.app-editor-scroll {
+  flex: 1;
+  overflow-y: auto;
+  position: relative; /* positioning context for caret + fx layers */
+  scrollbar-width: thin;
+  scrollbar-color: var(--c-faint) transparent;
+}
+.app-statusbar { flex: none; }
+
+/* chrome fades away in zen mode; text stays */
+.zen .app-chrome-top,
+.zen .app-statusbar {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+.app-chrome-top, .app-statusbar { transition: opacity var(--chrome-fade) ease; }
+/* moving the mouse in zen briefly reveals chrome */
+.zen.zen-peek .app-chrome-top,
+.zen.zen-peek .app-statusbar { opacity: 1; pointer-events: auto; }
+
+/* ============ editor surface ============ */
+.editor-page {
+  max-width: var(--editor-max-width);
+  margin: 0 auto;
+  padding: 3.5rem 1.5rem 40vh; /* 40vh: keep the caret away from the bottom edge */
+}
+
+.cursive-editor {
+  outline: none;
+  font-family: var(--font-editor);
+  font-size: var(--editor-font-size);
+  line-height: var(--editor-line-height);
+  caret-color: transparent; /* the smooth caret replaces the native one */
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+.cursive-editor.native-caret { caret-color: var(--c-caret); }
+
+.cursive-editor ::selection { background: var(--c-selection); }
+.cursive-editor::selection { background: var(--c-selection); }
+
+.cursive-editor > * + * { margin-top: 0.75em; }
+.cursive-editor h1 { font-size: 1.9em; line-height: 1.25; margin-top: 1.2em; }
+.cursive-editor h2 { font-size: 1.5em; line-height: 1.3; margin-top: 1.1em; }
+.cursive-editor h3 { font-size: 1.2em; line-height: 1.35; margin-top: 1em; }
+.cursive-editor blockquote {
+  border-left: 3px solid var(--c-accent);
+  padding-left: 1em;
+  color: var(--c-muted);
+}
+.cursive-editor code {
+  background: var(--c-surface);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+  font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+}
+.cursive-editor pre {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 0.9em 1.1em;
+  overflow-x: auto;
+}
+.cursive-editor pre code { background: none; padding: 0; font-size: 0.88em; }
+.cursive-editor a { color: var(--c-link); text-underline-offset: 3px; }
+.cursive-editor hr {
+  border: none;
+  border-top: 1px solid var(--c-border);
+  margin: 1.6em auto;
+  width: 40%;
+}
+.cursive-editor ul, .cursive-editor ol { padding-left: 1.4em; }
+.cursive-editor li + li { margin-top: 0.25em; }
+.cursive-editor ul[data-type='taskList'] { list-style: none; padding-left: 0.2em; }
+.cursive-editor ul[data-type='taskList'] li { display: flex; gap: 0.55em; }
+.cursive-editor ul[data-type='taskList'] input[type='checkbox'] {
+  accent-color: var(--c-accent);
+  margin-top: 0.35em;
+}
+.cursive-editor li[data-checked='true'] > div { color: var(--c-muted); text-decoration: line-through; }
+.cursive-editor mark { background: var(--c-selection); color: inherit; border-radius: 2px; }
+
+.cursive-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--c-faint);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+/* ============ ghost text ============ */
+.ghost-text {
+  color: var(--c-ghost);
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  animation: ghost-in 120ms ease-out;
+}
+@keyframes ghost-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* accepted suggestion fades from accent tint to plain ink */
+.ghost-accepted { animation: ghost-accept 340ms ease-out; }
+@keyframes ghost-accept {
+  from { color: var(--c-accent); opacity: 0.55; }
+  to { color: inherit; opacity: 1; }
+}
+
+/* ============ smooth caret ============ */
+.smooth-caret {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--c-caret);
+  pointer-events: none;
+  will-change: transform;
+  z-index: 5;
+}
+[data-caret-style='block'] .smooth-caret { opacity: 0.55; border-radius: 3px; }
+[data-caret-style='underline'] .smooth-caret { border-radius: 2px; }
+.smooth-caret.blinking { animation: caret-blink 1.1s steps(1) infinite 300ms; }
+@keyframes caret-blink { 50% { opacity: 0; } }
+.smooth-caret.hidden { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ghost-text, .ghost-accepted { animation: none; }
+  .app-chrome-top, .app-statusbar { transition: none; }
+}
