@@ -5,11 +5,11 @@ phase plan in `ARCHITECTURE.md`, it lives here — not in code.
 
 ## Deferred, likely later
 
-- **Autocorrect (SymSpell).** Excluded from v1 on purpose. A possible later
-  differentiator: local, instant, dictionary-based correction that pairs well with
-  the "typing feel" identity — but it changes text the user typed, which is a trust
-  and feel risk that needs its own design pass (undo semantics, per-word revert,
-  visual feedback). Revisit after Phase 3 ships.
+- ~~**Autocorrect (SymSpell).**~~ **Shipped in Phase 1** by explicit owner request
+  (originally excluded): local Damerau-ED1 correction at word boundaries against a
+  frequency-ranked dictionary, with flash feedback, Backspace-to-revert, and a
+  session ignore list. Possible later upgrades: edit-distance-2 via true SymSpell
+  deletes, user dictionary, multi-language.
 - **Full offline launch (service worker / PWA install).** v1 is local-first once
   loaded; installability and offline boot are a later polish item.
 - **Image/table/math/dictate/print toolbar items** — Phase 4 by plan, not before.

@@ -229,9 +229,10 @@ Sent to AI endpoints, only at suggestion time: ≤ ~1,000 chars before caret + i
 1. Menu bar deferred to the end of Phase 1, trimmed to menus with real items.
 2. Docs list is a popover doc-switcher, not a sidebar.
 3. Free-tier caps: per-client 150/day **and** per-IP ceiling ~400/day.
-4. Suggestions trigger mid-word (see §2) — completing the current word is the point. Autocorrect stays out of v1 (ROADMAP).
+4. Suggestions trigger mid-word (see §2) — completing the current word is the point.
 5. Native browser spellcheck stays **on** by default (toggle in settings).
-6. First-run default theme: **midnight** (dark, teal `oklch(0.72 0.10 188)` caret/accent).
-7. Desktop-first: mobile usable but not a polish target for v1.
-8. Basic Zen mode (chrome fade) ships in Phase 1; full treatment in Phase 2.
-9. Slim bottom status strip: word count + caps meter (+ live WPM in Phase 3); fades in Zen.
+6. First-run default theme: ~~midnight~~ **paper** (light; the teal caret carries the brand — revised 2026-07-18 after dogfooding). Midnight ships as the second pack, picker in settings.
+7. *(Revised 2026-07-18)* **Autocorrect is IN for v1** after a second explicit request: `core/autocorrect` does Damerau edit-distance-1 lookup against a rank-ordered frequency dictionary (SymSpell en_82_765, MIT, lazy-loaded 350 kB gz asset); the editor extension corrects only at word boundaries, flashes the fix, reverts on immediate Backspace (adding a session ignore), and skips code contexts, IME, acronyms, and anything it can't fix confidently.
+8. Desktop-first: mobile usable but not a polish target for v1.
+9. Basic Zen mode (chrome fade) ships in Phase 1; full treatment in Phase 2.
+10. Slim bottom status strip: word count + caps meter (+ live WPM in Phase 3); fades in Zen.
