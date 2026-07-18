@@ -1,0 +1,85 @@
+import { describe, expect, it } from 'vitest'
+import { vetSuggestion } from './quality'
+
+const MAX = 12
+
+/**
+ * Join contract (mirrors the prompt in ai/): the model is asked to continue the
+ * text exactly, repeating the in-progress word if the context ends mid-word.
+ *  - raw starting with whitespace   → boundary join, normalized to one space
+ *  - context ends mid-word          → raw must repeat the partial word (we strip
+ *    the overlap) or it is dropped — a bad join is worse than none
+ *  - context ends with space/punct  → letter-starting raw joins with the right spacing
+ */
+describe('vetSuggestion', () => {
+  it('accepts a boundary continuation with a leading space', () => {
+    expect(vetSuggestion(' over the lazy dog', 'The quick brown fox jumps', MAX)).toBe(
+      ' over the lazy dog',
+    )
+  })
+
+  it('strips the repeated partial word for mid-word completions', () => {
+    expect(vetSuggestion('completion works', 'ghost text co', MAX)).toBe('mpletion works')
+    expect(vetSuggestion('Completion works', 'ghost text co', MAX)).toBe('mpletion works')
+  })
+
+  it('drops a letter-start suggestion that does not repeat the partial word (ambiguous join)', () => {
+    expect(vetSuggestion('over the fence', 'the fox jumps', MAX)).toBeNull()
+  })
+
+  it('drops a pure repeat of the partial word', () => {
+    expect(vetSuggestion('jumps', 'the fox jumps', MAX)).toBeNull()
+  })
+
+  it('joins cleanly when the context already ends with a space', () => {
+    expect(vetSuggestion('over the fence', 'the fox jumps ', MAX)).toBe('over the fence')
+    expect(vetSuggestion('  over the fence', 'the fox jumps ', MAX)).toBe('over the fence')
+  })
+
+  it('adds a space after sentence punctuation', () => {
+    expect(vetSuggestion('The next day', 'It was late.', MAX)).toBe(' The next day')
+  })
+
+  it('rejects empty / whitespace / punctuation-only', () => {
+    expect(vetSuggestion('', 'some context here ', MAX)).toBeNull()
+    expect(vetSuggestion('   ', 'some context here ', MAX)).toBeNull()
+    expect(vetSuggestion('.', 'some context here ', MAX)).toBeNull()
+    expect(vetSuggestion('...', 'some context here ', MAX)).toBeNull()
+  })
+
+  it('rejects assistant chatter', () => {
+    for (const bad of [
+      'Sure, here is a continuation:',
+      "Here's the completed sentence",
+      'As an AI language model I',
+      'I cannot complete this',
+      'Certainly! The next words',
+    ]) {
+      expect(vetSuggestion(bad, 'the meeting is scheduled for ', MAX)).toBeNull()
+    }
+  })
+
+  it('rejects markdown/formatting junk', () => {
+    expect(vetSuggestion('- bullet point', 'plain prose context ', MAX)).toBeNull()
+    expect(vetSuggestion('## Heading', 'plain prose context ', MAX)).toBeNull()
+    expect(vetSuggestion('```js', 'plain prose context ', MAX)).toBeNull()
+  })
+
+  it('rejects a suggestion that repeats the context tail', () => {
+    expect(vetSuggestion(' brown fox jumps', 'The quick brown fox jumps', MAX)).toBeNull()
+    expect(vetSuggestion(' quick brown fox', 'The quick brown fox ', MAX)).toBeNull()
+  })
+
+  it('truncates at the max word count on a word boundary', () => {
+    const long = ' one two three four five six seven eight nine ten eleven twelve thirteen'
+    expect(vetSuggestion(long, 'counting now:', 5)).toBe(' one two three four five')
+  })
+
+  it('cuts at the first newline', () => {
+    expect(vetSuggestion(' first line\nsecond line', 'context goes here ', MAX)).toBe('first line')
+  })
+
+  it('trims trailing whitespace', () => {
+    expect(vetSuggestion(' hello there   ', 'well then,', MAX)).toBe(' hello there')
+  })
+})
