@@ -36,7 +36,7 @@ export async function saveDocContent(
   await db.put('docs', {
     ...doc,
     content,
-    title: derived.title,
+    title: doc.renamed ? doc.title : derived.title,
     wordCount: derived.wordCount,
     updatedAt: Date.now(),
   })
@@ -49,7 +49,8 @@ export async function updateDocMeta(
   const db = await getDb()
   const doc = await db.get('docs', id)
   if (!doc) return
-  await db.put('docs', { ...doc, ...patch, updatedAt: Date.now() })
+  const renamed = doc.renamed || patch.title !== undefined
+  await db.put('docs', { ...doc, ...patch, renamed, updatedAt: Date.now() })
 }
 
 export async function deleteDoc(id: string): Promise<void> {

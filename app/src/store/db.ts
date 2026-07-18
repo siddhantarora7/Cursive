@@ -13,6 +13,8 @@ export interface DocRecord {
   createdAt: number
   updatedAt: number
   wordCount: number
+  /** user renamed explicitly → stop deriving the title from the first line */
+  renamed?: boolean
 }
 
 export type AiMode = 'free' | 'byok' | 'off'
@@ -24,6 +26,9 @@ export interface Settings {
   customTheme: Theme | null
   /** null → use the theme's font */
   fontOverride: string | null
+  /** editor typography is global (Monkeytype-style), not per-selection */
+  editorFontSize: number
+  lineHeight: number
   caret: { smoothing: number; blink: boolean }
   aiMode: AiMode
   byokProvider: ByokProvider
@@ -38,6 +43,8 @@ export const DEFAULT_SETTINGS: Settings = {
   themeId: 'midnight',
   customTheme: null,
   fontOverride: null,
+  editorFontSize: 17,
+  lineHeight: 1.7,
   caret: { smoothing: 0.5, blink: true },
   aiMode: 'free',
   byokProvider: 'anthropic',

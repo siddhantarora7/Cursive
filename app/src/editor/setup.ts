@@ -9,6 +9,7 @@ import Superscript from '@tiptap/extension-superscript'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import { Placeholder } from '@tiptap/extensions'
+import { Find } from './extensions/find'
 import { GhostText, type GhostTextOptions } from './extensions/ghost-text'
 import type { PMJson } from '../store/db'
 
@@ -44,6 +45,7 @@ export function createCursiveEditor(opts: CreateEditorOptions): Editor {
       TaskList,
       TaskItem.configure({ nested: true }),
       Placeholder.configure({ placeholder: 'Start typing…' }),
+      Find,
       GhostText.configure(opts.ghost),
     ],
     editorProps: {
