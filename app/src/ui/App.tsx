@@ -15,6 +15,7 @@ import { ensureFontLoaded, fontById } from '../themes/fonts'
 import { themeById } from '../themes'
 import { DocsPopover } from './DocsPopover'
 import { FindReplaceBar } from './FindReplaceBar'
+import { MenuBar } from './MenuBar'
 import { SettingsPanel } from './SettingsPanel'
 import { StatusBar } from './StatusBar'
 import { Toolbar } from './Toolbar'
@@ -268,6 +269,16 @@ export function App() {
             onCreate={() => void newDoc()}
             onRename={(id, t) => void renameDoc(id, t)}
             onDelete={(id) => void removeDoc(id)}
+          />
+          <MenuBar
+            editor={editor}
+            settings={settings}
+            docTitle={activeDoc?.title ?? 'cursive'}
+            onNewDoc={() => void newDoc()}
+            onToggleFind={() => setFindOpen((v) => !v)}
+            onToggleZen={() => patchSettings({ zen: !settings.zen })}
+            onSettingsChange={patchSettings}
+            onOpenSettings={() => setSettingsOpen(true)}
           />
         </div>
         <Toolbar

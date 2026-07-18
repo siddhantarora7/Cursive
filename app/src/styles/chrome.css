@@ -26,6 +26,18 @@
   white-space: nowrap;
 }
 
+/* ============ menu bar ============ */
+.menubar { display: flex; align-items: center; gap: 2px; margin-left: 0.5rem; }
+.menubar .dropdown-trigger { font-size: 0.8rem; color: var(--c-muted); height: 24px; }
+.menubar-item { position: relative; padding-right: 3.5rem; }
+.menubar-check { width: 1rem; color: var(--c-accent); }
+.menubar-hint {
+  position: absolute;
+  right: 0.6rem;
+  color: var(--c-faint);
+  font-size: 0.72rem;
+}
+
 /* ============ toolbar ============ */
 .toolbar {
   display: flex;
