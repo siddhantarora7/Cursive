@@ -1,7 +1,7 @@
 import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey, type Transaction } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
-import { correctWord } from '../../core/autocorrect/correct'
+import { correctLoneLetter, correctWord } from '../../core/autocorrect/correct'
 import type { Dictionary } from '../../core/autocorrect/dictionary'
 
 /**
@@ -104,7 +104,8 @@ export const Autocorrect = Extension.create<AutocorrectOptions>({
             const codeMark = view.state.schema.marks.code
             if (codeMark && view.state.doc.rangeHasMark(wordFrom, from, codeMark)) return false
 
-            const corrected = correctWord(word, dict)
+            const corrected =
+              word.length === 1 ? correctLoneLetter(word, dict, text) : correctWord(word, dict)
             if (corrected === null) return false
 
             const tr = view.state.tr.insertText(corrected + text, wordFrom, from)

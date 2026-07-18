@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { correctWord } from './correct'
+import { correctLoneLetter, correctWord } from './correct'
 import { parseDictionary } from './dictionary'
 
 // tiny rank-ordered dictionary for tests (rank = position, most frequent first)
 const dict = parseDictionary(
   [
-    'the', 'was', 'what', 'and', 'quite', 'although', 'bad', 'hello', 'world',
-    'it', 'that', 'this', 'dont', 'its', 'tea', 'ten',
+    'the', 'of', 'in', 'was', 'on', 'what', 'an', 'and', 'quite', 'although',
+    'bad', 'hello', 'world', 'it', 'that', 'this', 'dont', 'its', 'tea', 'ten',
   ].join('\n'),
 )
 
@@ -35,6 +35,24 @@ describe('correctWord — Damerau edit-distance-1 against a frequency-ranked dic
   it('prefers the more frequent candidate when several are one edit away', () => {
     // "tha" → the (rank 0) beats that (rank 10) and tea (rank 14)
     expect(correctWord('tha', dict)).toBe('the')
+  })
+
+  it('lone i becomes I after any delimiter', () => {
+    expect(correctLoneLetter('i', dict, ' ')).toBe('I')
+    expect(correctLoneLetter('i', dict, '.')).toBe('I')
+    expect(correctLoneLetter('i', dict, ',')).toBe('I')
+  })
+
+  it('a lone consonant before a space expands to the most frequent neighbor word', () => {
+    expect(correctLoneLetter('n', dict, ' ')).toBe('in') // in (rank 2) beats on/an
+    expect(correctLoneLetter('f', dict, ' ')).toBe('of')
+  })
+
+  it('lone-letter expansion stays conservative', () => {
+    expect(correctLoneLetter('n', dict, '.')).toBeNull() // only before a space
+    expect(correctLoneLetter('a', dict, ' ')).toBeNull() // valid word
+    expect(correctLoneLetter('q', dict, ' ')).toBeNull() // no common target
+    expect(correctLoneLetter('no', dict, ' ')).toBeNull() // singles only
   })
 
   it('leaves words it cannot confidently fix alone', () => {

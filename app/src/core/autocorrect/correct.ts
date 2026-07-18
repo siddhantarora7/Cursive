@@ -60,3 +60,32 @@ export function correctWord(word: string, dict: Dictionary): string | null {
   const result: string = best
   return firstCapped ? result[0]!.toUpperCase() + result.slice(1) : result
 }
+
+/** Don't expand a lone letter to anything rarer than this rank. */
+const MAX_SINGLE_RANK = 50
+const CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
+
+/**
+ * Lone-letter fixes, applied at the word boundary like everything else:
+ *  - `i` → `I` (always; English's one-letter pronoun is never lowercase)
+ *  - a lone consonant followed by a SPACE (only — `plan b.` stays alone)
+ *    expands to the most frequent two-letter word one insertion away,
+ *    e.g. `n` → `in`, `t` → `to`. Restricted to very common targets.
+ */
+export function correctLoneLetter(word: string, dict: Dictionary, delim: string): string | null {
+  if (word === 'i') return 'I'
+  if (word.length !== 1 || delim !== ' ') return null
+  if (!CONSONANTS.includes(word)) return null
+  let best: string | null = null
+  let bestRank = MAX_SINGLE_RANK
+  for (const c of LETTERS) {
+    for (const candidate of [c + word, word + c]) {
+      const rank = dict.get(candidate)
+      if (rank !== undefined && rank < bestRank) {
+        best = candidate
+        bestRank = rank
+      }
+    }
+  }
+  return best
+}

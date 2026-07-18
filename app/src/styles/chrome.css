@@ -27,8 +27,22 @@
 }
 
 /* ============ menu bar ============ */
-.menubar { display: flex; align-items: center; gap: 2px; margin-left: 0.5rem; }
-.menubar .dropdown-trigger { font-size: 0.8rem; color: var(--c-muted); height: 24px; }
+.menubar { display: flex; align-items: center; gap: 6px; margin-left: 0.5rem; }
+.menubar .dropdown-trigger {
+  font-size: 0.8rem;
+  color: var(--c-muted);
+  height: 26px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+.menubar .dropdown-trigger:hover,
+.menubar .dropdown-trigger.active {
+  color: var(--c-ink);
+  border-color: color-mix(in oklab, var(--c-accent) 45%, var(--c-border));
+  background: color-mix(in oklab, var(--c-accent) 7%, var(--c-surface));
+}
 .menubar-item { position: relative; padding-right: 3.5rem; }
 .menubar-check { width: 1rem; color: var(--c-accent); }
 .menubar-hint {
@@ -64,7 +78,9 @@
   color: var(--c-muted);
   cursor: pointer;
   font-size: 0.85rem;
+  line-height: 1;
 }
+.tb-btn svg { display: block; flex: none; }
 .tb-btn:hover:not(:disabled) { background: color-mix(in oklab, var(--c-ink) 8%, transparent); color: var(--c-ink); }
 .tb-btn:disabled { opacity: 0.35; cursor: default; }
 .tb-btn.active { color: var(--c-accent); background: color-mix(in oklab, var(--c-accent) 14%, transparent); }
