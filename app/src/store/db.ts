@@ -1,0 +1,71 @@
+import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
+import type { Theme } from '../core/theme/types'
+
+/** ProseMirror document JSON — opaque to the store. */
+export type PMJson = Record<string, unknown>
+
+export interface DocRecord {
+  id: string
+  title: string
+  content: PMJson | null
+  /** "Document intent" sent as system context with suggestions. */
+  intent: string
+  createdAt: number
+  updatedAt: number
+  wordCount: number
+}
+
+export type AiMode = 'free' | 'byok' | 'off'
+export type ByokProvider = 'anthropic' | 'gemini' | 'openai' | 'openrouter'
+
+export interface Settings {
+  version: 1
+  themeId: string
+  customTheme: Theme | null
+  /** null → use the theme's font */
+  fontOverride: string | null
+  caret: { smoothing: number; blink: boolean }
+  aiMode: AiMode
+  byokProvider: ByokProvider
+  /** model override per provider; '' → adapter default */
+  byokModel: string
+  spellcheck: boolean
+  zen: boolean
+}
+
+export const DEFAULT_SETTINGS: Settings = {
+  version: 1,
+  themeId: 'midnight',
+  customTheme: null,
+  fontOverride: null,
+  caret: { smoothing: 0.5, blink: true },
+  aiMode: 'free',
+  byokProvider: 'anthropic',
+  byokModel: '',
+  spellcheck: true,
+  zen: false,
+}
+
+interface CursiveDB extends DBSchema {
+  docs: {
+    key: string
+    value: DocRecord
+    indexes: { 'by-updated': number }
+  }
+  settings: { key: string; value: Settings }
+  stats: { key: string; value: Record<string, unknown> } // reserved for Phase 3
+}
+
+let dbPromise: Promise<IDBPDatabase<CursiveDB>> | null = null
+
+export function getDb(): Promise<IDBPDatabase<CursiveDB>> {
+  dbPromise ??= openDB<CursiveDB>('cursive', 1, {
+    upgrade(db) {
+      const docs = db.createObjectStore('docs', { keyPath: 'id' })
+      docs.createIndex('by-updated', 'updatedAt')
+      db.createObjectStore('settings')
+      db.createObjectStore('stats')
+    },
+  })
+  return dbPromise
+}
