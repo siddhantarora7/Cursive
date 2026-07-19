@@ -284,9 +284,10 @@ export function Toolbar(props: ToolbarProps) {
         )}
       </Dropdown>
 
-      <span className="tb-spacer" />
-      <Btn icon="zen" title={`Zen mode (${mod}\\)`} active={settings.zen} onClick={props.onToggleZen} />
-      <Btn icon="gear" title="Settings" onClick={props.onOpenSettings} />
+      <span className="tb-end">
+        <Btn icon="zen" title={`Zen mode (${mod}\\)`} active={settings.zen} onClick={props.onToggleZen} />
+        <Btn icon="gear" title="Settings" onClick={props.onOpenSettings} />
+      </span>
     </div>
   )
 }

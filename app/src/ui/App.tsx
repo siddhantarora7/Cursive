@@ -344,7 +344,10 @@ export function App() {
     <div className={`app${zenClass}`}>
       <header className="app-chrome-top">
         <div className="topbar">
-          <span className="brand" title="Cursive">✳ Cursive</span>
+          <a className="brand" href="/" title="Cursive home">
+            <img src="/cursive-logo.png" alt="" className="brand-mark" />
+            Cursive
+          </a>
           <DocsPopover
             docs={docs}
             activeId={activeId}

@@ -212,6 +212,7 @@ export function applyTheme(theme: Theme): void {
   const root = document.documentElement
   root.dataset.theme = theme.id
   root.dataset.caretStyle = theme.caretStyle
+  root.dataset.dark = theme.dark ? '1' : '0'
   root.style.colorScheme = theme.dark ? 'dark' : 'light'
   for (const key of THEME_VARS) {
     root.style.setProperty(`--c-${key}`, theme.vars[key])

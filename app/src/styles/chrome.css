@@ -6,12 +6,19 @@
   padding: 0.5rem 0.9rem 0;
 }
 .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--c-accent);
   user-select: none;
+  text-decoration: none;
 }
+.brand-mark { width: 20px; height: 20px; border-radius: 5px; }
+/* the mark is ink-on-black; flip it on dark themes so it stays visible */
+[data-dark='1'] .brand-mark { filter: invert(1); }
 .doc-title {
   display: inline-flex;
   align-items: center;
@@ -56,13 +63,23 @@
 .toolbar {
   display: flex;
   align-items: center;
+  justify-content: center; /* the control cluster sits centered in the bar */
   flex-wrap: wrap;
   gap: 2px;
-  padding: 0.35rem 0.6rem;
+  position: relative;
+  padding: 0.35rem 4.5rem 0.35rem 0.6rem; /* right inset clears the pinned end group */
   margin: 0.4rem 0.9rem 0.55rem;
   background: var(--c-surface);
   border: 1px solid var(--c-border);
   border-radius: 10px;
+}
+.tb-end {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  gap: 2px;
 }
 .tb-btn {
   display: inline-flex;
