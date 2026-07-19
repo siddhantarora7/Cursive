@@ -1,5 +1,3 @@
-export const config = { runtime: 'edge' }
-
 /**
  * BYOK pass-through for providers whose APIs block browser CORS.
  * The user's key arrives per-request, is forwarded upstream, and is NEVER
@@ -31,10 +29,13 @@ export default async function handler(req: Request): Promise<Response> {
   const key = req.headers.get('x-cursive-key') ?? ''
   const upstream = UPSTREAMS[provider]
   if (!upstream || !key) return new Response(null, { status: 400 })
+  // buffered (not streamed) so the Node runtime's fetch needs no duplex option
+  const body = await req.text()
+  if (body.length > 100_000) return new Response(null, { status: 413 })
   const res = await fetch(upstream.base, {
     method: 'POST',
     headers: { 'content-type': 'application/json', ...upstream.auth(key) },
-    body: req.body,
+    body,
     signal: AbortSignal.timeout(10_000),
   })
   return new Response(res.body, {

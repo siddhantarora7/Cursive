@@ -15,7 +15,7 @@ This document is the Phase 0 design. Nothing here is code yet; every section end
 - **Chrome UI:** React 18, strictly for toolbar/menus/settings/doc-list/panels. React never sits between a keystroke and the document.
 - **State:** no global state library. Editor state lives in ProseMirror. Chrome state is small enough for React context + a few stores.
 - **Persistence:** IndexedDB via the `idb` micro-wrapper (~1 kB). Dexie is nicer but is a dependency and an abstraction we don't need for three object stores.
-- **Server:** Vercel Edge Functions in `/api` (Edge runtime, not Node — lower cold-start latency, and Upstash Redis speaks REST so it works on Edge). Upstash Redis free tier for caps/rate limits.
+- **Server:** Vercel Functions in `/api` — Web-standard handlers on the Node runtime under Fluid Compute (the platform default since the Edge runtime's deprecation; bytecode caching keeps cold starts low). Upstash Redis (REST) free tier for caps/rate limits.
 - **Tests:** Vitest. Everything in `core/` is pure TS and unit-tested. CI: typecheck → test → build → Vercel preview per PR (GitHub Actions).
 
 ```
