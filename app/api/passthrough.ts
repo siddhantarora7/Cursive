@@ -23,8 +23,7 @@ const UPSTREAMS: Record<string, { base: string; auth: (key: string) => Record<st
   },
 }
 
-export default async function handler(req: Request): Promise<Response> {
-  if (req.method !== 'POST') return new Response(null, { status: 405 })
+export async function POST(req: Request): Promise<Response> {
   const provider = req.headers.get('x-cursive-provider') ?? ''
   const key = req.headers.get('x-cursive-key') ?? ''
   const upstream = UPSTREAMS[provider]
