@@ -1,7 +1,8 @@
 /**
- * The completion prompt — shared by the free-tier proxy (api/ imports this)
- * and the BYOK direct adapters, so the quality filter's join contract
- * (mid-word → repeat the word) holds on every path.
+ * The completion prompt for BYOK direct adapters.
+ * KEEP IN SYNC with the server copy inlined in api/complete.ts (which must be
+ * import-free for deployment) — the quality filter's join contract
+ * (mid-word → repeat the word) depends on both staying identical.
  */
 
 export const MAX_COMPLETION_TOKENS = 40

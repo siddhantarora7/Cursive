@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { handleComplete, parseChain, type CompleteDeps } from './complete-core'
+import { handleComplete, parseChain, type CompleteDeps } from './complete'
 
 function post(body: unknown, headers: Record<string, string> = {}): Request {
   return new Request('http://localhost/api/complete', {
