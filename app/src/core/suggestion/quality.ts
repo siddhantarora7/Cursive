@@ -10,9 +10,16 @@ import { lastPartialWord } from '../text/context'
  *    right spacing for how the context ends
  *  - context ends mid-word → raw must repeat that partial word (models asked to
  *    "continue exactly" usually re-type it); we strip the overlap. A letter-run
- *    that doesn't repeat the partial word is an ambiguous join → drop.
+ *    that doesn't repeat the partial word is accepted only when `isWord`
+ *    confirms partial+run forms a real word (tail continuation, e.g.
+ *    "effort" + "less…"); otherwise the join is ambiguous → drop.
  */
-export function vetSuggestion(raw: string, context: string, maxWords: number): string | null {
+export function vetSuggestion(
+  raw: string,
+  context: string,
+  maxWords: number,
+  isWord?: (word: string) => boolean,
+): string | null {
   if (!raw) return null
 
   // keep only the first line
@@ -33,6 +40,11 @@ export function vetSuggestion(raw: string, context: string, maxWords: number): s
     )
   )
     return null
+  // assistant-mode leak: the model answered the text instead of continuing it
+  if (/thanks? for asking/i.test(body)) return null
+  // a question at the caret + a bare first-person answer = a reply, not a continuation
+  if (/\?\s*$/.test(context) && /^(i([’']| a)?m\b|yes[,.!]|no[,.!]|(great|good|fine|well),)/i.test(body))
+    return null
   if (!/[\p{L}\p{N}]/u.test(body)) return null // punctuation-only
 
   const partial = lastPartialWord(context)
@@ -44,12 +56,18 @@ export function vetSuggestion(raw: string, context: string, maxWords: number): s
   } else if (endsWithSpace) {
     joined = body
   } else if (partial) {
-    // must repeat the in-progress word so we can strip the overlap
+    // must repeat the in-progress word so we can strip the overlap…
     if (body.length > partial.length && body.slice(0, partial.length).toLowerCase() === partial.toLowerCase()) {
       joined = body.slice(partial.length)
       if (!/^[\p{L}\p{N}]/u.test(joined) && !/^[\s.,;:!?')\]]/.test(joined)) return null
     } else {
-      return null
+      // …or be a tail that completes it into a dictionary word ("effort"+"less")
+      const run = body.match(/^[a-zA-Z]+/)
+      if (isWord && run && isWord((partial + run[0]).toLowerCase())) {
+        joined = body
+      } else {
+        return null
+      }
     }
   } else {
     // context ends with punctuation, raw starts with a letter → new sentence/word

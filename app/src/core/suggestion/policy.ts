@@ -64,7 +64,10 @@ export class SuggestionPolicy {
   private composing = false
   private enabled = true
 
-  constructor(private cfg: PolicyConfig) {
+  constructor(
+    private cfg: PolicyConfig,
+    private isWord?: (word: string) => boolean,
+  ) {
     this.cache = new LruCache(cfg.cacheSize)
   }
 
@@ -143,7 +146,7 @@ export class SuggestionPolicy {
     if (id !== this.inflightId || this.pendingContext === null) return []
     this.inflightId = null
     this.failures = 0
-    const vetted = vetSuggestion(raw, this.pendingContext, this.cfg.maxSuggestionWords)
+    const vetted = vetSuggestion(raw, this.pendingContext, this.cfg.maxSuggestionWords, this.isWord)
     if (vetted === null) return []
     this.cache.set(fnv1a(this.pendingContext), vetted)
     this.shown = true

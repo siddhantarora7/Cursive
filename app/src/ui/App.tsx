@@ -208,6 +208,7 @@ export function App() {
             ? completionRef.current(req)
             : Promise.resolve({ ok: false as const, cause: 'net' as const }),
         getIntent: () => intentRef.current,
+        isWord: (w) => dictRef.current?.has(w) ?? false,
         onQuota: (q) => {
           setQuota(q)
           setAiPaused(false)

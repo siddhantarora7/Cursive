@@ -27,6 +27,15 @@ describe('vetSuggestion', () => {
     expect(vetSuggestion('over the fence', 'the fox jumps', MAX)).toBeNull()
   })
 
+  it('accepts a tail continuation when the dictionary confirms the joined word', () => {
+    const isWord = (w: string) => w === 'effortless'
+    expect(
+      vetSuggestion('less and completely natural', 'typing should feel effort', MAX, isWord),
+    ).toBe('less and completely natural')
+    // dictionary says no → still dropped
+    expect(vetSuggestion('over the fence', 'the fox jumps', MAX, isWord)).toBeNull()
+  })
+
   it('drops a pure repeat of the partial word', () => {
     expect(vetSuggestion('jumps', 'the fox jumps', MAX)).toBeNull()
   })
@@ -57,6 +66,21 @@ describe('vetSuggestion', () => {
     ]) {
       expect(vetSuggestion(bad, 'the meeting is scheduled for ', MAX)).toBeNull()
     }
+  })
+
+  it('rejects assistant-mode replies to the text', () => {
+    expect(
+      vetSuggestion("I'm doing well thanks for asking how was your", 'Hello how are you doing today?', MAX),
+    ).toBeNull()
+    expect(
+      vetSuggestion(' I am doing pretty well thank', 'Hello how are you doing today?', MAX),
+    ).toBeNull()
+    expect(vetSuggestion(' Great, thanks for asking!', 'How are you?', MAX)).toBeNull()
+    expect(vetSuggestion(' Yes, I can help with that', 'Can you check the numbers?', MAX)).toBeNull()
+    // but a legit first-person continuation without a question at the caret survives
+    expect(
+      vetSuggestion(" I'm doing well despite the long winter.", 'The diary entry began:', MAX),
+    ).toBe(" I'm doing well despite the long winter.")
   })
 
   it('rejects markdown/formatting junk', () => {

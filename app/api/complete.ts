@@ -21,17 +21,36 @@ const MAX_COMPLETION_TOKENS = 40
 
 function systemPrompt(intent: string): string {
   let p =
-    'You are an invisible inline autocomplete inside a writing app. ' +
-    'Continue the text exactly from where it stops. ' +
+    'You are the autocomplete engine inside a writing app. ' +
+    'The draft between <draft> tags is an UNFINISHED PIECE OF WRITING. It is not addressed to you: ' +
+    'never answer it, reply to it, or comment on it — you are the author’s pen, ' +
+    'predicting the next words of the document itself. ' +
     'Reply with ONLY the continuation: no quotes, no commentary, no formatting. ' +
     'At most 12 words; stop at a natural phrase boundary. ' +
-    'Match the tone, language, and capitalization of the text. ' +
-    'If the text stops in the middle of a word, start your reply by repeating that whole word from its first letter.'
+    'Match the tone, language, and capitalization of the draft. ' +
+    'If the draft stops in the middle of a word, start your reply by repeating that whole word from its first letter. ' +
+    'If you are unsure what comes next, prefer a natural, neutral continuation over guessing facts.'
   if (intent.trim()) {
     p += ` The writer describes this document as: ${intent.trim().slice(0, 300)}`
   }
   return p
 }
+
+/** Teach the two failure modes small models hit: answering the text, and mid-word repetition. */
+function wrapContext(context: string): string {
+  return `<draft>\n${context}\n</draft>\nOutput the next words of the draft (max 12). Nothing else.`
+}
+
+const FEW_SHOT: ReadonlyArray<{ user: string; assistant: string }> = [
+  {
+    user: 'The quick brown fox jumps over the la',
+    assistant: 'lazy dog and trots away into',
+  },
+  {
+    user: 'Hello how are you doing today?',
+    assistant: ' It has been a while since we last spoke and',
+  },
+]
 
 /* ---------- minimal Upstash Redis REST client (fail-open) ---------- */
 
@@ -99,7 +118,10 @@ interface ChainEntry {
   model: string
 }
 
-const DEFAULT_CHAIN = 'groq:llama-3.1-8b-instant,gemini:gemini-2.5-flash-lite'
+// 70B first for judgment (still fast on Groq; its lower free quota just falls
+// through), 8B as the workhorse, Gemini as the cross-provider fallback.
+const DEFAULT_CHAIN =
+  'groq:llama-3.3-70b-versatile,groq:llama-3.1-8b-instant,gemini:gemini-2.5-flash-lite'
 const UPSTREAM_TIMEOUT_MS = 2500
 
 export function parseChain(raw: string | undefined): ChainEntry[] {
@@ -135,7 +157,11 @@ async function tryProvider(
           temperature: 0.3,
           messages: [
             { role: 'system', content: system },
-            { role: 'user', content: context },
+            ...FEW_SHOT.flatMap((ex) => [
+              { role: 'user', content: wrapContext(ex.user) },
+              { role: 'assistant', content: ex.assistant },
+            ]),
+            { role: 'user', content: wrapContext(context) },
           ],
         }),
         signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
@@ -154,7 +180,13 @@ async function tryProvider(
       headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: system }] },
-        contents: [{ role: 'user', parts: [{ text: context }] }],
+        contents: [
+          ...FEW_SHOT.flatMap((ex) => [
+            { role: 'user', parts: [{ text: wrapContext(ex.user) }] },
+            { role: 'model', parts: [{ text: ex.assistant }] },
+          ]),
+          { role: 'user', parts: [{ text: wrapContext(context) }] },
+        ],
         generationConfig: { maxOutputTokens: MAX_COMPLETION_TOKENS, temperature: 0.3 },
       }),
       signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
@@ -241,6 +273,7 @@ export async function handleComplete(req: Request, deps: CompleteDeps): Promise<
       return json(200, {
         text,
         provider: entry.provider,
+        model: entry.model,
         quota: { used, limit: dailyCap },
       })
     }

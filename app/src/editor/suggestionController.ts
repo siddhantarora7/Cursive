@@ -24,6 +24,8 @@ export type CompletionFn = (req: {
 export interface SuggestionControllerOptions {
   complete: CompletionFn
   getIntent: () => string
+  /** dictionary check for mid-word tail joins in the quality filter */
+  isWord?: (word: string) => boolean
   onQuota?: (quota: { used: number; limit: number }) => void
   onCapExhausted?: () => void
 }
@@ -36,7 +38,7 @@ const MAX_CONTEXT_CHARS = 1000
  * lives in core/suggestion/policy.
  */
 export class SuggestionController {
-  private policy = new SuggestionPolicy(DEFAULT_POLICY)
+  private policy: SuggestionPolicy
   private timer = 0
   private aborters = new Map<number, AbortController>()
   private disposed = false
@@ -45,6 +47,7 @@ export class SuggestionController {
     private editor: Editor,
     private opts: SuggestionControllerOptions,
   ) {
+    this.policy = new SuggestionPolicy(DEFAULT_POLICY, opts.isWord)
     const dom = editor.view.dom
     dom.addEventListener('compositionstart', this.onCompositionStart)
     dom.addEventListener('compositionend', this.onCompositionEnd)

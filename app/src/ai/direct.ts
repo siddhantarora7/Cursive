@@ -1,6 +1,6 @@
 import type { CompletionFn, CompletionOutcome } from '../editor/suggestionController'
 import type { ByokProvider } from '../store/db'
-import { MAX_COMPLETION_TOKENS, systemPrompt } from './prompt'
+import { FEW_SHOT, MAX_COMPLETION_TOKENS, systemPrompt, wrapContext } from './prompt'
 
 /**
  * BYOK adapters — the user's key goes straight from localStorage to the
@@ -88,7 +88,13 @@ async function anthropic(
       max_tokens: MAX_COMPLETION_TOKENS,
       temperature: 0.3,
       system: systemPrompt(intent),
-      messages: [{ role: 'user', content: context }],
+      messages: [
+        ...FEW_SHOT.flatMap((ex) => [
+          { role: 'user', content: wrapContext(ex.user) },
+          { role: 'assistant', content: ex.assistant },
+        ]),
+        { role: 'user', content: wrapContext(context) },
+      ],
     }),
     signal,
   })
@@ -111,7 +117,13 @@ async function gemini(
     headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
     body: JSON.stringify({
       systemInstruction: { parts: [{ text: systemPrompt(intent) }] },
-      contents: [{ role: 'user', parts: [{ text: context }] }],
+      contents: [
+        ...FEW_SHOT.flatMap((ex) => [
+          { role: 'user', parts: [{ text: wrapContext(ex.user) }] },
+          { role: 'model', parts: [{ text: ex.assistant }] },
+        ]),
+        { role: 'user', parts: [{ text: wrapContext(context) }] },
+      ],
       generationConfig: { maxOutputTokens: MAX_COMPLETION_TOKENS, temperature: 0.3 },
     }),
     signal,
@@ -141,7 +153,11 @@ async function openaiCompatible(
       temperature: 0.3,
       messages: [
         { role: 'system', content: systemPrompt(intent) },
-        { role: 'user', content: context },
+        ...FEW_SHOT.flatMap((ex) => [
+          { role: 'user', content: wrapContext(ex.user) },
+          { role: 'assistant', content: ex.assistant },
+        ]),
+        { role: 'user', content: wrapContext(context) },
       ],
     }),
     signal,
