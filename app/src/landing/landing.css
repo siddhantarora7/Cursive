@@ -1,0 +1,289 @@
+/*
+ * Landing-only stylesheet. Tailwind v4 utilities WITHOUT preflight: the
+ * editor's own reset in styles/base.css already normalizes the document, and
+ * preflight would fight the editor chrome. Only pages that import this file
+ * can use the utilities.
+ *
+ * NOTE: utilities are deliberately NOT wrapped in a cascade layer. base.css is
+ * unlayered, and unlayered author styles always beat layered ones, which would
+ * leave `* { margin: 0 }` overriding every margin utility.
+ */
+@import 'tailwindcss/theme.css';
+@import 'tailwindcss/utilities.css';
+
+@theme {
+  /* One background for the whole document. Sections are transparent; the
+     separation is spacing, hairlines and warm shadow, never a colour swap. */
+  --color-cream: #fdfcf0;
+  --color-sheet: #fffef8;
+  --color-ink: #1a1a1a;
+
+  /*
+   * Two greys, deliberately. `muted` is 3.35:1 on cream, which is fine for
+   * ghost text and not-yet-revealed words (decorative, and an ink equivalent
+   * is always on screen) but fails WCAG for anything anyone has to read.
+   * `meta` is 5.47:1 and is the only grey allowed to carry real text.
+   */
+  --color-muted: #8a8a8a;
+  --color-meta: #6b675c;
+  --color-blue: #2b3a67;
+  --color-red: #c8492e;
+  --color-hairline: #e4e1d2;
+
+  --font-display: 'Baskervville', 'Iowan Old Style', 'Times New Roman', serif;
+  --font-body: 'Public Sans Variable', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  /* Ease-out only. Bounce and elastic read as dated and pull attention to the
+     animation rather than the thing being animated. */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Semantic z-index scale. No arbitrary 999s. */
+:root {
+  --z-ambient: 0;
+  --z-raised: 10;
+  --z-sticky: 20;
+  --z-nav: 30;
+}
+
+/* ---------------------------------------------------------------- text --- */
+
+.l-display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.04;
+  /* Floor is -0.04em; anything tighter and the letters touch. */
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.l-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  /* Capitals sit too close at default spacing; the tracking above is the fix. */
+}
+
+.l-prose {
+  max-width: 68ch;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------- surfaces --- */
+
+/* Warm shadows. A neutral grey shadow on cream reads as dirt, not depth. */
+.l-raise {
+  box-shadow:
+    0 1px 2px rgb(80 68 30 / 0.04),
+    0 6px 16px -6px rgb(80 68 30 / 0.09),
+    0 24px 48px -24px rgb(80 68 30 / 0.12);
+}
+
+.l-raise-lg {
+  box-shadow:
+    0 2px 4px rgb(80 68 30 / 0.05),
+    0 12px 28px -8px rgb(80 68 30 / 0.1),
+    0 40px 80px -32px rgb(80 68 30 / 0.16);
+}
+
+/* Keycaps. The reference art sits on cool blue-grey, where cool double shadows
+   read as soft plastic. On cream the same values look like grime, so the light
+   is re-tuned warm and the top highlight is cream rather than white. */
+.l-keycap {
+  background: linear-gradient(180deg, #fffef9 0%, #f6f3e4 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    inset 0 -1px 0 rgb(120 104 60 / 0.08),
+    0 1px 1px rgb(80 68 30 / 0.05),
+    0 4px 8px -2px rgb(80 68 30 / 0.1),
+    0 12px 20px -8px rgb(80 68 30 / 0.14);
+  transition:
+    transform 140ms var(--ease-out-quart),
+    box-shadow 140ms var(--ease-out-quart);
+}
+
+.l-keycap[data-pressed='true'] {
+  transform: translateY(3px) scale(0.985);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.7),
+    inset 0 2px 4px rgb(120 104 60 / 0.12),
+    0 1px 1px rgb(80 68 30 / 0.05),
+    0 2px 4px -1px rgb(80 68 30 / 0.09);
+}
+
+/* --------------------------------------------------------------- caret --- */
+
+.l-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 1px;
+  border-radius: 2px;
+  background: currentColor;
+  vertical-align: text-bottom;
+  animation: l-blink 1.1s steps(1) infinite 300ms;
+}
+
+@keyframes l-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------- capsule --- */
+
+/* The bar field marquees on transform only — no per-frame JavaScript, and the
+   compositor owns it. Two copies of the row make the wrap seamless. */
+@keyframes l-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.l-barfield {
+  animation: l-marquee 9s linear infinite;
+}
+
+/* --------------------------------------------------------------- drift --- */
+
+/* Ambient keys. Long, offset, transform-only loops so the field never appears
+   to pulse in unison. */
+@keyframes l-drift {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(var(--r, 0deg));
+  }
+  50% {
+    transform: translate3d(var(--dx, 10px), var(--dy, -14px), 0)
+      rotate(calc(var(--r, 0deg) + 3deg));
+  }
+  100% {
+    transform: translate3d(0, 0, 0) rotate(var(--r, 0deg));
+  }
+}
+
+.l-drifter {
+  animation: l-drift var(--dur, 22s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+/* ------------------------------------------------------ feature visuals --- */
+
+/* The caret travels the line rather than jumping between characters, which is
+   the actual behaviour the editor ships. Long dwell at each end so it reads as
+   deliberate movement instead of a pendulum. */
+@keyframes l-glide {
+  0%,
+  10% {
+    transform: translate3d(0, -50%, 0);
+  }
+  45%,
+  62% {
+    transform: translate3d(15.5em, -50%, 0);
+  }
+  97%,
+  100% {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+.l-glide {
+  animation: l-glide 6.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+/* Keystroke sparks: fire outward, fade, rest. The long tail on the cycle is
+   the rest, so the card is still most of the time. */
+@keyframes l-spark {
+  0% {
+    transform: translate3d(-50%, -50%, 0) scale(0.2);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  46% {
+    transform: translate3d(calc(-50% + var(--sx, 0px)), calc(-50% + var(--sy, 0px)), 0)
+      scale(1);
+    opacity: 0;
+  }
+  100% {
+    transform: translate3d(calc(-50% + var(--sx, 0px)), calc(-50% + var(--sy, 0px)), 0)
+      scale(1);
+    opacity: 0;
+  }
+}
+
+.l-spark {
+  animation: l-spark 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* --------------------------------------------------------------- press --- */
+
+.l-press {
+  transition:
+    transform 140ms var(--ease-out-quart),
+    box-shadow 140ms var(--ease-out-quart),
+    background-color 140ms var(--ease-out-quart);
+}
+
+.l-press:active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* --------------------------------------------------------------- grain --- */
+
+/* A faint tooth so the cream field is paper rather than a flat fill. Inline
+   SVG turbulence: no network request, and it is a single fixed layer so it
+   never repaints on scroll. */
+.l-grain::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-ambient);
+  pointer-events: none;
+  opacity: 0.28;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+}
+
+/* --------------------------------------------------------- reduced motion --- */
+
+/*
+ * Reduced motion is a path, not a switch. Looping decoration stops entirely;
+ * components that read scroll progress render their finished frame instead
+ * (handled in Pin.tsx, which also collapses the extra scroll height).
+ */
+@media (prefers-reduced-motion: reduce) {
+  .l-barfield,
+  .l-drifter,
+  .l-caret,
+  .l-glide,
+  .l-spark {
+    animation: none !important;
+  }
+
+  /* The sparks are mid-flight at rest, so without an explicit resting state
+     they would sit frozen on top of the key. Park them invisible instead. */
+  .l-spark {
+    opacity: 0;
+  }
+
+  .l-glide {
+    transform: translate3d(0, -50%, 0);
+  }
+
+  .l-press,
+  .l-keycap {
+    transition-duration: 0.01ms !important;
+  }
+
+  .l-grain::before {
+    opacity: 0.18;
+  }
+}

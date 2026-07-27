@@ -1,0 +1,86 @@
+<!doctype html>
+<!-- Template for the static OG card. Rendered once by scripts/generate-og.mjs
+     into public/og.png (1200x630). Not shipped to production. -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Baskervville:ital@0;1&display=swap"
+    />
+    <style>
+      * { margin: 0; box-sizing: border-box; }
+      body {
+        width: 1200px;
+        height: 630px;
+        background: #fdfcf0;
+        color: #1a1a1a;
+        font-family: 'Baskervville', Georgia, serif;
+        position: relative;
+        overflow: hidden;
+      }
+      .grain {
+        position: absolute;
+        inset: 0;
+        opacity: 0.4;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.08 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+      .wordmark {
+        position: absolute;
+        top: 64px;
+        left: 80px;
+        font-style: italic;
+        font-size: 40px;
+        letter-spacing: -0.01em;
+      }
+      .headline {
+        position: absolute;
+        left: 80px;
+        top: 236px;
+        font-size: 104px;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+      }
+      .headline .muted { color: #8a8a8a; }
+      .caret {
+        display: inline-block;
+        width: 7px;
+        height: 0.82em;
+        margin-left: 10px;
+        border-radius: 4px;
+        background: #2b3a67;
+        vertical-align: baseline;
+        transform: translateY(0.08em);
+      }
+      .sub {
+        position: absolute;
+        left: 84px;
+        bottom: 84px;
+        font-family: -apple-system, 'Helvetica Neue', sans-serif;
+        font-size: 26px;
+        color: #8a8a8a;
+      }
+      .ribbon {
+        position: absolute;
+        right: -140px;
+        bottom: -180px;
+        width: 560px;
+        height: 560px;
+        border: 44px solid #2b3a67;
+        border-radius: 50%;
+        opacity: 0.14;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain"></div>
+    <div class="ribbon"></div>
+    <div class="wordmark">Cursive</div>
+    <div class="headline">
+      <span class="muted">Type half.</span><br />
+      Tab the rest.<span class="caret"></span>
+    </div>
+    <div class="sub">Free. In your browser. No signup.</div>
+  </body>
+</html>
