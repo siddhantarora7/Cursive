@@ -43,11 +43,11 @@ function Bars({ className }: { className: string }) {
   // Doubled so the marquee wraps seamlessly at -50%.
   const bars = [...HEIGHTS, ...HEIGHTS]
   return (
-    <div className="l-barfield absolute inset-y-0 left-0 flex w-max items-center gap-[5px] px-5">
+    <div className="l-barfield absolute inset-y-0 left-0 flex w-max items-center gap-[4px] px-4">
       {bars.map((h, i) => (
         <span
           key={i}
-          className={`block w-[5px] shrink-0 rounded-full ${className}`}
+          className={`block w-[4px] shrink-0 rounded-full ${className}`}
           style={{ height: `${h * 100}%` }}
         />
       ))}
@@ -86,7 +86,7 @@ export function TypingCapsule() {
       <div className="relative">
         <HeroMarquees />
         <div
-          className="relative h-20 w-[min(21rem,80vw)] overflow-hidden rounded-full border-2 border-ink bg-sheet l-raise"
+          className="relative h-[3.75rem] w-[min(16.5rem,72vw)] overflow-hidden rounded-full border-2 border-ink bg-sheet l-raise"
           style={{ zIndex: 'var(--z-raised)' }}
         >
           {/* The suggestion, underneath. */}
@@ -109,7 +109,7 @@ export function TypingCapsule() {
           {/* The caret, parked at the split. */}
           <span
             aria-hidden
-            className="absolute top-1/2 h-9 w-[2px] -translate-y-1/2 rounded-full bg-blue transition-opacity duration-300"
+            className="absolute top-1/2 h-7 w-[2px] -translate-y-1/2 rounded-full bg-blue transition-opacity duration-300"
             style={{ left: `${SPLIT}%`, opacity: accepted ? 0 : 1 }}
           />
         </div>

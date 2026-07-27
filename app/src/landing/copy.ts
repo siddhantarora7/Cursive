@@ -147,7 +147,7 @@ export const FEATURES = {
     body: 'Key sounds, typing effects, and a quiet celebration when a streak holds. All optional, all off by default.',
   },
   fix: {
-    title: 'teh becomes the, before you notice',
+    title: '‘teh’ becomes ‘the’, before you notice',
     body: 'Common slips are corrected at the word boundary against a frequency-ranked dictionary, on your machine. Backspace puts your version back.',
   },
 } as const

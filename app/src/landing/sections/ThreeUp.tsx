@@ -10,53 +10,91 @@ import { FEATURES } from '../copy'
  * a page where every panel is doing something has no emphasis left to spend.
  */
 
-/* The caret is the product's signature. Here it is on its own, gliding a line
-   the way it does in the editor rather than jumping between characters. */
+/*
+ * The caret is the product's signature: it travels the line instead of
+ * teleporting, and the ink follows it in.
+ *
+ * The wrapper is `leading-none` and `inline-block` so its box is the text box
+ * itself. That is what keeps the caret on the baseline: previously the caret
+ * was centred against a flex line box taller than the glyphs and sat visibly
+ * above them, and the glide keyframe's own Y translation made it impossible to
+ * correct with an alignment utility.
+ */
 function CaretVisual() {
   return (
     <div className="relative mt-7 flex flex-1 items-center overflow-hidden rounded-xl border border-hairline bg-cream px-5 py-6 font-mono text-[0.875rem]">
-      <div className="relative inline-flex items-center">
-        <span className="text-ink/25">the sentence keeps moving</span>
+      <span className="relative inline-block whitespace-nowrap leading-none">
+        {/* the sentence as it would sit unaccepted */}
+        <span className="text-muted">the sentence keeps moving</span>
+        {/* the same words in ink, wiped in behind the travelling caret */}
         <span
           aria-hidden
-          className="l-glide absolute left-0 top-1/2 h-[1.15em] w-[2px] -translate-y-1/2 rounded-full bg-blue"
+          className="l-wipe absolute inset-0 text-ink"
+          style={{ clipPath: 'inset(0 100% 0 0)' }}
+        >
+          the sentence keeps moving
+        </span>
+        <span
+          aria-hidden
+          className="l-glide absolute left-0 top-0 h-full w-[2px] rounded-full bg-blue"
+          style={{ boxShadow: '0 0 8px rgba(43,58,103,0.45)' }}
         />
-      </div>
+      </span>
     </div>
   )
 }
 
-/* Keystroke effects: a burst that fires and settles, not a permanent shimmer. */
+/*
+ * Keystroke effects, shown on actual keys.
+ *
+ * The previous version was a single button reading "type", which illustrated
+ * nothing: a label naming the thing instead of the thing happening. This is a
+ * real word being typed. Keys depress left to right, each throws a small spark
+ * burst as it lands, and the streak badge pays off once the row completes,
+ * which is the three behaviours the copy actually claims.
+ */
+const KEYS = ['w', 'r', 'i', 't', 'e']
+const BURST = [
+  { x: -13, y: -15 },
+  { x: 0, y: -19 },
+  { x: 13, y: -14 },
+]
+
 function SparkVisual() {
-  const sparks = [
-    { x: -22, y: -16, d: 0 },
-    { x: -8, y: -24, d: 0.18 },
-    { x: 10, y: -21, d: 0.36 },
-    { x: 24, y: -11, d: 0.54 },
-    { x: -18, y: 6, d: 0.72 },
-    { x: 18, y: 8, d: 0.9 },
-  ]
   return (
-    <div className="relative mt-7 flex min-h-[124px] flex-1 items-center justify-center overflow-hidden rounded-xl border border-hairline bg-cream">
-      <div className="relative">
-        {sparks.map((s) => (
-          <span
-            key={`${s.x}-${s.y}`}
-            aria-hidden
-            className="l-spark absolute left-1/2 top-1/2 block h-1.5 w-1.5 rounded-full bg-blue"
-            style={
-              {
-                '--sx': `${s.x}px`,
-                '--sy': `${s.y}px`,
-                animationDelay: `${s.d}s`,
-              } as React.CSSProperties
-            }
-          />
+    <div className="relative mt-7 flex min-h-[124px] flex-1 flex-col items-center justify-center gap-5 overflow-hidden rounded-xl border border-hairline bg-cream py-6">
+      <div className="flex items-end gap-1.5">
+        {KEYS.map((k, i) => (
+          <span key={k} className="relative block" style={{ '--i': i } as React.CSSProperties}>
+            {BURST.map((b, j) => (
+              <span
+                key={j}
+                aria-hidden
+                className="l-spark absolute left-1/2 top-1/2 block h-1 w-1 rounded-full bg-blue"
+                style={
+                  {
+                    '--sx': `${b.x}px`,
+                    '--sy': `${b.y}px`,
+                    animationDuration: '3s',
+                    animationDelay: `${i * 0.15}s`,
+                  } as React.CSSProperties
+                }
+              />
+            ))}
+            <span
+              className="l-keytap l-keycap relative flex h-9 w-9 items-center justify-center rounded-lg border border-[#e6e2d0] font-mono text-sm text-ink"
+              style={{ '--i': i } as React.CSSProperties}
+            >
+              {k}
+            </span>
+          </span>
         ))}
-        <span className="relative block rounded-lg border border-hairline bg-sheet px-4 py-2.5 font-mono text-sm text-ink l-raise">
-          type
-        </span>
       </div>
+
+      <span className="l-streak inline-flex items-center gap-1.5 rounded-full border border-[rgb(201_162_39/0.35)] bg-[rgb(201_162_39/0.1)] px-3 py-1">
+        <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-[#c9a227]" />
+        <span className="l-meta text-ink">12 in a row</span>
+      </span>
     </div>
   )
 }
@@ -98,11 +136,11 @@ export function ThreeUp() {
             </p>
           </div>
           <div className="flex shrink-0 items-center gap-4 rounded-xl border border-hairline bg-cream px-6 py-5 font-mono text-lg">
-            <span className="text-meta line-through decoration-red decoration-2">teh</span>
+            <span className="text-meta line-through decoration-red decoration-2">‘teh’</span>
             <span aria-hidden className="text-muted">
               →
             </span>
-            <span className="text-ink">the</span>
+            <span className="text-ink">‘the’</span>
           </div>
         </article>
       </div>

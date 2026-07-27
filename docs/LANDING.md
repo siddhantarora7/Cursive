@@ -28,6 +28,14 @@ unlayered and unlayered author styles always beat layered ones.
 
 Faces: Baskervville (display), Public Sans (body), JetBrains Mono (meta labels only).
 
+Gold (`--color-gold`) is decorative only: bubbles, the CTA bloom, the 3D keycap's
+rim-light. It never carries text, because on cream it would have to go near-brown
+to pass contrast, at which point it stops reading as gold.
+
+**Preflight is off, so lists keep their UA markers.** `landing.css` resets
+`list-style` inside `main`/`header`/`footer`; without it stray discs appear
+between flex items, which is exactly where nobody looks for them.
+
 **Two greys, deliberately.** `--color-muted` (#8A8A8A, 3.35:1 on cream) is reserved
 for ghost text and not-yet-revealed words, which are decorative and always have an
 ink counterpart on screen. `--color-meta` (#6B675C, 5.47:1) is the only grey allowed
@@ -83,17 +91,30 @@ manifesto renders as an ordinary sentence rather than a frozen frame of the mech
 ## Performance
 
 Landing route, measured from a production build (gzipped): react entry ~63KB +
-motion ~44KB + Below ~7KB + Landing ~3KB + shared ~3KB ≈ **120KB JS**, plus ~9KB CSS,
-so **~128KB** against the 150KB budget. TipTap is not on this route at all; the demos
-are scripted and the editor loads only at `/app`.
+motion ~45KB + Below ~8KB + Landing ~4KB + shared ~3KB ≈ **122KB JS**, plus ~9KB
+CSS, so **~132KB** against the 150KB budget. TipTap is not on this route at all;
+the demos are scripted and the editor loads only at `/app`.
 
-The largest single item is motion's renderer chunk (~44KB). If the budget ever gets
-tight, replacing the handful of `motion.*` components with direct MotionValue
-subscriptions would remove most of it; `useScroll`/`useTransform` alone do not need
-the renderer.
+The largest single item is motion's renderer chunk (~45KB). If the budget ever
+gets tight, replacing the handful of `motion.*` components with direct
+MotionValue subscriptions would remove most of it; `useScroll`/`useTransform`
+alone do not need the renderer.
 
-Below-fold sections are one lazy chunk mounted by an IntersectionObserver 900px ahead
-of the viewport. The OG card is generated offline by `app/scripts/generate-og.mjs`.
+Spline was considered for the 3D keycap and rejected: its runtime is roughly
+eight times this entire route's JavaScript, and the available scenes are
+third-party hosted assets, which sits badly on a page whose argument is that
+nothing leaves your browser. `Keycap3D` is CSS `preserve-3d` and costs ~3KB.
+
+Atmosphere is deliberately cheap. The gradient bubbles are radial gradients
+whose own colour stops fade out rather than blurred elements, because
+`filter: blur()` over a 900px box repaints on scroll; they animate on transform
+only. The ambient key field is viewport-fixed with scroll-driven opacity, since
+an absolutely-placed layer spanning thirty viewports scatters eight keys so far
+apart you never see two at once.
+
+Below-fold sections are one lazy chunk mounted by an IntersectionObserver 900px
+ahead of the viewport. The OG card is generated offline by
+`app/scripts/generate-og.mjs`.
 
 ## Tests
 

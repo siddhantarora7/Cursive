@@ -12,7 +12,7 @@ import { METRICS } from '../copy'
 export function MetaStrip() {
   return (
     <section className="px-6 pb-10 pt-2 sm:pb-16">
-      <ul className="mx-auto flex max-w-3xl flex-col divide-y divide-hairline border-y border-hairline sm:flex-row sm:divide-x sm:divide-y-0">
+      <ul className="mx-auto list-none flex max-w-3xl flex-col divide-y divide-hairline border-y border-hairline sm:flex-row sm:divide-x sm:divide-y-0">
         {METRICS.map((m) => (
           <li
             key={m.label}

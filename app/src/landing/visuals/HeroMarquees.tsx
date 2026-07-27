@@ -121,22 +121,31 @@ export function HeroMarquees() {
       className="pointer-events-none absolute left-1/2 top-1/2 hidden h-[700px] w-[1900px] -translate-x-1/2 -translate-y-1/2 md:block"
       style={{ zIndex: 'var(--z-ambient)' }}
     >
-      {/* Rough draft: curls in from the left, then runs into the capsule. */}
+      {/*
+       * Rough draft: curls in from the left, then flattens out and runs
+       * horizontally into the capsule at exactly y=350, the layer's centre
+       * line and therefore the capsule's.
+       *
+       * The final control point shares the endpoint's y so the curve *arrives*
+       * level instead of still descending. Without that the text meets the
+       * capsule at an angle and the two halves stop reading as one continuous
+       * line passing through it, which is the entire idea.
+       */}
       <CurvedText
         className="absolute left-0 top-1/2 h-auto w-[1000px] -translate-y-1/2"
         pathId="l-curve-draft"
-        d="M132 252 C 196 140, 358 120, 428 222 C 498 324, 374 434, 284 388 C 194 342, 226 220, 358 236 C 596 266, 762 332, 1000 349"
+        d="M132 252 C 196 140, 358 120, 428 222 C 498 324, 374 434, 284 388 C 194 342, 226 220, 358 236 C 466 250, 592 350, 700 350 L 1000 350"
         text={DRAFT_TEXT}
         fill="#8A8A8A"
         opacity={0.85}
-        shift="-22%"
+        shift="-30%"
       />
 
-      {/* The corrected version, riding a solid ribbon out to the right. */}
+      {/* The corrected version leaves on the same centre line and lifts away. */}
       <CurvedText
         className="absolute right-0 top-1/2 h-auto w-[1000px] -translate-y-1/2"
         pathId="l-curve-clean"
-        d="M0 352 C 200 350, 380 341, 560 281 C 740 221, 880 211, 1000 219"
+        d="M0 350 C 210 350, 390 342, 566 282 C 742 222, 882 212, 1000 220"
         text={CLEAN_TEXT}
         stroke="#2B3A67"
         fill="#FDFCF0"

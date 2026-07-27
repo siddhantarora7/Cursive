@@ -33,7 +33,7 @@ function Plan({ plan, featured }: { plan: PlanShape; featured?: boolean }) {
       <p className="mt-1 font-display text-4xl text-ink tabular-nums">{plan.price}</p>
       <p className="mt-3 text-[0.9375rem] leading-relaxed text-ink/70">{plan.blurb}</p>
 
-      <ul className="mt-7 flex flex-1 flex-col gap-3">
+      <ul className="mt-7 list-none flex flex-1 flex-col gap-3">
         {plan.points.map((p) => (
           <li key={p} className="flex gap-3 text-[0.9375rem] leading-relaxed text-ink/80">
             <span aria-hidden className="mt-[0.55em] block h-1 w-1 shrink-0 rounded-full bg-blue" />

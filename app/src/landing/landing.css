@@ -30,6 +30,14 @@
   --color-red: #c8492e;
   --color-hairline: #e4e1d2;
 
+  /*
+   * Gold is decorative only: bubbles, glows, rim-light on the 3D keycap. It
+   * never carries text. On cream it would need to be near-brown to pass
+   * contrast, at which point it stops reading as gold, so it stays light.
+   */
+  --color-gold: #c9a227;
+  --color-gold-lit: #e8c95f;
+
   --font-display: 'Baskervville', 'Iowan Old Style', 'Times New Roman', serif;
   --font-body: 'Public Sans Variable', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
@@ -47,6 +55,19 @@
   --z-raised: 10;
   --z-sticky: 20;
   --z-nav: 30;
+}
+
+/*
+ * Preflight is off, so lists keep the user-agent's markers and indentation.
+ * Every list on this page is a semantic grouping used as a layout container,
+ * never a bulleted list, and the stray discs show up between flex items where
+ * nobody thinks to look for them. Fixed here rather than relying on remembering
+ * `list-none` at each call site.
+ */
+:where(main, header, footer) ul,
+:where(main, header, footer) ol {
+  list-style: none;
+  padding-left: 0;
 }
 
 /* ---------------------------------------------------------------- text --- */
@@ -176,26 +197,53 @@
 
 /* ------------------------------------------------------ feature visuals --- */
 
-/* The caret travels the line rather than jumping between characters, which is
-   the actual behaviour the editor ships. Long dwell at each end so it reads as
-   deliberate movement instead of a pendulum. */
+/*
+ * The caret travels the line rather than jumping between characters, and the
+ * ink text is wiped in behind it. Two animations on the same clock: the caret
+ * is the leading edge of the reveal, which is what accepting a suggestion
+ * actually looks like.
+ *
+ * No Y translation here. Vertical placement is layout's job (a `leading-none`
+ * wrapper whose box is the text box); doing it in the keyframe means the
+ * animation silently overrides any alignment utility on the element and the
+ * caret drifts off the baseline.
+ */
 @keyframes l-glide {
   0%,
   10% {
-    transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, 0, 0);
   }
-  45%,
-  62% {
-    transform: translate3d(15.5em, -50%, 0);
+  48%,
+  64% {
+    transform: translate3d(15em, 0, 0);
   }
   97%,
   100% {
-    transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .l-glide {
   animation: l-glide 6.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes l-wipe {
+  0%,
+  10% {
+    clip-path: inset(0 100% 0 0);
+  }
+  48%,
+  64% {
+    clip-path: inset(0 0 0 0);
+  }
+  97%,
+  100% {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+.l-wipe {
+  animation: l-wipe 6.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
 }
 
 /* Keystroke sparks: fire outward, fade, rest. The long tail on the cycle is
@@ -222,6 +270,99 @@
 
 .l-spark {
   animation: l-spark 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* ------------------------------------------------------------ key taps --- */
+
+/* A press rolling left to right across a row of keys, then a rest. Stagger
+   comes from --i on each key rather than from separate keyframes. */
+@keyframes l-keytap {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  5% {
+    transform: translateY(3px);
+  }
+  13% {
+    transform: translateY(0);
+  }
+}
+
+.l-keytap {
+  animation: l-keytap 3s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  animation-delay: calc(var(--i, 0) * 0.15s);
+}
+
+/* The streak badge lands once the row finishes, which is the celebration the
+   copy promises. */
+@keyframes l-streak {
+  0%,
+  62%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70% {
+    transform: scale(1.09);
+    opacity: 1;
+  }
+  86% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.l-streak {
+  animation: l-streak 3s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+/* ------------------------------------------------------------- bubbles --- */
+
+/*
+ * Gold and ink gradient blobs drifting behind the middle of the page. Large,
+ * heavily blurred radial gradients on long offset loops, transform-only.
+ *
+ * `filter: blur()` on something this size is genuinely expensive, so the blur
+ * is baked into the gradient's own colour stops instead of applied as a
+ * filter: a radial-gradient that fades to transparent is already soft, costs
+ * nothing to composite, and cannot trigger a repaint on scroll.
+ */
+@keyframes l-bubble {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(var(--bx, 40px), var(--by, -30px), 0) scale(1.14);
+  }
+  66% {
+    transform: translate3d(calc(var(--bx, 40px) * -0.55), calc(var(--by, -30px) * 0.7), 0)
+      scale(0.9);
+  }
+}
+
+.l-bubble {
+  animation: l-bubble var(--bdur, 28s) ease-in-out infinite;
+  animation-delay: var(--bdelay, 0s);
+  will-change: transform;
+}
+
+/* --------------------------------------------------------------- shine --- */
+
+/* A specular sweep across a button face on hover. Bounded to the button, so
+   the compositor work stays trivial. */
+@keyframes l-shine {
+  from {
+    transform: translateX(-160%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(260%) skewX(-18deg);
+  }
+}
+
+.l-shine {
+  animation: l-shine 900ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* --------------------------------------------------------------- press --- */
@@ -264,7 +405,12 @@
   .l-drifter,
   .l-caret,
   .l-glide,
-  .l-spark {
+  .l-wipe,
+  .l-spark,
+  .l-bubble,
+  .l-shine,
+  .l-keytap,
+  .l-streak {
     animation: none !important;
   }
 
@@ -274,8 +420,14 @@
     opacity: 0;
   }
 
+  /* Rest the caret demo on its finished frame: fully accepted, caret parked at
+     the end, which is the state the animation was travelling toward. */
   .l-glide {
-    transform: translate3d(0, -50%, 0);
+    transform: translate3d(15em, 0, 0);
+  }
+
+  .l-wipe {
+    clip-path: inset(0 0 0 0);
   }
 
   .l-press,

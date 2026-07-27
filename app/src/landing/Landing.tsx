@@ -6,6 +6,7 @@ import '@fontsource-variable/jetbrains-mono'
 import './landing.css'
 import { PinProvider } from './primitives/PinContext'
 import { AmbientKeys } from './primitives/AmbientKeys'
+import { GradientBubbles } from './primitives/GradientBubbles'
 import { Nav } from './sections/Nav'
 import { Hero } from './sections/Hero'
 import { MetaStrip } from './sections/MetaStrip'
@@ -83,6 +84,9 @@ function AmbientField() {
       className="pointer-events-none fixed inset-0"
       style={{ opacity, zIndex: 'var(--z-ambient)' }}
     >
+      {/* Gold and ink blobs sit behind the key field; together they are the
+          page's whole atmosphere, and both fade out before the finale. */}
+      <GradientBubbles opacity={0.9} />
       <AmbientKeys opacity={1} />
     </motion.div>
   )

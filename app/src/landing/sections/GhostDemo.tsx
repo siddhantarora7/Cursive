@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useMotionValueEvent, type MotionValue } from 'motion/react'
+import { motion, useMotionValueEvent, useTransform, type MotionValue } from 'motion/react'
 import { GHOST } from '../copy'
 import { Pin } from '../primitives/Pin'
 import { Keycap } from '../primitives/Keycap'
@@ -84,11 +84,29 @@ function same(a: Frame, b: Frame) {
   )
 }
 
+/*
+ * The first quarter of the pin is an arrival: the editor grows from small and
+ * low into full size and settles, with a gold bloom coming up under it. Only
+ * then does anything type.
+ *
+ * Scale, translate and opacity are read straight off the scroll MotionValue
+ * rather than mirrored into React state, so the growth is a compositor
+ * transform with no re-render behind it. The typing below is state, but it
+ * only changes when a frame actually differs.
+ */
+const GROW_END = 0.25
+
 function Demo({ progress }: { progress: MotionValue<number> }) {
-  const [frame, setFrame] = useState<Frame>(() => frameAt(progress.get()))
+  const [frame, setFrame] = useState<Frame>(() => frameAt(0))
+
+  const scale = useTransform(progress, [0, GROW_END], [0.78, 1], { clamp: true })
+  const lift = useTransform(progress, [0, GROW_END], [64, 0], { clamp: true })
+  const settle = useTransform(progress, [0, GROW_END * 0.7], [0.35, 1], { clamp: true })
+  const bloom = useTransform(progress, [GROW_END * 0.45, GROW_END], [0, 1], { clamp: true })
 
   useMotionValueEvent(progress, 'change', (v) => {
-    const next = frameAt(v)
+    // Typing occupies the remaining scroll once the editor has landed.
+    const next = frameAt((v - GROW_END) / (1 - GROW_END))
     setFrame((prev) => (same(prev, next) ? prev : next))
   })
 
@@ -103,27 +121,38 @@ function Demo({ progress }: { progress: MotionValue<number> }) {
         <p className="l-prose mx-auto mt-4 text-[1.0625rem] text-ink/80">{GHOST.body}</p>
       </div>
 
-      <EditorMock
-        className="mt-10 l-raise-lg"
-        label="notes.md"
-        status={`${frame.stage + 1} / ${N}`}
+      <motion.div
+        className="relative mt-10"
+        style={{ scale, y: lift, opacity: settle, transformOrigin: 'center top' }}
       >
-        <p className="min-h-[5.5em]">
-          <span>{typedText}</span>
-          {frame.ghost > 0 && (
-            <span
-              style={{
-                color: frame.inked ? '#1A1A1A' : '#8A8A8A',
-                opacity: frame.inked ? 1 : 0.35 + frame.ghost * 0.65,
-                transition: 'color 260ms cubic-bezier(0.25,1,0.5,1)',
-              }}
-            >
-              {stage.ghost}
-            </span>
-          )}
-          {typing && <span className="l-caret text-blue" aria-hidden />}
-        </p>
-      </EditorMock>
+        {/* gold bloom, arriving as the editor lands */}
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute -inset-10 -z-10 rounded-[36px]"
+          style={{
+            opacity: bloom,
+            background:
+              'radial-gradient(closest-side, rgba(232,201,95,0.3), rgba(201,162,39,0.1) 55%, rgba(201,162,39,0) 100%)',
+          }}
+        />
+        <EditorMock className="l-raise-lg" label="notes.md" status={`${frame.stage + 1} / ${N}`}>
+          <p className="min-h-[5.5em]">
+            <span>{typedText}</span>
+            {frame.ghost > 0 && (
+              <span
+                style={{
+                  color: frame.inked ? '#1A1A1A' : '#8A8A8A',
+                  opacity: frame.inked ? 1 : 0.35 + frame.ghost * 0.65,
+                  transition: 'color 260ms cubic-bezier(0.25,1,0.5,1)',
+                }}
+              >
+                {stage.ghost}
+              </span>
+            )}
+            {typing && <span className="l-caret text-blue" aria-hidden />}
+          </p>
+        </EditorMock>
+      </motion.div>
 
       <div className="mt-6 flex items-center justify-center gap-3">
         <Keycap size="sm" pressed={frame.tab}>
@@ -139,7 +168,7 @@ function Demo({ progress }: { progress: MotionValue<number> }) {
 
 export function GhostDemo() {
   return (
-    <Pin id="ghost" vh={3.4} innerClassName="pt-20">
+    <Pin id="ghost" vh={4.5} innerClassName="pt-20">
       {(p) => <Demo progress={p} />}
     </Pin>
   )

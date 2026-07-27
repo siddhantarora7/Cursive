@@ -16,7 +16,7 @@ export function Trust() {
         <h2 className="l-display text-[clamp(2rem,4.5vw,3.5rem)]">{TRUST.heading}</h2>
         <p className="l-prose mx-auto mt-6 text-[1.0625rem] text-ink/80">{TRUST.body}</p>
 
-        <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5">
+        <ul className="mt-10 list-none flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5">
           {TRUST.facts.map((f) => (
             <li
               key={f}
