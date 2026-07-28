@@ -52,6 +52,16 @@ export function Hero() {
         className="relative mx-auto flex max-w-3xl flex-col items-center text-center"
         style={{ zIndex: 'var(--z-raised)' }}
       >
+        {/* Links to the plans rather than just asserting: the claim is
+            checkable in one click, which is the whole posture of the page. */}
+        <a
+          href="#plans"
+          className="l-glass mb-8 inline-flex items-center gap-2.5 rounded-full px-4 py-2 no-underline transition-transform duration-200 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-blue"
+        >
+          <span aria-hidden className="block h-1.5 w-1.5 rounded-full bg-[#c9a227]" />
+          <span className="l-meta text-ink">{HERO.badge}</span>
+        </a>
+
         <h1 className="l-display text-[clamp(2.75rem,7vw,6rem)]">
           <span className="text-ink">{HERO.lead}</span>{' '}
           <span

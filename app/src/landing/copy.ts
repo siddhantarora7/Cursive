@@ -29,7 +29,14 @@ export const HERO = {
   lead: 'Type half.',
   tail: 'Tab the rest.',
   sub: 'Cursive drafts the next few words as you write. If they fit, press Tab and they are yours. If not, keep typing and they step aside.',
-  meta: 'Free · No account · Runs in your browser',
+  /*
+   * The price answer belongs above the fold. It was previously one clause in
+   * an 11px line under the button, and the actual answer lived in a pricing
+   * section eleven sections down, which is a long way to scroll to find out
+   * whether you are about to be asked for a card.
+   */
+  badge: 'Free forever · No account · Nothing to buy',
+  meta: 'Runs in your browser · Works offline once loaded',
 } as const
 
 /*
