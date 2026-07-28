@@ -68,6 +68,29 @@ test('the pinned ghost-text demo advances with scroll', async ({ page }) => {
   await expect(pos).toHaveAttribute('aria-label', 'Sentence 1 of 3', { timeout: 5_000 })
 })
 
+test('the hero editor completes and Tab accepts', async ({ page }) => {
+  await page.goto('/')
+
+  const input = page.locator('#cursive-try')
+  await input.click()
+  await input.fill('The deadline moved to ')
+  // Ghost text is a suggestion, not a value: the input still holds only yours.
+  await expect(input).toHaveValue('The deadline moved to ')
+
+  await page.keyboard.press('Tab')
+  await expect(input).toHaveValue(/^The deadline moved to Friday,/)
+})
+
+test('Tab still moves focus when there is nothing to accept', async ({ page }) => {
+  await page.goto('/')
+  const input = page.locator('#cursive-try')
+  await input.click()
+  // Mid-word, so no suggestion is offered and Tab must behave like Tab.
+  await input.fill('qqq')
+  await page.keyboard.press('Tab')
+  await expect(input).not.toBeFocused()
+})
+
 test('the themes section cycles real editor themes', async ({ page }) => {
   await page.goto('/')
 

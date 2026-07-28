@@ -6,6 +6,9 @@ import '@fontsource-variable/jetbrains-mono'
 import './landing.css'
 import { PinProvider } from './primitives/PinContext'
 import { GradientBubbles } from './primitives/GradientBubbles'
+import { ScrollRail } from './primitives/ScrollRail'
+import { useScrollSpy } from './primitives/useScrollSpy'
+import { NAV } from './copy'
 import { Nav } from './sections/Nav'
 import { Hero } from './sections/Hero'
 import { MetaStrip } from './sections/MetaStrip'
@@ -92,7 +95,12 @@ function AmbientField() {
   )
 }
 
+/* The rail and the nav read from the same list, so they cannot disagree. */
+const RAIL_STOPS = NAV.links.map((l) => ({ id: l.href.slice(1), label: l.label }))
+
 export default function Landing() {
+  const railActive = useScrollSpy(RAIL_STOPS.map((s) => s.id))
+
   useEffect(() => {
     document.title = 'Cursive · Type half. Tab the rest.'
   }, [])
@@ -102,6 +110,7 @@ export default function Landing() {
       <div className="l-grain relative min-h-svh bg-cream font-body text-ink">
         <AmbientField />
         <Nav />
+        <ScrollRail stops={RAIL_STOPS} active={railActive} />
 
         <main>
           <Hero />

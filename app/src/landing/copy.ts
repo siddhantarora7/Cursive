@@ -11,9 +11,11 @@
 export const CTA = { label: 'Start writing', href: '/app' } as const
 
 export const NAV = {
+  /* Doubles as the scroll rail's stop list, so nav and rail cannot drift. */
   links: [
     { label: 'How it works', href: '#ghost' },
     { label: 'The feel', href: '#themes' },
+    { label: 'Compare', href: '#compare' },
     { label: 'Free', href: '#plans' },
   ],
   repo: 'https://github.com/siddhantarora7/Cursive',
@@ -247,6 +249,62 @@ export const SOURCE = {
   heading: 'Read the code that runs in your browser.',
   body: 'The suggestion policy, the storage layer and the proxy are all in the open. The privacy claims on this page are checkable rather than promised.',
   cta: 'View on GitHub',
+} as const
+
+
+/* --------------------------------------------------------------- compare --- */
+
+/*
+ * Verifiable attributes only. Every row is something a reader can check for
+ * themselves in ten seconds, which is the only kind of comparison worth
+ * publishing: no "easier to use", no "more powerful", no invented benchmark.
+ * Where a rival genuinely wins or ties, the row says so.
+ */
+export const COMPARE = {
+  heading: 'Where your words actually live.',
+  body: 'The honest version. Cursive is not better at everything; it is built on a different assumption about whose machine your writing sits on.',
+  columns: ['Cursive', 'Google Docs', 'Notion AI', 'ChatGPT'],
+  rows: [
+    { label: 'Documents stored', values: ['This browser', 'Google’s servers', 'Notion’s servers', 'OpenAI’s servers'] },
+    { label: 'Account required', values: ['No', 'Yes', 'Yes', 'Yes'] },
+    { label: 'How AI reaches you', values: ['Inline, at the caret', 'Side panel', 'Side panel', 'Separate chat'] },
+    { label: 'Works offline', values: ['Yes, after first load', 'Partly', 'No', 'No'] },
+    { label: 'Sees your whole document', values: ['Never', 'Yes', 'Yes', 'Only what you paste'] },
+    { label: 'Price', values: ['$0', '$0', 'From $10/mo', 'From $20/mo'] },
+  ],
+  note: 'Compared against the free tier of each where one exists, in July 2026.',
+} as const
+
+/* ------------------------------------------------------------------- faq --- */
+
+export const FAQ = {
+  heading: 'The questions people actually ask.',
+  items: [
+    {
+      q: 'Which models write the suggestions?',
+      a: 'The free tier runs through Groq and Google’s free API tiers. Bring your own key and it goes straight from your browser to whichever provider you chose, under your own terms.',
+    },
+    {
+      q: 'What happens when I hit the daily allowance?',
+      a: 'Nothing breaks. Ghost text stops appearing and the editor carries on exactly as it was. Add your own key, or come back tomorrow.',
+    },
+    {
+      q: 'Can I get my writing out?',
+      a: 'Yes, as Markdown, at any time. Worth doing: documents live in this browser, so clearing your browser data deletes them.',
+    },
+    {
+      q: 'Does it work offline?',
+      a: 'The editor does, once the page has loaded. Suggestions need a connection, so they pause and everything else keeps working.',
+    },
+    {
+      q: 'Is my API key safe?',
+      a: 'It is kept in this browser’s localStorage and never reaches our servers. Requests made with it go directly from your browser to your provider.',
+    },
+    {
+      q: 'What actually gets sent when I ask for a suggestion?',
+      a: 'At most a thousand characters from around your caret, your optional intent line, and a random anonymous id. Never the whole document, and nothing at all while AI is off.',
+    },
+  ],
 } as const
 
 /* ---------------------------------------------------------------- finale --- */

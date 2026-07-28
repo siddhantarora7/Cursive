@@ -1,6 +1,7 @@
 import { CTA, PLANS, SOURCE, NAV } from '../copy'
 import { TextureButton } from '../primitives/TextureButton'
 import { IconCode, IconPlug, IconShield } from '../primitives/Icons'
+import { RepoStats } from '../primitives/RepoStats'
 
 /*
  * Two plans, both free, stated without a pricing table's usual theatre: no
@@ -143,6 +144,9 @@ export function Plans() {
             </h3>
             <p className="l-prose mt-3 text-[0.9375rem] leading-relaxed text-ink/70">
               {SOURCE.body}
+            </p>
+            <p className="mt-4">
+              <RepoStats repo="siddhantarora7/Cursive" />
             </p>
           </div>
           <TextureButton href={NAV.repo} variant="outline" className="shrink-0">

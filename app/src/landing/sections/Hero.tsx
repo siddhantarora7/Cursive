@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
+import { useTabEgg } from '../primitives/useTabEgg'
 import { CTA, HERO } from '../copy'
 import { TextureButton } from '../primitives/TextureButton'
 import { TypingCapsule } from '../visuals/TypingCapsule'
@@ -21,6 +22,21 @@ export function Hero() {
   const reduced = useReducedMotion()
   const [accepted, setAccepted] = useState(false)
 
+  /*
+   * Press Tab with nothing focused and the headline re-accepts itself: the
+   * tail drops back to ghost grey and inks again. The page's own keyboard
+   * shortcut is the product's only keyboard shortcut.
+   */
+  const egg = useTabEgg()
+  const [replay, setReplay] = useState(false)
+
+  useEffect(() => {
+    if (!egg) return
+    setReplay(true)
+    const back = setTimeout(() => setReplay(false), 620)
+    return () => clearTimeout(back)
+  }, [egg])
+
   useEffect(() => {
     if (reduced) {
       setAccepted(true)
@@ -40,7 +56,7 @@ export function Hero() {
           <span className="text-ink">{HERO.lead}</span>{' '}
           <span
             style={{
-              color: accepted ? '#1A1A1A' : '#8A8A8A',
+              color: accepted && !replay ? '#1A1A1A' : '#8A8A8A',
               transition: reduced ? 'none' : 'color 420ms cubic-bezier(0.25,1,0.5,1)',
             }}
           >

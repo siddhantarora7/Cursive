@@ -1,24 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import { Keycap } from '../primitives/Keycap'
 import { HeroMarquees } from './HeroMarquees'
+import { completeFor } from '../ghost'
 
 /*
- * The hero capsule: Wispr's silhouette, carrying Cursive's meaning.
+ * The hero capsule: Wispr's silhouette, carrying Cursive's meaning, and then
+ * becoming the product the moment you touch it.
  *
- * A field of bars marquees leftward on a transform-only CSS animation. A fixed
- * split sits at 62% of the capsule: bars to the left of it are ink (what you
- * have typed), bars to the right are muted (the suggestion waiting on you).
- * Every few seconds the Tab key beneath ticks and the split runs out to 100%,
- * turning the whole field ink, then a new suggestion fades back in.
+ * Idle, it is a field of bars marqueeing left with a split at 62%: bars left
+ * of the split are ink (typed), bars right of it are muted (the suggestion).
+ * Every few seconds the Tab key ticks, the split runs to 100%, and a new
+ * suggestion fades in. That is the reference's motion, encoding
+ * ghost-text-then-accept without a word of explanation.
  *
- * So the motion is the reference's, and it encodes ghost-text-then-accept
- * without a word of explanation. The split is a clip-path on a stationary
- * overlay rather than anything on the moving row, which keeps the cursor
- * fixed in screen space while the bars flow through it.
+ * Click it and the bars give way to a real writing surface: your keystrokes,
+ * a real caret, real ghost text ahead of it, Tab to accept. It is the same
+ * object doing the abstract thing and the literal thing, which is why the
+ * curved marquees still make sense wrapped around it.
  *
- * Bar heights come from a fixed seeded sequence: identical on every load, so
- * two people looking at the page see the same thing.
+ * Keystrokes are captured by a genuinely focusable <input> that is visually
+ * hidden but present, so IME, mobile keyboards, autofill suppression and
+ * screen readers all behave. The visible text is rendered separately because
+ * an <input> cannot paint two colours.
  */
 
 const BAR_COUNT = 40
@@ -30,8 +34,6 @@ function seeded(i: number): number {
   return s - Math.floor(s)
 }
 
-/* Keystroke cadence: mostly mid-height with occasional peaks and rests, which
-   is what real typing looks like. A flat random field reads as an equaliser. */
 const HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
   const base = seeded(i)
   const accent = seeded(i * 3) > 0.82 ? 0.3 : 0
@@ -40,7 +42,6 @@ const HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
 })
 
 function Bars({ className }: { className: string }) {
-  // Doubled so the marquee wraps seamlessly at -50%.
   const bars = [...HEIGHTS, ...HEIGHTS]
   return (
     <div className="l-barfield absolute inset-y-0 left-0 flex w-max items-center gap-[4px] px-4">
@@ -57,10 +58,18 @@ function Bars({ className }: { className: string }) {
 
 export function TypingCapsule() {
   const reduced = useReducedMotion()
-  const [accepted, setAccepted] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
 
+  const [accepted, setAccepted] = useState(false)
+  const [live, setLive] = useState(false)
+  const [value, setValue] = useState('')
+  const [tabHint, setTabHint] = useState(false)
+
+  const ghost = live ? completeFor(value) : ''
+
+  /* The idle demo loop, paused entirely while someone is actually writing. */
   useEffect(() => {
-    if (reduced) return
+    if (reduced || live) return
     let timer: ReturnType<typeof setTimeout>
     const loop = (state: boolean) => {
       timer = setTimeout(
@@ -73,53 +82,104 @@ export function TypingCapsule() {
     }
     loop(true)
     return () => clearTimeout(timer)
-  }, [reduced])
+  }, [reduced, live])
+
+  const accept = () => {
+    if (!ghost) return
+    setValue((v) => v + ghost)
+    setTabHint(true)
+    window.setTimeout(() => setTabHint(false), 220)
+  }
 
   return (
     <div className="relative flex flex-col items-center gap-5">
       {/*
        * The marquees are anchored here, to a wrapper containing the capsule
        * and nothing else, so the two curves converge on the capsule itself.
-       * Anchoring them any further out silently drags the crossing point off
-       * centre by however tall the hint below happens to be.
+       * Anchoring them any further out drags the crossing point off centre by
+       * however tall whatever sits below happens to be.
        */}
       <div className="relative">
         <HeroMarquees />
+
         <div
-          className="relative h-[3.75rem] w-[min(16.5rem,72vw)] overflow-hidden rounded-full border-2 border-ink bg-sheet l-raise"
+          onPointerDown={() => inputRef.current?.focus()}
+          className="relative flex h-[3.75rem] w-[min(30rem,84vw)] cursor-text items-center overflow-hidden rounded-full border-2 border-ink bg-sheet px-5 l-raise"
           style={{ zIndex: 'var(--z-raised)' }}
         >
-          {/* The suggestion, underneath. */}
-          <div className="absolute inset-0">
-            <Bars className="bg-muted/45" />
-          </div>
-
-          {/* What is committed, clipped to the split. On accept the clip opens
-              to full width, which is the whole idea in one property. */}
+          {/* Idle: the abstract bar field. */}
           <div
-            className="absolute inset-0"
-            style={{
-              clipPath: `inset(0 ${accepted ? 0 : 100 - SPLIT}% 0 0)`,
-              transition: `clip-path ${accepted ? 520 : 700}ms var(--ease-out-quart)`,
-            }}
+            className="absolute inset-0 transition-opacity duration-300"
+            style={{ opacity: live ? 0 : 1, pointerEvents: 'none' }}
           >
-            <Bars className="bg-ink" />
+            <div className="absolute inset-0">
+              <Bars className="bg-muted/45" />
+            </div>
+            <div
+              className="absolute inset-0"
+              style={{
+                clipPath: `inset(0 ${accepted ? 0 : 100 - SPLIT}% 0 0)`,
+                transition: `clip-path ${accepted ? 520 : 700}ms var(--ease-out-quart)`,
+              }}
+            >
+              <Bars className="bg-ink" />
+            </div>
+            <span
+              aria-hidden
+              className="absolute top-1/2 h-7 w-[2px] -translate-y-1/2 rounded-full bg-blue transition-opacity duration-300"
+              style={{ left: `${SPLIT}%`, opacity: accepted ? 0 : 1 }}
+            />
           </div>
 
-          {/* The caret, parked at the split. */}
-          <span
+          {/* Live: your words, with a real suggestion ahead of the caret. */}
+          <div
+            className="relative w-full truncate whitespace-pre font-mono text-[0.9375rem] transition-opacity duration-300"
+            style={{ opacity: live ? 1 : 0 }}
             aria-hidden
-            className="absolute top-1/2 h-7 w-[2px] -translate-y-1/2 rounded-full bg-blue transition-opacity duration-300"
-            style={{ left: `${SPLIT}%`, opacity: accepted ? 0 : 1 }}
+          >
+            <span className="text-ink">{value}</span>
+            {!value && <span className="text-muted">Write a sentence…</span>}
+            <span className="l-caret text-blue" />
+            <span className="text-muted">{ghost}</span>
+          </div>
+
+          <label className="sr-only" htmlFor="cursive-try">
+            Try Cursive: type a sentence and press Tab to accept the suggestion
+          </label>
+          <input
+            id="cursive-try"
+            ref={inputRef}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onFocus={() => setLive(true)}
+            onBlur={() => !value && setLive(false)}
+            onKeyDown={(e) => {
+              // Only swallow Tab when there is something to accept, so the key
+              // keeps moving focus the rest of the time.
+              if (e.key === 'Tab' && ghost) {
+                e.preventDefault()
+                accept()
+              }
+              if (e.key === 'Escape') {
+                setValue('')
+                e.currentTarget.blur()
+              }
+            }}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            className="absolute inset-0 h-full w-full cursor-text bg-transparent px-5 font-mono text-[0.9375rem] text-transparent caret-transparent outline-none"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-2.5">
-        <Keycap size="sm" pressed={accepted}>
+        <Keycap size="sm" pressed={live ? tabHint : accepted}>
           Tab
         </Keycap>
-        <span className="l-meta text-meta">to accept</span>
+        <span className="l-meta text-meta">
+          {live ? (ghost ? 'to accept' : 'keep typing') : 'to accept · click to try it'}
+        </span>
       </div>
     </div>
   )

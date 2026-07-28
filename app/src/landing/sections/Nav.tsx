@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import { CTA, NAV } from '../copy'
 import { TextureButton } from '../primitives/TextureButton'
 import { usePinEngaged } from '../primitives/PinContext'
+import { useScrollSpy } from '../primitives/useScrollSpy'
 
 /*
  * The sticky pill.
@@ -25,6 +26,7 @@ export function Nav() {
   const reduced = useReducedMotion()
   const sentinel = useRef<HTMLDivElement>(null)
   const [atTop, setAtTop] = useState(true)
+  const active = useScrollSpy(NAV.links.map((l) => l.href.slice(1)))
 
   useEffect(() => {
     const el = sentinel.current
@@ -80,7 +82,12 @@ export function Nav() {
               <a
                 key={l.href}
                 href={l.href}
-                className="rounded-full px-3 py-1.5 font-body text-sm text-ink/70 no-underline transition-colors duration-150 hover:bg-[rgb(80_68_30/0.06)] hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+                aria-current={active === l.href.slice(1) ? 'true' : undefined}
+                className={`rounded-full px-3 py-1.5 font-body text-sm no-underline transition-colors duration-150 hover:bg-[rgb(80_68_30/0.06)] hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue ${
+                  active === l.href.slice(1)
+                    ? 'bg-[rgb(80_68_30/0.07)] text-ink'
+                    : 'text-ink/70'
+                }`}
               >
                 {l.label}
               </a>
