@@ -135,6 +135,7 @@ const STARS = [
 
 const FIGURE_LEGEND: Legend = {
   H: P.hair,
+  T: P.metal,
   S: P.skin,
   E: P.hair,
   B: P.shirt,
@@ -146,9 +147,13 @@ const FIGURE_LEGEND: Legend = {
 
 /*
  * Desk, figure and laptop. 50 wide, 30 tall. The desk top is row 15 and the
- * legs run to the last row, so placing this at y = 40 lands it exactly on the
- * floor. The figure's head sits at columns 21-26, which is the middle of the
- * desk; the lamp goes on the right-hand end.
+ * desk's own legs run to the last row, so placing this at y = 40 lands it
+ * exactly on the floor. The figure's head sits at columns 21-26, the middle of
+ * the desk; the lamp goes on the right-hand end.
+ *
+ * The figure's legs and shoes are drawn in the gap between the desk legs. A
+ * seated figure cropped at the desk edge reads as a bust on a plinth, not as
+ * somebody sitting down.
  */
 const DESK = [
   '.....................HHHHHH',
@@ -168,19 +173,19 @@ const DESK = [
   '...............llllllllllllllll',
   'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD',
   'dddddddddddddddddddddddddddddddddddddddddddddddddd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
-  '..dd..........................................dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd               TTTT TTTT                  dd',
+  '..dd              HHHHH HHHHH                 dd',
+  '..dd              HHHHH HHHHH                 dd',
 ]
 
 /* Two hand frames, drawn over the laptop lip. Toggling between them is the
@@ -291,6 +296,59 @@ const TABLE = [
   '.tt................tt',
 ]
 
+const ART_LEGEND: Legend = {
+  F: P.metal,
+  C: P.paper,
+  U: P.blue,
+  R: P.red,
+  o: P.glow,
+}
+
+/* A framed print: sun over hills. */
+const POSTER = [
+  'FFFFFFFFFFFFFFFFFFFF',
+  'FCCCCCCCCCCCCCCCCCCF',
+  'FCCCCCCCCoooCCCCCCCF',
+  'FCCCCCCCoooooCCCCCCF',
+  'FCCCCCCCCoooCCCCCCCF',
+  'FCCCCCCCCCCCCCCCCCCF',
+  'FCCCCCCCCCCCCCCCCCCF',
+  'FCCCUUCCCCCCCCUUUCCF',
+  'FCCUUUUCCCCCUUUUUUCF',
+  'FCUUUUUUUCCUUUUUUUUF',
+  'FUUUUUUUUUUUUUUUUUUF',
+  'FUUUUUUUUUUUUUUUUUUF',
+  'FFFFFFFFFFFFFFFFFFFF',
+]
+
+/* A smaller print, hung above the shelf. */
+const SMALL_ART = [
+  'FFFFFFFFFFFFFF',
+  'FCCCCCCCCCCCCF',
+  'FCCCUUCCCCCCCF',
+  'FCCUUUUCCCCCCF',
+  'FCUUUUUUCCCCCF',
+  'FCCCCCCCCCRRCF',
+  'FCCCCCCCCRRRRF',
+  'FCCCCCCCCCRRCF',
+  'FCCCCCCCCCCCCF',
+  'FFFFFFFFFFFFFF',
+]
+
+const CLOCK_LEGEND: Legend = { F: P.metal, C: P.paper, M: P.hair }
+const CLOCK = [
+  '...FFFFF',
+  '..FCCCCCF',
+  '.FCCCCCCCF',
+  'FCCCCMCCCCF',
+  'FCCCCMCCCCF',
+  'FCCCCMMMCCF',
+  'FCCCCCCCCCF',
+  '.FCCCCCCCF',
+  '..FCCCCCF',
+  '...FFFFF',
+]
+
 const PENDANT_LEGEND: Legend = { M: P.metal, g: P.glow }
 const PENDANT = [
   '....M',
@@ -368,11 +426,19 @@ export function PixelScene() {
           them and a stack of books on the floor.
         </title>
 
-        {/* far: ceiling pendants and the window */}
+        {/* far: the ceiling, its pendants, and what is on the wall */}
         <motion.g style={{ y: farY }}>
+          {/* The pendants used to hang from nothing. */}
+          <rect x={0} y={0} width={320} height={2} fill={P.metal} />
+          <rect x={0} y={2} width={320} height={1} fill={P.hair} opacity={0.5} />
+
           {[62, 168, 258].map((x) => (
-            <Art key={x} rows={PENDANT} legend={PENDANT_LEGEND} x={x} y={0} />
+            <Art key={x} rows={PENDANT} legend={PENDANT_LEGEND} x={x} y={3} />
           ))}
+
+          <Art rows={SMALL_ART} legend={ART_LEGEND} x={30} y={22} />
+          <Art rows={CLOCK} legend={CLOCK_LEGEND} x={140} y={17} />
+          <Art rows={POSTER} legend={ART_LEGEND} x={212} y={19} />
           <Art rows={WINDOW} legend={WINDOW_LEGEND} x={70} y={18} />
           <g transform="translate(70,18)">
             {STARS.map((s) => (
