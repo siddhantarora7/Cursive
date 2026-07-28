@@ -61,13 +61,12 @@ const MARQUEE_PAIRS: ReadonlyArray<readonly [rough: string, clean: string]> = [
 const GAP = '   '
 
 /*
- * The capsule sits near the END of the draft path but near the START of the
- * ribbon path, so a given pair reaches it at different times on each curve.
- * Rotating the clean text forward by whole pairs cancels that lag. Whole pairs
- * rather than a fractional phase offset, so the correction stays exact and
- * survives any edit to the text.
+ * Kept at zero: the lag between the two curves is corrected exactly in
+ * HeroMarquees by measuring each path's distance to the capsule, which lands
+ * sub-pair. Rotating whole pairs here was an approximation of that and left a
+ * visible fraction of a phrase out of step.
  */
-const CLEAN_LEAD = 3
+const CLEAN_LEAD = 0
 
 /** Pad both members of every pair to a common width, then join. */
 function buildMarquee(which: 0 | 1, rotate = 0): string {

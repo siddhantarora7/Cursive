@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import { CLEAN_TEXT, DRAFT_TEXT } from '../copy'
 
@@ -40,6 +40,50 @@ import { CLEAN_TEXT, DRAFT_TEXT } from '../copy'
  */
 const RATE = 74
 
+/*
+ * Where the capsule sits, in each SVG's own coordinates.
+ *
+ * The marquee layer is 1900 wide and centred on the capsule, so the capsule's
+ * centre is at layer x 950. The draft SVG occupies layer 0..1000, the ribbon
+ * SVG 900..1900, which puts that same point at 950 in one and 50 in the other.
+ */
+const DRAFT_SYNC_X = 950
+const CLEAN_SYNC_X = 50
+
+/*
+ * The capsule's width, in the same units.
+ *
+ * Aligning the two curves at the capsule's centre is correct and still reads
+ * as broken, because the centre is hidden underneath the capsule. What a
+ * reader actually compares is the last words visible at the left edge against
+ * the first words emerging at the right edge, and those are a whole capsule
+ * apart. Shifting the ribbon by that width aligns what can be seen.
+ */
+const CAPSULE_W = 480
+
+/**
+ * Distance along `path` at which it reaches `targetX`.
+ *
+ * Sampled rather than solved because the draft path doubles back on itself, so
+ * x is not monotonic and there is no closed form. Ties resolve to the later
+ * sample, which picks the final approach to the capsule rather than the loop
+ * that crossed the same x earlier.
+ */
+function lengthAtX(path: SVGPathElement, targetX: number): number {
+  const total = path.getTotalLength()
+  let best = 0
+  let bestErr = Infinity
+  for (let i = 0; i <= 600; i++) {
+    const len = (total * i) / 600
+    const err = Math.abs(path.getPointAtLength(len).x - targetX)
+    if (err <= bestErr) {
+      bestErr = err
+      best = len
+    }
+  }
+  return best
+}
+
 function CurvedText({
   pathId,
   d,
@@ -50,6 +94,11 @@ function CurvedText({
   weight = 400,
   shift,
   className,
+  syncX,
+  onSync,
+  onSpan,
+  phase = 0,
+  armed = false,
 }: {
   pathId: string
   d: string
@@ -60,8 +109,17 @@ function CurvedText({
   weight?: number
   shift: string
   className: string
+  syncX?: number
+  onSync?: (len: number) => void
+  onSpan?: (span: number) => void
+  phase?: number
+  armed?: boolean
 }) {
   const ref = useRef<SVGTextPathElement>(null)
+  const pathRef = useRef<SVGPathElement>(null)
+  // Held in a ref so the measure effect never re-runs on a new callback.
+  const onSpanRef = useRef(onSpan)
+  onSpanRef.current = onSpan
   const reduced = useReducedMotion()
   const [span, setSpan] = useState(0)
 
@@ -72,7 +130,10 @@ function CurvedText({
     const measure = () => {
       try {
         const total = el.getComputedTextLength()
-        if (total > 0) setSpan(total / 2)
+        if (total > 0) {
+          setSpan(total / 2)
+          onSpanRef.current?.(total / 2)
+        }
       } catch {
         /* getComputedTextLength throws if the node is not yet rendered */
       }
@@ -81,6 +142,12 @@ function CurvedText({
     // Re-measure once webfonts land, since metrics change under them.
     if (document.fonts?.ready) void document.fonts.ready.then(measure)
   }, [])
+
+  useEffect(() => {
+    const path = pathRef.current
+    if (!path || syncX === undefined || !onSync) return
+    onSync(lengthAtX(path, syncX))
+  }, [syncX, onSync, d])
 
   const doubled = `${text}   ${text}   `
 
@@ -92,6 +159,7 @@ function CurvedText({
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
+        ref={pathRef}
         id={pathId}
         d={d}
         fill="none"
@@ -99,7 +167,21 @@ function CurvedText({
           ? { stroke, strokeWidth: 34, strokeLinecap: 'round' as const }
           : {})}
       />
-      <text x={0} fontSize={14.5} fontWeight={weight} className="font-mono">
+      {/*
+        * xml:space="preserve" is load-bearing, not tidiness.
+        *
+        * SVG collapses runs of whitespace by default, which silently discarded
+        * every space the two texts are padded with. The pairs then rendered at
+        * different widths (579 characters against 561 for supposedly identical
+        * strings) and no amount of phase correction could line them up.
+        */}
+      <text
+        x={0}
+        fontSize={14.5}
+        fontWeight={weight}
+        xmlSpace="preserve"
+        className="font-mono"
+      >
         <textPath
           ref={ref}
           href={`#${pathId}`}
@@ -109,12 +191,12 @@ function CurvedText({
         >
           {doubled}
         </textPath>
-        {!reduced && span > 0 && (
+        {!reduced && armed && span > 0 && (
           <animate
-            key={span}
+            key={`${span}:${Math.round(phase)}`}
             attributeName="x"
             dur={`${Math.round(span / RATE)}s`}
-            values={`${-span};0`}
+            values={`${-span + phase};${phase}`}
             repeatCount="indefinite"
           />
         )}
@@ -124,6 +206,39 @@ function CurvedText({
 }
 
 export function HeroMarquees() {
+  /*
+   * The two curves reach the capsule after travelling different distances, so
+   * without a correction the same pair arrives at different times on each and
+   * the message never lines up.
+   *
+   * A character at text-position t sits at path length (x + t), so the one at
+   * the capsule is t = L - x. Equating the two curves gives
+   * phase = cleanLen - draftLen, not the other way round: the ribbon reaches
+   * the capsule almost immediately while the draft has a long loop to travel
+   * first, so the ribbon has to be pushed *back*.
+   */
+  const [draftLen, setDraftLen] = useState<number | null>(null)
+  const [cleanLen, setCleanLen] = useState<number | null>(null)
+  const [draftSpan, setDraftSpan] = useState<number | null>(null)
+  const [cleanSpan, setCleanSpan] = useState<number | null>(null)
+
+  const onDraft = useCallback((l: number) => setDraftLen(l), [])
+  const onClean = useCallback((l: number) => setCleanLen(l), [])
+
+  /*
+   * Both <animate> elements must be created in the same commit.
+   *
+   * SMIL starts an animation when its element is inserted, so mounting one
+   * curve's animation as soon as its own measurements land and the other's a
+   * frame later starts them on different clocks. No static phase can correct
+   * that, and it was the real reason the two curves never lined up. Arming
+   * them together removes the variable entirely.
+   */
+  const armed =
+    draftLen !== null && cleanLen !== null && draftSpan !== null && cleanSpan !== null
+
+  const phase = armed ? cleanLen - draftLen + CAPSULE_W : 0
+
   return (
     <div
       aria-hidden
@@ -148,6 +263,10 @@ export function HeroMarquees() {
         fill="#8A8A8A"
         opacity={0.85}
         shift="-30%"
+        syncX={DRAFT_SYNC_X}
+        onSync={onDraft}
+        onSpan={setDraftSpan}
+        armed={armed}
       />
 
       {/* The corrected version leaves on the same centre line and lifts away. */}
@@ -160,6 +279,11 @@ export function HeroMarquees() {
         fill="#FDFCF0"
         weight={600}
         shift="-32%"
+        syncX={CLEAN_SYNC_X}
+        onSync={onClean}
+        onSpan={setCleanSpan}
+        phase={phase}
+        armed={armed}
       />
     </div>
   )

@@ -60,6 +60,16 @@ const GENERIC = [
   ' once the details are settled.',
 ]
 
+/*
+ * What an empty, freshly focused field is offered.
+ *
+ * Without this, clicking in and pressing Tab does nothing at all: there is no
+ * text, so there is nothing to complete, so the key correctly does nothing and
+ * the whole thing reads as broken. An opener means the first key anyone presses
+ * pays off.
+ */
+export const OPENER = 'The deadline moved to Friday, which means '
+
 /**
  * The completion to show after `text`, or an empty string for none.
  *

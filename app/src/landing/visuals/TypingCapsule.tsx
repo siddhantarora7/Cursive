@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'motion/react'
 import { Keycap } from '../primitives/Keycap'
 import { HeroMarquees } from './HeroMarquees'
-import { completeFor } from '../ghost'
+import { OPENER, completeFor } from '../ghost'
 
 /*
  * The hero capsule: Wispr's silhouette, carrying Cursive's meaning, and then
@@ -34,11 +34,16 @@ function seeded(i: number): number {
   return s - Math.floor(s)
 }
 
+/*
+ * Capped well short of the capsule's inner height. At 94% the tallest bars met
+ * the border at top and bottom and read as thickened segments of it, which is
+ * why the outline looked heavy in places and hairline elsewhere.
+ */
 const HEIGHTS = Array.from({ length: BAR_COUNT }, (_, i) => {
   const base = seeded(i)
   const accent = seeded(i * 3) > 0.82 ? 0.3 : 0
   const rest = seeded(i * 7) > 0.9 ? -0.22 : 0
-  return Math.min(0.94, Math.max(0.16, 0.3 + base * 0.45 + accent + rest))
+  return Math.min(0.66, Math.max(0.14, 0.26 + base * 0.34 + accent * 0.6 + rest))
 })
 
 function Bars({ className }: { className: string }) {
@@ -65,7 +70,7 @@ export function TypingCapsule() {
   const [value, setValue] = useState('')
   const [tabHint, setTabHint] = useState(false)
 
-  const ghost = live ? completeFor(value) : ''
+  const ghost = live ? (value ? completeFor(value) : OPENER) : ''
 
   /* The idle demo loop, paused entirely while someone is actually writing. */
   useEffect(() => {
@@ -104,7 +109,7 @@ export function TypingCapsule() {
 
         <div
           onPointerDown={() => inputRef.current?.focus()}
-          className="relative flex h-[3.75rem] w-[min(30rem,84vw)] cursor-text items-center overflow-hidden rounded-full border-2 border-ink bg-sheet px-5 l-raise"
+          className="relative flex h-[3.75rem] w-[min(30rem,84vw)] cursor-text items-center overflow-hidden rounded-full border border-ink/70 bg-sheet px-5 l-raise"
           style={{ zIndex: 'var(--z-raised)' }}
         >
           {/* Idle: the abstract bar field. */}
@@ -138,7 +143,6 @@ export function TypingCapsule() {
             aria-hidden
           >
             <span className="text-ink">{value}</span>
-            {!value && <span className="text-muted">Write a sentence…</span>}
             <span className="l-caret text-blue" />
             <span className="text-muted">{ghost}</span>
           </div>
