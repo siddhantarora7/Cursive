@@ -33,7 +33,7 @@ export function TwoUp() {
     <section className="px-6 py-20 sm:py-28">
       <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
         {/* ------------------------------------------------- ghost text --- */}
-        <article className="flex flex-col rounded-3xl bg-blue p-7 text-cream l-raise-lg sm:p-9">
+        <article className="l-glass-dark flex flex-col rounded-3xl p-7 text-cream sm:p-9">
           <h3 className="l-display text-[clamp(1.5rem,2.4vw,2rem)] text-cream">
             {TWO_UP.draft.before}
             <Chip tone="dark">
@@ -46,7 +46,7 @@ export function TwoUp() {
             {TWO_UP.draft.body}
           </p>
 
-          <div className="mt-8 rounded-2xl bg-[#22305a] p-5 font-mono text-[0.875rem] leading-[1.9] ring-1 ring-inset ring-cream/10">
+          <div className="mt-8 rounded-2xl bg-[rgb(16_24_48/0.5)] p-5 font-mono text-[0.875rem] leading-[1.9] shadow-[inset_0_1px_0_rgb(253_252_240/0.12),inset_0_-1px_0_rgb(0_0_0/0.3)] ring-1 ring-inset ring-cream/12">
             <span className="text-cream">The deadline moved to Friday, which means </span>
             <span className="text-cream/40">we lose the buffer we planned for.</span>
             <div className="mt-4 flex items-center gap-2.5">
@@ -54,14 +54,14 @@ export function TwoUp() {
                 TAB
               </span>
               <span className="font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-cream/45">
-                accepts the gray
+                to accept
               </span>
             </div>
           </div>
         </article>
 
         {/* ------------------------------------------------------ cmd+k --- */}
-        <article className="flex flex-col rounded-3xl border border-hairline bg-sheet p-7 l-raise sm:p-9">
+        <article className="l-glass flex flex-col rounded-3xl p-7 sm:p-9">
           <h3 className="l-display text-[clamp(1.5rem,2.4vw,2rem)]">
             {TWO_UP.edit.before}
             <Chip tone="light">{TWO_UP.edit.chip}</Chip>
@@ -71,7 +71,7 @@ export function TwoUp() {
             {TWO_UP.edit.body}
           </p>
 
-          <div className="mt-8 rounded-2xl border border-hairline bg-cream p-5 font-mono text-[0.875rem] leading-[1.9]">
+          <div className="mt-8 rounded-2xl border border-white/60 bg-[rgb(255_255_255/0.45)] p-5 font-mono text-[0.875rem] leading-[1.9] shadow-[inset_0_1px_0_rgb(255_255_255/0.9)]">
             <div className="flex items-center gap-2">
               <Keycap size="sm">⌘K</Keycap>
               <span className="truncate text-ink/60">“{TWO_UP.edit.prompt}”</span>

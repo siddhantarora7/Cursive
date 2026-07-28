@@ -119,7 +119,7 @@ export function TypingCapsule() {
         <Keycap size="sm" pressed={accepted}>
           Tab
         </Keycap>
-        <span className="l-meta text-meta">to take it</span>
+        <span className="l-meta text-meta">to accept</span>
       </div>
     </div>
   )

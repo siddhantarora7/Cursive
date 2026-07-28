@@ -22,7 +22,7 @@ import { FEATURES } from '../copy'
  */
 function CaretVisual() {
   return (
-    <div className="relative mt-7 flex flex-1 items-center overflow-hidden rounded-xl border border-hairline bg-cream px-5 py-6 font-mono text-[0.875rem]">
+    <div className="relative mt-7 flex flex-1 items-center overflow-hidden rounded-xl border border-white/55 bg-[rgb(255_255_255/0.4)] px-5 py-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.85)] font-mono text-[0.875rem]">
       <span className="relative inline-block whitespace-nowrap leading-none">
         {/* the sentence as it would sit unaccepted */}
         <span className="text-muted">the sentence keeps moving</span>
@@ -62,7 +62,7 @@ const BURST = [
 
 function SparkVisual() {
   return (
-    <div className="relative mt-7 flex min-h-[124px] flex-1 flex-col items-center justify-center gap-5 overflow-hidden rounded-xl border border-hairline bg-cream py-6">
+    <div className="relative mt-7 flex min-h-[124px] flex-1 flex-col items-center justify-center gap-5 overflow-hidden rounded-xl border border-white/55 bg-[rgb(255_255_255/0.4)] py-6 shadow-[inset_0_1px_0_rgb(255_255_255/0.85)]">
       <div className="flex items-end gap-1.5">
         {KEYS.map((k, i) => (
           <span key={k} className="relative block" style={{ '--i': i } as React.CSSProperties}>
@@ -104,7 +104,7 @@ export function ThreeUp() {
     <section className="px-6 py-20 sm:py-24">
       <div className="mx-auto grid max-w-5xl grid-cols-1 gap-5 md:grid-cols-12">
         {/* wide */}
-        <article className="flex flex-col rounded-3xl border border-hairline bg-sheet p-7 l-raise md:col-span-7 sm:p-8">
+        <article className="l-glass flex flex-col rounded-3xl p-7 md:col-span-7 sm:p-8">
           <h3 className="l-display text-[clamp(1.375rem,2.1vw,1.75rem)]">
             {FEATURES.caret.title}
           </h3>
@@ -115,7 +115,7 @@ export function ThreeUp() {
         </article>
 
         {/* narrow */}
-        <article className="flex flex-col rounded-3xl border border-hairline bg-sheet p-7 l-raise md:col-span-5 sm:p-8">
+        <article className="l-glass flex flex-col rounded-3xl p-7 md:col-span-5 sm:p-8">
           <h3 className="l-display text-[clamp(1.375rem,2.1vw,1.75rem)]">
             {FEATURES.feel.title}
           </h3>
@@ -126,7 +126,7 @@ export function ThreeUp() {
         </article>
 
         {/* full width, horizontal, and still */}
-        <article className="flex flex-col items-start gap-7 rounded-3xl border border-hairline bg-sheet p-7 l-raise md:col-span-12 md:flex-row md:items-center md:gap-12 sm:p-8">
+        <article className="l-glass flex flex-col items-start gap-7 rounded-3xl p-7 md:col-span-12 md:flex-row md:items-center md:gap-12 sm:p-8">
           <div className="md:flex-1">
             <h3 className="l-display text-[clamp(1.375rem,2.1vw,1.75rem)]">
               {FEATURES.fix.title}
@@ -135,7 +135,7 @@ export function ThreeUp() {
               {FEATURES.fix.body}
             </p>
           </div>
-          <div className="flex shrink-0 items-center gap-4 rounded-xl border border-hairline bg-cream px-6 py-5 font-mono text-lg">
+          <div className="flex shrink-0 items-center gap-4 rounded-xl border border-white/55 bg-[rgb(255_255_255/0.4)] px-6 py-5 font-mono text-lg shadow-[inset_0_1px_0_rgb(255_255_255/0.85)]">
             <span className="text-meta line-through decoration-red decoration-2">‘teh’</span>
             <span aria-hidden className="text-muted">
               →

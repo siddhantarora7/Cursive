@@ -5,7 +5,6 @@ import '@fontsource-variable/public-sans'
 import '@fontsource-variable/jetbrains-mono'
 import './landing.css'
 import { PinProvider } from './primitives/PinContext'
-import { AmbientKeys } from './primitives/AmbientKeys'
 import { GradientBubbles } from './primitives/GradientBubbles'
 import { Nav } from './sections/Nav'
 import { Hero } from './sections/Hero'
@@ -84,10 +83,11 @@ function AmbientField() {
       className="pointer-events-none fixed inset-0"
       style={{ opacity, zIndex: 'var(--z-ambient)' }}
     >
-      {/* Gold and ink blobs sit behind the key field; together they are the
-          page's whole atmosphere, and both fade out before the finale. */}
+      {/* Gold and ink blobs only. The drifting key field used to run the whole
+          length of the page, which spent the motif everywhere and left the
+          section that is actually about keys with nothing to reveal; it now
+          lives solely in ThreeKeys. */}
       <GradientBubbles opacity={0.9} />
-      <AmbientKeys opacity={1} />
     </motion.div>
   )
 }

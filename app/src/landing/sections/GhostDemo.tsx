@@ -135,7 +135,7 @@ function Demo({ progress }: { progress: MotionValue<number> }) {
               'radial-gradient(closest-side, rgba(232,201,95,0.3), rgba(201,162,39,0.1) 55%, rgba(201,162,39,0) 100%)',
           }}
         />
-        <EditorMock className="l-raise-lg" label="notes.md" status={`${frame.stage + 1} / ${N}`}>
+        <EditorMock className="l-raise-lg" bare>
           <p className="min-h-[5.5em]">
             <span>{typedText}</span>
             {frame.ghost > 0 && (
@@ -154,13 +154,34 @@ function Demo({ progress }: { progress: MotionValue<number> }) {
         </EditorMock>
       </motion.div>
 
-      <div className="mt-6 flex items-center justify-center gap-3">
-        <Keycap size="sm" pressed={frame.tab}>
-          Tab
-        </Keycap>
-        <span className="l-meta text-meta">
-          {frame.inked ? 'taken' : frame.ghost > 0 ? 'to take it' : 'keep typing'}
-        </span>
+      <div className="mt-6 flex flex-col items-center gap-5">
+        <div className="flex items-center gap-3">
+          <Keycap size="sm" pressed={frame.tab}>
+            Tab
+          </Keycap>
+          <span className="l-meta text-meta">
+            {frame.inked ? 'accepted' : frame.ghost > 0 ? 'to accept' : 'keep typing'}
+          </span>
+        </div>
+
+        {/* Position, without a counter reading like file metadata. */}
+        <div
+          className="flex items-center gap-2"
+          role="status"
+          aria-label={`Sentence ${frame.stage + 1} of ${N}`}
+        >
+          {STAGES.map((_, i) => (
+            <span
+              key={i}
+              aria-hidden
+              className="h-1.5 rounded-full transition-all duration-300"
+              style={{
+                width: i === frame.stage ? 20 : 6,
+                background: i === frame.stage ? '#2B3A67' : '#E4E1D2',
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )

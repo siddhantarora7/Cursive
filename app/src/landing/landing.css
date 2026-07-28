@@ -95,6 +95,95 @@
   text-wrap: pretty;
 }
 
+/* ---------------------------------------------------------- liquid glass --- */
+
+/*
+ * Liquid glass. Not a blur with a border: the read comes from four stacked
+ * cues, and dropping any one of them makes it look like frosted plastic.
+ *
+ *   1. a diagonal translucent gradient, brightest at the top-left corner
+ *   2. a real backdrop blur with saturation lift, so what is behind it bends
+ *   3. a bright inner top edge and a dark inner bottom edge, which is the
+ *      refraction you actually notice on thick glass
+ *   4. a specular sheen across the upper third (the ::before below)
+ *
+ * `backdrop-filter` is expensive, so these are only ever used on a handful of
+ * large static cards, never on anything that animates or repeats.
+ */
+.l-glass {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    148deg,
+    rgb(255 255 255 / 0.78) 0%,
+    rgb(255 255 255 / 0.4) 42%,
+    rgb(255 255 255 / 0.62) 100%
+  );
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgb(255 255 255 / 0.75);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.95),
+    inset 0 -1px 0 rgb(120 104 60 / 0.07),
+    inset 0 0 26px rgb(255 255 255 / 0.35),
+    0 1px 2px rgb(80 68 30 / 0.05),
+    0 10px 26px -8px rgb(80 68 30 / 0.14),
+    0 34px 60px -30px rgb(80 68 30 / 0.2);
+}
+
+.l-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: linear-gradient(
+    160deg,
+    rgb(255 255 255 / 0.6) 0%,
+    rgb(255 255 255 / 0.1) 26%,
+    transparent 52%
+  );
+}
+
+/* The same material tuned for the ink-blue card: the highlights have to come
+   from the cream side of the palette or the glass reads as smoke. */
+.l-glass-dark {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(
+    148deg,
+    rgb(70 88 140 / 0.94) 0%,
+    rgb(43 58 103 / 0.97) 46%,
+    rgb(31 42 78 / 0.98) 100%
+  );
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgb(253 252 240 / 0.16);
+  box-shadow:
+    inset 0 1px 0 rgb(253 252 240 / 0.24),
+    inset 0 -1px 0 rgb(0 0 0 / 0.25),
+    inset 0 0 40px rgb(253 252 240 / 0.05),
+    0 2px 4px rgb(28 38 71 / 0.18),
+    0 14px 34px -10px rgb(28 38 71 / 0.34),
+    0 40px 70px -34px rgb(28 38 71 / 0.42);
+}
+
+.l-glass-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
+  background: linear-gradient(
+    160deg,
+    rgb(255 255 255 / 0.18) 0%,
+    rgb(255 255 255 / 0.04) 24%,
+    transparent 50%
+  );
+}
+
 /* ------------------------------------------------------------- surfaces --- */
 
 /* Warm shadows. A neutral grey shadow on cream reads as dirt, not depth. */
@@ -346,6 +435,53 @@
   animation: l-bubble var(--bdur, 28s) ease-in-out infinite;
   animation-delay: var(--bdelay, 0s);
   will-change: transform;
+}
+
+/* ---------------------------------------------------------- gloss button --- */
+
+/*
+ * The glossy black CTA.
+ *
+ * The reference is the lit-plastic Apple download button: a body that is
+ * lighter at the top than the bottom, a hard specular cap over the upper half
+ * with a crisp lower edge, a bright 1px rim along the very top, and a soft
+ * glow pooled underneath. In black the whole thing lives in a very narrow
+ * value range, so the highlight has to carry it: an almost-flat black body
+ * with a strong gloss reads as glass, while a big gradient reads as grey.
+ */
+.l-gloss {
+  background: linear-gradient(180deg, #3a3a3d 0%, #1c1c1f 44%, #0a0a0b 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.34),
+    inset 0 -1px 0 rgb(0 0 0 / 0.6),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 8px 18px -6px rgb(0 0 0 / 0.42),
+    0 18px 36px -14px rgb(0 0 0 / 0.4);
+  transition:
+    transform 150ms var(--ease-out-quart),
+    box-shadow 220ms var(--ease-out-quart);
+}
+
+/* The specular cap: brightest at the very top, gone by the midline. */
+.l-gloss-cap {
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.3) 0%,
+    rgb(255 255 255 / 0.12) 38%,
+    rgb(255 255 255 / 0.03) 62%,
+    transparent 74%
+  );
+}
+
+.l-gloss:hover {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.44),
+    inset 0 -1px 0 rgb(0 0 0 / 0.6),
+    inset 0 0 0 1px rgb(255 255 255 / 0.09),
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 10px 24px -6px rgb(0 0 0 / 0.48),
+    0 26px 48px -16px rgb(0 0 0 / 0.46);
 }
 
 /* --------------------------------------------------------------- shine --- */

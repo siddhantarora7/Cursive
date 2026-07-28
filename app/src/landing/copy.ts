@@ -120,7 +120,7 @@ export const KEYS = {
   heading: 'The entire interface.',
   body: 'No sidebar. No chat window. Nothing to configure before you are allowed to start.',
   items: [
-    { cap: 'Tab', label: 'Take it', note: 'Accept the draft in front of you.' },
+    { cap: 'Tab', label: 'Accept', note: 'Take the draft in front of you.' },
     { cap: '⌘K', label: 'Rewrite', note: 'Change only what you highlighted.' },
     { cap: 'Esc', label: 'Dismiss', note: 'Send it away and keep typing.' },
   ],
@@ -157,8 +157,26 @@ export const FEATURES = {
 export const TRUST = {
   heading: 'Your documents never leave this browser.',
   body: 'They live in IndexedDB on your own machine. There is no account to make and nothing to sync. When a suggestion is requested, Cursive sends at most a thousand characters from around your caret, and nothing else.',
-  facts: ['IndexedDB', 'No account', 'No sync', 'Nothing stored server-side'],
   link: { label: 'Read the privacy page', href: '/privacy' },
+  /*
+   * The rotating strip. Every one of these is checkable against the repo; none
+   * is a claim about traction, a customer count, or a partner logo we do not
+   * have. `icon` keys into primitives/Icons.
+   */
+  facts: [
+    { icon: 'database', label: 'Stored in IndexedDB' },
+    { icon: 'noAccount', label: 'No account, ever' },
+    { icon: 'noSync', label: 'Nothing syncs' },
+    { icon: 'shield', label: '1,000 characters, max' },
+    { icon: 'eye', label: 'No telemetry' },
+    { icon: 'offline', label: 'Works offline once loaded' },
+    { icon: 'keyboard', label: 'Tab to accept' },
+    { icon: 'palette', label: 'Eight themes' },
+    { icon: 'spark', label: 'Typing effects, optional' },
+    { icon: 'plug', label: 'Bring your own key' },
+    { icon: 'download', label: 'Export any document' },
+    { icon: 'code', label: 'Open source' },
+  ],
 } as const
 
 /* ----------------------------------------------------------------- plans --- */

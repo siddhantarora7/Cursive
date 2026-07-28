@@ -42,7 +42,6 @@ function Cycle({ progress }: { progress: MotionValue<number> }) {
 
       <EditorMock
         className="mt-10 l-raise-lg"
-        label="draft.md"
         status={theme.name}
         style={
           {

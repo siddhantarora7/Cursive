@@ -54,14 +54,18 @@ test('the pinned ghost-text demo advances with scroll', async ({ page }) => {
   await expect(page.getByText('Your next few words, already there.')).toBeVisible()
 
   // The stage counter is a pure function of scroll position, both ways.
-  await scrubPin(page, '#ghost', 0.02)
-  await expect(page.getByText('1 / 3')).toBeVisible({ timeout: 5_000 })
+  // Position is announced rather than printed as file metadata, so assert the
+  // accessible name instead of visible chrome.
+  const pos = page.getByRole('status')
+
+  await scrubPin(page, '#ghost', 0.05)
+  await expect(pos).toHaveAttribute('aria-label', 'Sentence 1 of 3', { timeout: 5_000 })
 
   await scrubPin(page, '#ghost', 0.95)
-  await expect(page.getByText('3 / 3')).toBeVisible({ timeout: 5_000 })
+  await expect(pos).toHaveAttribute('aria-label', 'Sentence 3 of 3', { timeout: 5_000 })
 
-  await scrubPin(page, '#ghost', 0.02)
-  await expect(page.getByText('1 / 3')).toBeVisible({ timeout: 5_000 })
+  await scrubPin(page, '#ghost', 0.05)
+  await expect(pos).toHaveAttribute('aria-label', 'Sentence 1 of 3', { timeout: 5_000 })
 })
 
 test('the themes section cycles real editor themes', async ({ page }) => {

@@ -15,7 +15,11 @@ import type { CSSProperties, ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
-  /** Filename shown at the top left. */
+  /*
+   * Optional. A fake filename is chrome pretending to be information: it tells
+   * the reader nothing about the product and it is the first thing that makes
+   * a mock look generated. Pass one only when the demo genuinely needs it.
+   */
   label?: string
   /** Small right-aligned status, e.g. a word count or theme name. */
   status?: ReactNode
@@ -26,7 +30,7 @@ type Props = {
 
 export function EditorMock({
   children,
-  label = 'untitled.md',
+  label,
   status,
   className = '',
   style,
@@ -42,17 +46,21 @@ export function EditorMock({
         ...style,
       }}
     >
-      {!bare && (
+      {!bare && (label || status) && (
         <div
           className="flex items-center justify-between border-b px-4 py-2.5 transition-colors duration-[650ms]"
           style={{ borderColor: 'var(--mock-border, #E4E1D2)' }}
         >
-          <span
-            className="l-meta transition-colors duration-[650ms]"
-            style={{ color: 'var(--mock-muted, #8A8A8A)' }}
-          >
-            {label}
-          </span>
+          {label ? (
+            <span
+              className="l-meta transition-colors duration-[650ms]"
+              style={{ color: 'var(--mock-muted, #8A8A8A)' }}
+            >
+              {label}
+            </span>
+          ) : (
+            <span />
+          )}
           {status ? (
             <span
               className="l-meta transition-colors duration-[650ms]"
