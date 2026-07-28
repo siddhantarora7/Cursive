@@ -215,10 +215,20 @@ export const TRUST = {
 /* ----------------------------------------------------------------- plans --- */
 
 export const PLANS = {
-  heading: 'Both plans are free. One of them always will be.',
+  heading: 'Both plans are free. There is nothing to buy.',
+  /*
+   * Stated plainly because it is true and because it removes the question
+   * every pricing section otherwise plants. There is no Stripe account, no
+   * checkout and no paid tier; pretending otherwise to look established is
+   * the kind of small lie a reader finds out about at exactly the wrong
+   * moment.
+   */
+  noPaid:
+    'There is no paid tier, no checkout, and no card on file. If that ever changes it will be said here first, and the free tier stays.',
   free: {
     name: 'Free',
     price: '$0',
+    priceNote: 'forever',
     blurb: 'The whole editor, with a daily allowance of AI suggestions.',
     points: [
       'Unlimited documents, local to this browser',
@@ -231,6 +241,7 @@ export const PLANS = {
   byok: {
     name: 'Bring your own key',
     price: '$0',
+    priceNote: 'you pay your provider',
     blurb: 'Plug in an API key you already have and drop the allowance.',
     points: [
       'Unlimited ghost text and ⌘K edits',

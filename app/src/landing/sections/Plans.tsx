@@ -26,6 +26,7 @@ type PlanShape = {
   readonly blurb: string
   readonly points: readonly string[]
   readonly cta: string
+  readonly priceNote: string
 }
 
 function Plan({
@@ -73,7 +74,7 @@ function Plan({
         <span className="font-display text-5xl leading-none text-ink tabular-nums">
           {plan.price}
         </span>
-        <span className="l-meta text-meta">forever</span>
+        <span className="l-meta text-meta">{plan.priceNote}</span>
       </p>
 
       <p className="relative mt-4 text-[0.9375rem] leading-relaxed text-ink/70">{plan.blurb}</p>
@@ -127,7 +128,10 @@ export function Plans() {
           <Plan plan={PLANS.byok} icon={<IconPlug />} />
         </div>
 
-        <p className="l-prose mx-auto mt-8 text-center text-sm leading-relaxed text-meta">
+        <p className="mx-auto mt-10 max-w-xl text-center text-[0.9375rem] leading-relaxed text-ink/75">
+          {PLANS.noPaid}
+        </p>
+        <p className="l-prose mx-auto mt-5 text-center text-sm leading-relaxed text-meta">
           {PLANS.note}
         </p>
       </div>
