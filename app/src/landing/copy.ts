@@ -31,22 +31,54 @@ export const HERO = {
 } as const
 
 /*
- * The curved marquee pair. The back curve carries a message the way it actually
- * gets typed; the ribbon carries the version that gets sent. Doubled words and
- * misspellings are deliberate and should survive copy edits.
+ * The curved marquee pair.
+ *
+ * These are not two independent blocks of text. They are the same message
+ * twice, phrase by phrase: the back curve carries it the way it actually gets
+ * typed, the ribbon carries what gets sent. Pair `i` on one curve is the
+ * correction of pair `i` on the other.
+ *
+ * For that to be legible the two have to arrive at the capsule together, so
+ * both members of a pair are padded to the same length and the marquees are
+ * set in the monospace face. In a monospace, equal character counts mean equal
+ * rendered widths (bold included), which makes the two curves land in lockstep
+ * by construction rather than by a tuned magic number that drifts.
+ *
+ * Doubled words and misspellings on the rough side are deliberate.
  */
-export const DRAFT_TEXT =
-  'ok so i think the the timeline slips, theres been alot of back and forth ' +
-  'and honestly nobody really knows whats going on right now. can you check ' +
-  'if the notes from yesterday went out or if their still waiting on us. i ' +
-  'think someone mentioned it but no one confirmed and now im a bit lost, ' +
-  'sorry for the ramble, its been a week and i keep loosing the thread'
+const MARQUEE_PAIRS: ReadonlyArray<readonly [rough: string, clean: string]> = [
+  ['ok so i think the the timeline slips', 'The timeline is likely to slip.'],
+  ['theres been alot of back and forth', 'There has been a lot of back and forth,'],
+  ['and honestly nobody really knows whats going on', 'and no one has a clear picture yet.'],
+  ['can you check if the notes from yesterday went out', 'Could you check whether yesterday’s notes went out,'],
+  ['or if their still waiting on us', 'or whether the team is still waiting?'],
+  ['i think someone mentioned it but no one confirmed', 'I think it came up, but nobody confirmed it.'],
+  ['sorry for the ramble its been a week', 'Happy to take that piece if it helps.'],
+]
 
-export const CLEAN_TEXT =
-  'The timeline is likely to slip. There has been a lot of back and forth, ' +
-  'and no one has a clear picture yet. Could you check whether yesterday’s ' +
-  'notes went out, or whether the team is still waiting on us? I think it came ' +
-  'up, but nobody confirmed it. Happy to take that piece if it helps.'
+const GAP = '   '
+
+/*
+ * The capsule sits near the END of the draft path but near the START of the
+ * ribbon path, so a given pair reaches it at different times on each curve.
+ * Rotating the clean text forward by whole pairs cancels that lag. Whole pairs
+ * rather than a fractional phase offset, so the correction stays exact and
+ * survives any edit to the text.
+ */
+const CLEAN_LEAD = 3
+
+/** Pad both members of every pair to a common width, then join. */
+function buildMarquee(which: 0 | 1, rotate = 0): string {
+  const n = MARQUEE_PAIRS.length
+  return Array.from({ length: n }, (_, i) => {
+    const pair = MARQUEE_PAIRS[(i + rotate) % n]!
+    const width = Math.max(pair[0].length, pair[1].length)
+    return pair[which].padEnd(width, ' ') + GAP
+  }).join('')
+}
+
+export const DRAFT_TEXT = buildMarquee(0)
+export const CLEAN_TEXT = buildMarquee(1, CLEAN_LEAD)
 
 /* ------------------------------------------------------------ meta strip --- */
 

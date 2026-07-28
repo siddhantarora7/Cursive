@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useMotionValueEvent, type MotionValue } from 'motion/react'
+import { motion, useMotionValueEvent, useTransform, type MotionValue } from 'motion/react'
 import { BUILTIN_THEMES } from '../../themes'
 import { THEMES } from '../copy'
 import { Pin } from '../primitives/Pin'
@@ -18,14 +18,23 @@ import { EditorMock } from '../visuals/EditorMock'
  * frame in JavaScript.
  */
 
+/* The mock arrives the same way the ghost demo does, then starts cycling. */
+const GROW_END = 0.16
+
 function Cycle({ progress }: { progress: MotionValue<number> }) {
   const [index, setIndex] = useState(0)
   const themes = BUILTIN_THEMES
 
+  const scale = useTransform(progress, [0, GROW_END], [0.56, 1], { clamp: true })
+  const lift = useTransform(progress, [0, GROW_END], [96, 0], { clamp: true })
+  const settle = useTransform(progress, [0, GROW_END * 0.7], [0.3, 1], { clamp: true })
+
   useMotionValueEvent(progress, 'change', (v) => {
+    // Cycling occupies the scroll remaining after the mock has landed.
+    const after = (v - GROW_END) / (1 - GROW_END)
     const next = Math.min(
       themes.length - 1,
-      Math.max(0, Math.floor(Math.min(0.9999, Math.max(0, v)) * themes.length)),
+      Math.max(0, Math.floor(Math.min(0.9999, Math.max(0, after)) * themes.length)),
     )
     setIndex((prev) => (prev === next ? prev : next))
   })
@@ -34,14 +43,18 @@ function Cycle({ progress }: { progress: MotionValue<number> }) {
   if (!theme) return null
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6">
+    <div className="mx-auto w-full max-w-[min(64rem,72vw)] px-6">
       <div className="text-center">
         <h2 className="l-display text-[clamp(1.75rem,3.4vw,2.75rem)]">{THEMES.heading}</h2>
         <p className="l-prose mx-auto mt-4 text-[1.0625rem] text-ink/80">{THEMES.body}</p>
       </div>
 
+      <motion.div
+        className="mt-10"
+        style={{ scale, y: lift, opacity: settle, transformOrigin: 'center top' }}
+      >
       <EditorMock
-        className="mt-10 l-raise-lg"
+        className="l-raise-lg"
         status={theme.name}
         style={
           {
@@ -52,7 +65,7 @@ function Cycle({ progress }: { progress: MotionValue<number> }) {
           } as React.CSSProperties
         }
       >
-        <p className="transition-colors duration-[650ms]">
+        <p className="min-h-[7em] text-[1.0625rem] transition-colors duration-[650ms]">
           {THEMES.sample}
           <span
             className="l-caret"
@@ -61,6 +74,7 @@ function Cycle({ progress }: { progress: MotionValue<number> }) {
           />
         </p>
       </EditorMock>
+      </motion.div>
 
       {/* Which of the eight you are looking at. Dots, not a scrollbar: this is
           orientation, not a control. */}

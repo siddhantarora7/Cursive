@@ -74,7 +74,6 @@ export function Trust() {
           items={ITEMS}
           speed={38}
           gap={14}
-          hoverSpeed={0}
           ariaLabel="What is true about Cursive"
           renderItem={(item) => item.node}
         />

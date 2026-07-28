@@ -31,6 +31,15 @@ import { CLEAN_TEXT, DRAFT_TEXT } from '../copy'
  * there is no version of this that composes rather than merely shrinks.
  */
 
+/*
+ * Pixels per second, shared by both curves. Deriving each curve's duration
+ * from its own measured span was the desync: the two texts differed in length,
+ * so they ran at different speeds and nothing on the ribbon ever lined up with
+ * the draft feeding into the capsule. With equal-width texts and one rate,
+ * pair i meets the capsule on both curves at the same moment.
+ */
+const RATE = 74
+
 function CurvedText({
   pathId,
   d,
@@ -90,7 +99,7 @@ function CurvedText({
           ? { stroke, strokeWidth: 34, strokeLinecap: 'round' as const }
           : {})}
       />
-      <text x={0} fontSize={15.5} fontWeight={weight} className="font-body">
+      <text x={0} fontSize={14.5} fontWeight={weight} className="font-mono">
         <textPath
           ref={ref}
           href={`#${pathId}`}
@@ -104,7 +113,7 @@ function CurvedText({
           <animate
             key={span}
             attributeName="x"
-            dur={`${Math.round(span / 78)}s`}
+            dur={`${Math.round(span / RATE)}s`}
             values={`${-span};0`}
             repeatCount="indefinite"
           />

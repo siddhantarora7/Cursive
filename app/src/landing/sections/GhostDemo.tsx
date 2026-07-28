@@ -99,8 +99,8 @@ const GROW_END = 0.25
 function Demo({ progress }: { progress: MotionValue<number> }) {
   const [frame, setFrame] = useState<Frame>(() => frameAt(0))
 
-  const scale = useTransform(progress, [0, GROW_END], [0.78, 1], { clamp: true })
-  const lift = useTransform(progress, [0, GROW_END], [64, 0], { clamp: true })
+  const scale = useTransform(progress, [0, GROW_END], [0.52, 1], { clamp: true })
+  const lift = useTransform(progress, [0, GROW_END], [110, 0], { clamp: true })
   const settle = useTransform(progress, [0, GROW_END * 0.7], [0.35, 1], { clamp: true })
   const bloom = useTransform(progress, [GROW_END * 0.45, GROW_END], [0, 1], { clamp: true })
 
@@ -115,7 +115,7 @@ function Demo({ progress }: { progress: MotionValue<number> }) {
   const typing = frame.ghost === 0
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-6">
+    <div className="mx-auto w-full max-w-[min(64rem,72vw)] px-6">
       <div className="text-center">
         <h2 className="l-display text-[clamp(1.75rem,3.4vw,2.75rem)]">{GHOST.heading}</h2>
         <p className="l-prose mx-auto mt-4 text-[1.0625rem] text-ink/80">{GHOST.body}</p>
@@ -136,7 +136,7 @@ function Demo({ progress }: { progress: MotionValue<number> }) {
           }}
         />
         <EditorMock className="l-raise-lg" bare>
-          <p className="min-h-[5.5em]">
+          <p className="min-h-[7em] text-[1.0625rem]">
             <span>{typedText}</span>
             {frame.ghost > 0 && (
               <span

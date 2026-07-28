@@ -23,8 +23,10 @@ import { useReducedMotion } from 'motion/react'
  *      from it, so the row tiles exactly rather than relying on a guessed
  *      duplicate count.
  *
- * Velocity easing is kept: hovering decelerates to a stop rather than
- * stopping dead, which is what makes it feel like a physical belt.
+ * There is deliberately no hover behaviour. The original pauses under the
+ * cursor, but this belt is a statement of fact rather than a control: nothing
+ * in it is clickable, so stopping it only interrupts a reader whose pointer
+ * happened to be resting there. It is `pointer-events: none` throughout.
  */
 
 export type LoopItem = {
@@ -42,8 +44,6 @@ type Props = {
   speed?: number
   direction?: 'left' | 'right'
   gap?: number
-  /** Speed while hovered; 0 stops it. */
-  hoverSpeed?: number
   fadeColor?: string
   ariaLabel?: string
   className?: string
@@ -55,7 +55,6 @@ export const LogoLoop = memo(function LogoLoop({
   speed = 42,
   direction = 'left',
   gap = 14,
-  hoverSpeed = 0,
   fadeColor = '#FDFCF0',
   ariaLabel = 'What is true about Cursive',
   className = '',
@@ -68,7 +67,17 @@ export const LogoLoop = memo(function LogoLoop({
 
   const [seqWidth, setSeqWidth] = useState(0)
   const [copies, setCopies] = useState(MIN_COPIES)
-  const [hovered, setHovered] = useState(false)
+
+  /*
+   * Position and velocity live in refs, not in the effect body.
+   *
+   * As locals they were re-initialised to zero every time the effect re-ran,
+   * so any state change (measurement settling, a hover) snapped the belt back
+   * to its start. Refs survive re-runs, so the belt keeps its place no matter
+   * what else re-renders around it.
+   */
+  const offsetRef = useRef(0)
+  const velocityRef = useRef(0)
 
   const targetVelocity = useMemo(
     () => Math.abs(speed) * (direction === 'left' ? 1 : -1),
@@ -107,25 +116,22 @@ export const LogoLoop = memo(function LogoLoop({
 
     let raf = 0
     let last: number | null = null
-    let offset = 0
-    let velocity = 0
 
     const tick = (t: number) => {
       if (last === null) last = t
       const dt = Math.max(0, t - last) / 1000
       last = t
 
-      const target = hovered ? hoverSpeed : targetVelocity
-      velocity += (target - velocity) * (1 - Math.exp(-dt / SMOOTH_TAU))
-
-      offset = (((offset + velocity * dt) % seqWidth) + seqWidth) % seqWidth
-      track.style.transform = `translate3d(${-offset}px, 0, 0)`
+      velocityRef.current += (targetVelocity - velocityRef.current) * (1 - Math.exp(-dt / SMOOTH_TAU))
+      offsetRef.current =
+        (((offsetRef.current + velocityRef.current * dt) % seqWidth) + seqWidth) % seqWidth
+      track.style.transform = `translate3d(${-offsetRef.current}px, 0, 0)`
       raf = requestAnimationFrame(tick)
     }
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [reduced, seqWidth, hovered, hoverSpeed, targetVelocity])
+  }, [reduced, seqWidth, targetVelocity])
 
   const lists = useMemo(
     () =>
@@ -165,10 +171,8 @@ export const LogoLoop = memo(function LogoLoop({
     >
       <div
         ref={trackRef}
-        className={`flex w-max ${reduced ? 'justify-center' : ''}`}
+        className={`pointer-events-none flex w-max ${reduced ? 'justify-center' : ''}`}
         style={{ willChange: reduced ? undefined : 'transform' }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
       >
         {lists}
       </div>

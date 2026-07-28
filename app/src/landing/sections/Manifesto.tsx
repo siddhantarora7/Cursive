@@ -72,19 +72,23 @@ function Column({ progress }: { progress: MotionValue<number> }) {
         <span className="block h-2.5 w-2.5 rounded-full bg-red shadow-[0_0_0_5px_rgb(200_73_46/0.14)]" />
       </div>
 
-      {/* fade the top and bottom so words enter and leave rather than clip */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          zIndex: 'var(--z-raised)',
-          background:
-            'linear-gradient(to bottom, #FDFCF0 0%, rgba(253,252,240,0) 26%, rgba(253,252,240,0) 74%, #FDFCF0 100%)',
-        }}
-      />
-
+      {/*
+       * Words fade at the top and bottom via a mask, not via an opaque cream
+       * overlay painted on top. The overlay was hiding the page's gold field
+       * wherever it covered, which produced a visible horizontal seam against
+       * the transparent sections either side: a colour change between sections,
+       * which is the one thing this page must never have.
+       */}
       <motion.div
-        style={{ y, top: '50%', marginTop: -LINE / 2 }}
+        style={{
+          y,
+          top: '50%',
+          marginTop: -LINE / 2,
+          maskImage:
+            'linear-gradient(to bottom, transparent 0%, #000 24%, #000 76%, transparent 100%)',
+          WebkitMaskImage:
+            'linear-gradient(to bottom, transparent 0%, #000 24%, #000 76%, transparent 100%)',
+        }}
         className="absolute left-0 flex w-1/2 flex-col pr-7 font-display text-[clamp(1.75rem,4vw,3.25rem)] leading-none"
       >
         {WORDS.map((w, i) => (
