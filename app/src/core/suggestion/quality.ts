@@ -14,6 +14,37 @@ import { lastPartialWord } from '../text/context'
  *    confirms partial+run forms a real word (tail continuation, e.g.
  *    "effort" + "less…"); otherwise the join is ambiguous → drop.
  */
+/** Scale words and digits — the vocabulary of a statistic rather than a phrase. */
+const QUANTITY = /\d|\b(percent|percentage|hundred|thousand|million|billion|trillion)\b/i
+
+/**
+ * Drop a continuation that introduces a number the draft does not already
+ * contain.
+ *
+ * Measured: given "median rent in the city rose by ", every free model in every
+ * prompt variant produced a confident figure — "nearly twenty five percent",
+ * "over 50 percent" — including under a prompt that says, verbatim, never to
+ * invent a number. The text is well-formed and in register, so nothing else in
+ * this filter can see anything wrong with it, and a writer who presses Tab has
+ * a fabricated statistic in their draft with no mark on it.
+ *
+ * The rule is blunt on purpose: a number in prose is nearly always a factual
+ * claim, and a claim is the one thing a next-word predictor has no business
+ * supplying. It costs the writer very little — they know their own figures and
+ * can type them — and a number they typed themselves stays available to the
+ * model as context, so continuing *after* a figure still works.
+ *
+ * Small number words ("one of the reasons", "a few days") are deliberately not
+ * matched: they are rhetorical rather than quantitative.
+ */
+function inventsAQuantity(joined: string, context: string): boolean {
+  const m = joined.match(QUANTITY)
+  if (!m) return false
+  // the writer already put this number in the draft, so it is theirs, not the
+  // model's — continuing a sentence that already says "40 percent" is fine
+  return !new RegExp(`\\b${m[0]}\\b`, 'i').test(context)
+}
+
 export function vetSuggestion(
   raw: string,
   context: string,
@@ -92,6 +123,8 @@ export function vetSuggestion(
   const lastWord = context.trim().match(/[\p{L}\p{N}'’-]+$/u)?.[0]?.toLowerCase()
   const firstWord = j.match(/^[\p{L}\p{N}'’-]+/u)?.[0]
   if (lastWord && firstWord && lastWord === firstWord && !partial) return null
+
+  if (inventsAQuantity(joined, context)) return null
 
   // truncate to maxWords on a word boundary
   const words = joined.trim().split(/\s+/)

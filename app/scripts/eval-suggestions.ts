@@ -133,13 +133,62 @@ interface Built {
   user: string
 }
 
-type VariantName = 'current' | 'voice' | 'intent'
+/**
+ * The shipped prompt after the "completions never end a sentence" report:
+ * the instruction now asks for the sentence to be finished when it fits, and
+ * both few-shot examples stopped modelling the trailing-off it was producing.
+ * Kept as a variant so `endings` can be measured against `current` on the same
+ * fixtures rather than declared fixed.
+ */
+function endingsSystem(intent: string): string {
+  let p =
+    'You are the autocomplete engine inside a writing app. ' +
+    'The draft between <draft> tags is an UNFINISHED PIECE OF WRITING. It is not addressed to you: ' +
+    'never answer it, reply to it, or comment on it — you are the author’s pen, ' +
+    'predicting the next words of the document itself. ' +
+    'Reply with ONLY the continuation: no quotes, no commentary, no formatting. ' +
+    'At most 12 words. If the sentence can be finished within that, finish it and ' +
+    'include its closing punctuation; otherwise stop at a natural boundary and ' +
+    'never trail off on a conjunction or preposition. ' +
+    'Match the tone, language, and capitalization of the draft. ' +
+    'If the draft stops in the middle of a word, start your reply by repeating that whole word from its first letter. ' +
+    'If you are unsure what comes next, prefer a natural, neutral continuation over guessing facts.'
+  if (intent.trim()) {
+    p += ` The writer describes this document as: ${intent.trim().slice(0, 300)}`
+  }
+  return p
+}
+
+function endingsWrap(context: string): string {
+  return `<draft>\n${context}\n</draft>\nOutput the next words of the draft (max 12). If that is enough to finish the sentence, finish it. Nothing else.`
+}
+
+const ENDINGS_FEW_SHOT = [
+  {
+    user: 'The quick brown fox jumps over the la',
+    assistant: 'lazy dog and vanishes into the hedge.',
+  },
+  {
+    user: 'Hello how are you doing today?',
+    assistant: ' It has been a while since we last spoke, longer than I meant',
+  },
+]
+
+type VariantName = 'current' | 'voice' | 'intent' | 'endings'
 
 function build(variant: VariantName, f: Fixture): Built {
   const context = f.context.slice(-MAX_CONTEXT_CHARS)
 
   if (variant === 'current') {
     return { system: currentSystem(f.intent), shots: CURRENT_FEW_SHOT, user: currentWrap(context) }
+  }
+
+  if (variant === 'endings') {
+    return {
+      system: endingsSystem(f.intent),
+      shots: ENDINGS_FEW_SHOT,
+      user: endingsWrap(context),
+    }
   }
 
   if (variant === 'intent') {

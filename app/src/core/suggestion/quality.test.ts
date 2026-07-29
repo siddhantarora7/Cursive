@@ -151,3 +151,44 @@ describe('vetSuggestion — findings from the eval corpus', () => {
       .toBe('rstep and knocked')
   })
 })
+
+/*
+ * The fact-invention guard. The corpus measured every free model producing a
+ * confident rent statistic on the same prompt, 6 times out of 6, including
+ * under a system prompt that forbids it in as many words.
+ */
+describe('vetSuggestion — invented quantities', () => {
+  it('drops a statistic the model made up', () => {
+    const ctx = 'Between 2010 and 2020, median rent in the city rose by '
+    expect(vetSuggestion('nearly fifty percent to over two thousand dollars', ctx, MAX)).toBeNull()
+    expect(vetSuggestion('over 50 percent, far exceeding inflation', ctx, MAX)).toBeNull()
+    expect(vetSuggestion('approximately 40 percent nationwide', ctx, MAX)).toBeNull()
+  })
+
+  it('drops an invented date', () => {
+    expect(
+      vetSuggestion('expecting delivery on or before the 17th', 'Confirming the first batch. ', MAX),
+    ).toBeNull()
+  })
+
+  it('keeps a number the writer already put in the draft', () => {
+    // continuing a sentence that already says 40 percent is not an invention
+    const ctx = 'Rents rose 40 percent, and that 40 '
+    expect(vetSuggestion('percent figure understates it', ctx, MAX)).toBe('percent figure understates it')
+  })
+
+  it('does not mistake rhetorical number words for statistics', () => {
+    expect(vetSuggestion(' one of the reasons this matters', 'It is', MAX)).toBe(
+      ' one of the reasons this matters',
+    )
+    expect(vetSuggestion(' a few days later she left', 'They waited.', MAX)).toBe(
+      ' a few days later she left',
+    )
+  })
+
+  it('leaves ordinary prose alone', () => {
+    expect(vetSuggestion(' over the lazy dog', 'The quick brown fox jumps', MAX)).toBe(
+      ' over the lazy dog',
+    )
+  })
+})

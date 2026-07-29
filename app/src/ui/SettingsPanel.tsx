@@ -210,6 +210,27 @@ export function SettingsPanel({
     setKeyDraft(getByokKey(p))
   }
 
+  /*
+   * A whole suggestion is a bet on twelve words being right; its first word is
+   * a much safer bet. Offering both is cheaper than trying to guess the length
+   * a writer wants. Mod-ArrowRight takes one word under either setting, so the
+   * choice here is only about what the unmodified key does.
+   */
+  const TAB_MODES = [
+    {
+      id: 'all' as const,
+      title: 'the whole suggestion',
+      meta: 'default',
+      note: 'Fastest when the suggestion is already what you meant. ⌘→ still takes a single word.',
+    },
+    {
+      id: 'word' as const,
+      title: 'one word',
+      meta: 'cautious',
+      note: 'Tab walks the suggestion a word at a time, so you can stop the moment it stops sounding like you.',
+    },
+  ]
+
   const aiModes = [
     {
       id: 'free' as const,
@@ -358,6 +379,25 @@ export function SettingsPanel({
             </div>
           )}
 
+          <div className="option-cards tight" role="radiogroup" aria-label="What Tab accepts">
+            {TAB_MODES.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                role="radio"
+                aria-checked={settings.tabAccepts === m.id}
+                className={`option-card${settings.tabAccepts === m.id ? ' selected' : ''}`}
+                onClick={() => onChange({ tabAccepts: m.id })}
+              >
+                <span className="option-title">
+                  Tab takes {m.title}
+                  <span className="option-meta">{m.meta}</span>
+                </span>
+                <span className="option-note">{m.note}</span>
+              </button>
+            ))}
+          </div>
+
           <label className="intent-label">Document intent
             <textarea
               rows={2}
@@ -367,6 +407,12 @@ export function SettingsPanel({
             />
             <small className="field-hint">Sent with every suggestion for this document.</small>
           </label>
+
+          <p className="field-hint">
+            Suggestions finish sentences; they don&rsquo;t know things. Cursive won&rsquo;t offer you
+            a figure or a date it invented, but everything else here is a guess at your next few
+            words &mdash; good enough to type with, never good enough to cite.
+          </p>
         </section>
 
         <section>

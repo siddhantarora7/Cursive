@@ -37,6 +37,13 @@ export interface Settings {
   byokModel: string
   spellcheck: boolean
   autocorrect: boolean
+  /**
+   * What Tab takes. A twelve-word guess is right far less often than its first
+   * word is, so writers who find whole-suggestion accepts too speculative can
+   * make Tab take one word at a time. Mod-ArrowRight always takes one word
+   * regardless, so the narrower action is never unavailable.
+   */
+  tabAccepts: 'all' | 'word'
   zen: boolean
   fx: { sparks: boolean; streak: boolean; shake: boolean }
   sound: { pack: 'off' | 'thock' | 'typewriter' | 'pop'; volume: number }
@@ -57,6 +64,7 @@ export const DEFAULT_SETTINGS: Settings = {
   byokModel: '',
   spellcheck: true,
   autocorrect: true,
+  tabAccepts: 'all',
   zen: false,
   fx: { sparks: true, streak: true, shake: false },
   sound: { pack: 'off', volume: 0.6 },

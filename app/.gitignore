@@ -4,3 +4,6 @@ dist
 *.local
 test-results/
 playwright-report/
+
+# crash-recovery snapshots from eval runs; the final .json is the record
+scripts/results/*.partial.json

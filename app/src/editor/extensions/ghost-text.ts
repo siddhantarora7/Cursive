@@ -139,13 +139,18 @@ export interface GhostTextOptions {
   onDismiss: () => void
   /** called when the user accepts (Tab / Mod-ArrowRight), with the inserted text */
   onAccept: (text: string, mode: 'all' | 'word') => void
+  /**
+   * What Tab takes. Read through a function rather than captured, because the
+   * extension is configured once and the setting can change under it.
+   */
+  tabMode: () => 'all' | 'word'
 }
 
 export const GhostText = Extension.create<GhostTextOptions>({
   name: 'ghostText',
 
   addOptions() {
-    return { onDismiss: () => {}, onAccept: () => {} }
+    return { onDismiss: () => {}, onAccept: () => {}, tabMode: () => 'all' }
   },
 
   addProseMirrorPlugins() {
@@ -245,7 +250,7 @@ export const GhostText = Extension.create<GhostTextOptions>({
     return {
       Tab: () => {
         if (getGhostRemainder(this.editor.state) === null) return false
-        return this.editor.commands.acceptGhostText('all')
+        return this.editor.commands.acceptGhostText(this.options.tabMode())
       },
       'Mod-ArrowRight': () => {
         if (getGhostRemainder(this.editor.state) === null) return false

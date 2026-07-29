@@ -80,10 +80,53 @@ marker that it was invented. This is the strongest argument in the product for
 never rendering suggestions as *authority* — and it is a property of the model
 tier, not of the prompt.
 
-**Not yet addressed.** The honest options are to suppress completions that begin
-with a bare number or quantity after a numeric cue, or to accept the failure and
-say plainly in the UI that suggestions are drafting help and not facts. This
-needs a product decision, not a code change.
+**Addressed 2026-07-28, with both of the honest options rather than one.**
+
+The filter now drops any continuation that introduces a number the draft does
+not already contain — digits, `percent`, and the scale words (`hundred`,
+`thousand`, `million`…). The rule is blunt deliberately: a number in prose is
+nearly always a factual claim, and a claim is the one thing a next-word
+predictor has no business supplying. Small number words (`one of the reasons`,
+`a few days`) are not matched; they are rhetorical, not quantitative. A figure
+the writer typed themselves stays in context, so continuing *after* a number
+still works.
+
+Replayed over the stored 252 responses: **12 newly dropped, and all 12 are
+cases the corpus already wanted dropped** — 6/6 of the statistic trap, four
+invented figures on `edge-06-numbers` (whose fixture note reads "silence is an
+acceptable outcome"), and one invented delivery date on `eml-05-signoff`.
+
+And Settings now says, in the writer's words rather than a disclaimer's:
+suggestions finish sentences, they don't know things — good enough to type
+with, never good enough to cite. The filter catches invented *numbers*. It
+cannot catch an invented claim in plain prose, and pretending otherwise in the
+UI would be its own kind of dishonesty.
+
+## Completions that never ended a sentence
+
+Reported from real use: you could press Tab all day and never once be handed a
+full stop. Measured on the same 42 fixtures against `llama-3.3-70b-versatile`,
+this was not a model limitation — it was the prompt teaching it. The
+instruction said "stop at a natural phrase boundary", and both few-shot
+examples ended on a dangling word (`trots away into`, `we last spoke and`). The
+models copied the examples faithfully.
+
+| | ends a sentence | trails off on a function word | median words | p50 | p95 |
+|---|---:|---:|---:|---:|---:|
+| before | 0 / 42 (0%) | 5 | 8 | 287 ms | 358 ms |
+| after | 41 / 42 (98%) | 0 | 6 | 289 ms | 330 ms |
+
+The instruction now asks for the sentence to be finished when it fits, and the
+examples stopped modelling the behaviour being complained about. Suggestions
+also got **shorter** — median 8 words to 6 — which independently helps the
+other half of the same report, that long completions are too speculative to
+accept. Latency is unchanged.
+
+98% is a strong swing, and worth watching: near enough every suggestion now
+closes its sentence. That is the right default for a tool you accept with one
+key, but if it starts to feel eager, the lever is the `endings` variant in
+`scripts/eval-suggestions.ts` — it is kept alongside `current` precisely so the
+next change can be measured rather than argued about.
 
 ## Filter changes made, and validated
 

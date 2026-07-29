@@ -2,17 +2,22 @@ import { describeStatus, type AiSource, type SuggestionStatus } from '../core/su
 import type { Settings } from '../store/db'
 import { Icon } from './icons'
 
+const MOD = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘' : 'Ctrl'
+
 export function StatusBar({
   words,
   quota,
   settings,
   status,
+  ghostVisible,
   onOpenSettings,
 }: {
   words: number
   quota: { used: number; limit: number } | null
   settings: Settings
   status: SuggestionStatus
+  /** true while there is ghost text on screen to act on */
+  ghostVisible: boolean
   onOpenSettings: (focus?: 'byok') => void
 }) {
   const source: AiSource = settings.aiMode === 'byok' ? 'byok' : 'free'
@@ -26,6 +31,20 @@ export function StatusBar({
         {words.toLocaleString()} {words === 1 ? 'word' : 'words'}
       </span>
       <span className="status-spacer" />
+
+      {/*
+        Shown only while a suggestion is on screen. Word-at-a-time accept has
+        existed since the beginning and nobody found it, because a keybind
+        nothing mentions may as well not be bound. Here it appears exactly when
+        it is usable and disappears the moment it is not.
+      */}
+      {ghostVisible && (
+        <span className="status-keys" aria-hidden="true">
+          <kbd>tab</kbd> {settings.tabAccepts === 'word' ? 'word' : 'accept'}
+          <kbd>{MOD}→</kbd> word
+          <kbd>esc</kbd> dismiss
+        </span>
+      )}
 
       {note ? (
         <span className={`status-note ${note.tone}`} role="status">

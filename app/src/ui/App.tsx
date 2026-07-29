@@ -9,6 +9,7 @@ import { FxLayer } from '../fx/engine'
 import { SoundEngine } from '../sound'
 import wordsUrl from '../assets/en-words.txt?url'
 import { SmoothCaret } from '../editor/caret'
+import { getGhostRemainder } from '../editor/extensions/ghost-text'
 import { createCursiveEditor, deriveTitle, wordJustCompleted } from '../editor/setup'
 import {
   SuggestionController,
@@ -60,10 +61,13 @@ export function App() {
   const completionRef = useRef<CompletionFn | null>(null)
   const dictRef = useRef<Dictionary | null>(null)
   const autocorrectRef = useRef(true)
+  const tabModeRef = useRef<'all' | 'word'>('all')
+  const ghostVisibleRef = useRef(false)
   const intentRef = useRef('')
   const saveTimer = useRef(0)
   const zenPeekTimer = useRef(0)
   const [zenPeek, setZenPeek] = useState(false)
+  const [ghostVisible, setGhostVisible] = useState(false)
 
   intentRef.current = intent
 
@@ -136,6 +140,7 @@ export function App() {
     completionRef.current = buildCompletionFn(settings)
     controllerRef.current?.setEnabled(completionRef.current !== null)
     autocorrectRef.current = settings.autocorrect
+    tabModeRef.current = settings.tabAccepts
     caretRef.current?.setConfig(settings.caret)
     editor?.setOptions({
       editorProps: {
@@ -187,6 +192,7 @@ export function App() {
             fxRef.current?.pushAccept(lastGeomRef.current.x, lastGeomRef.current.y)
           },
           onDismiss: () => controllerRef.current?.notifyDismissed(),
+          tabMode: () => tabModeRef.current,
         },
         autocorrect: {
           isEnabled: () => autocorrectRef.current,
@@ -201,6 +207,13 @@ export function App() {
         onTransaction: (e, tr) => {
           caretRef.current?.update()
           controllerRef.current?.handleTransaction(tr)
+          // the keys only make sense while there is something to accept, so the
+          // hint is bound to the ghost being on screen rather than shown always
+          const ghosting = getGhostRemainder(e.state) !== null
+          if (ghosting !== ghostVisibleRef.current) {
+            ghostVisibleRef.current = ghosting
+            setGhostVisible(ghosting)
+          }
           if (tr.docChanged) {
             const now = Date.now()
             statsRef.current.record(now)
@@ -425,6 +438,7 @@ export function App() {
           quota={quota}
           settings={settings}
           status={aiStatus}
+          ghostVisible={ghostVisible}
           onOpenSettings={openSettings}
         />
       </footer>

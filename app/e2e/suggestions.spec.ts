@@ -96,3 +96,58 @@ test('a single dropped request stays silent', async ({ page }) => {
 
   await expect(page.locator('.status-note')).toHaveCount(0)
 })
+
+/*
+ * Accepting a suggestion. A twelve-word guess is right far less often than its
+ * first word is, so Tab's appetite is the writer's choice — and the narrower
+ * action has to be findable, which is what the key hints are for.
+ */
+
+/** Stub the proxy with a real completion instead of a refusal. */
+async function stubCompletion(page: import('@playwright/test').Page, text: string) {
+  await page.route('**/api/complete', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ text, used: 1, limit: 150 }),
+    }),
+  )
+}
+
+test('the key hints appear only while there is a suggestion to act on', async ({ page }) => {
+  await stubCompletion(page, ' over the lazy dog and away')
+  const editor = await openEditor(page)
+  await expect(page.locator('.status-keys')).toBeHidden()
+
+  await editor.click()
+  await page.keyboard.type('The quick brown fox jumps', { delay: 12 })
+  await expect(page.locator('.ghost-text')).toBeVisible({ timeout: 5_000 })
+  await expect(page.locator('.status-keys')).toBeVisible()
+
+  await page.keyboard.press('Escape')
+  await expect(page.locator('.status-keys')).toBeHidden()
+})
+
+test('Mod-ArrowRight takes one word without touching the rest', async ({ page }) => {
+  await stubCompletion(page, ' over the lazy dog and away')
+  const editor = await openEditor(page)
+
+  await editor.click()
+  await page.keyboard.type('The quick brown fox jumps', { delay: 12 })
+  await expect(page.locator('.ghost-text')).toBeVisible({ timeout: 5_000 })
+
+  await page.keyboard.press('ControlOrMeta+ArrowRight')
+
+  // only the first word landed in the document. The editor element also renders
+  // the ghost decoration, so read the document itself rather than the DOM text.
+  const docText = await editor.evaluate(
+    (el) => (el as HTMLElement & { pmViewDesc?: { node: { textContent: string } } }).innerText,
+  )
+  expect(docText).toContain('The quick brown fox jumps over')
+
+  // the rest is still on offer, re-anchored past the word just taken
+  const ghost = page.locator('.ghost-text')
+  await expect(ghost).toBeVisible()
+  await expect(ghost).toHaveText(/the lazy dog and away/)
+  await expect(ghost).not.toHaveText(/over/)
+})

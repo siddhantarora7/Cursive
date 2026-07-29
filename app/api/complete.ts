@@ -26,7 +26,9 @@ function systemPrompt(intent: string): string {
     'never answer it, reply to it, or comment on it — you are the author’s pen, ' +
     'predicting the next words of the document itself. ' +
     'Reply with ONLY the continuation: no quotes, no commentary, no formatting. ' +
-    'At most 12 words; stop at a natural phrase boundary. ' +
+    'At most 12 words. If the sentence can be finished within that, finish it and ' +
+    'include its closing punctuation; otherwise stop at a natural boundary and ' +
+    'never trail off on a conjunction or preposition. ' +
     'Match the tone, language, and capitalization of the draft. ' +
     'If the draft stops in the middle of a word, start your reply by repeating that whole word from its first letter. ' +
     'If you are unsure what comes next, prefer a natural, neutral continuation over guessing facts.'
@@ -36,19 +38,23 @@ function systemPrompt(intent: string): string {
   return p
 }
 
-/** Teach the two failure modes small models hit: answering the text, and mid-word repetition. */
 function wrapContext(context: string): string {
-  return `<draft>\n${context}\n</draft>\nOutput the next words of the draft (max 12). Nothing else.`
+  return `<draft>\n${context}\n</draft>\nOutput the next words of the draft (max 12). If that is enough to finish the sentence, finish it. Nothing else.`
 }
 
+/**
+ * Teach the three failure modes small models hit: answering the text, mid-word
+ * repetition, and trailing off. The endings are load-bearing — see the note on
+ * the mirror of this in src/ai/prompt.ts.
+ */
 const FEW_SHOT: ReadonlyArray<{ user: string; assistant: string }> = [
   {
     user: 'The quick brown fox jumps over the la',
-    assistant: 'lazy dog and trots away into',
+    assistant: 'lazy dog and vanishes into the hedge.',
   },
   {
     user: 'Hello how are you doing today?',
-    assistant: ' It has been a while since we last spoke and',
+    assistant: ' It has been a while since we last spoke, longer than I meant',
   },
 ]
 

@@ -289,6 +289,38 @@
   border-top: 1px solid var(--c-border);
 }
 .status-spacer { flex: 1; }
+/* Key hints, present only while a suggestion is. They fade rather than appear,
+   because something blinking into the status bar mid-sentence would pull the
+   eye off the text — which is the one thing this app must never do. */
+.status-keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--c-faint);
+  animation: status-keys-in 160ms ease both;
+}
+.status-keys kbd {
+  font: inherit;
+  font-size: 0.7rem;
+  padding: 0.05rem 0.3rem;
+  margin-right: 0.25rem;
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  color: var(--c-muted);
+}
+@keyframes status-keys-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .status-keys { animation: none; }
+}
+/* The hint shares the right edge with the quota chip. On a narrow window the
+   quota is the one that carries information the writer cannot get elsewhere,
+   so the hint is what goes. */
+@media (max-width: 640px) {
+  .status-keys { display: none; }
+}
 .status-quota { display: inline-flex; align-items: center; gap: 0.4rem; color: var(--c-muted); }
 .quota-bar {
   width: 56px;
