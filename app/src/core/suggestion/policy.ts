@@ -2,6 +2,7 @@ import { wordCount } from '../text/context'
 import { fnv1a } from './hash'
 import { LruCache } from './lru'
 import { vetSuggestion } from './quality'
+import type { SuggestionStatus } from './status'
 
 /**
  * The suggestion policy state machine. Pure: no timers, no fetch, no DOM.
@@ -30,14 +31,28 @@ export const DEFAULT_POLICY: PolicyConfig = {
   backoffCapMs: 60_000,
 }
 
+/**
+ * How long a server-side kill switch is believed before we probe again.
+ * Short enough that flipping AI back on doesn't strand a writer for the session.
+ */
+export const DISABLED_RETRY_MS = 10 * 60_000
+
+/**
+ * One failed request is a blip and must stay silent — a status line that
+ * flickers on every dropped packet trains the user to ignore it. Two in a row
+ * is a real outage and earns words.
+ */
+export const UNREACHABLE_AFTER_FAILURES = 2
+
 export type PolicyEvent =
   | { kind: 'typed'; context: string }
   | { kind: 'moved' }
   | { kind: 'blur' }
   | { kind: 'tick' }
   | { kind: 'response'; id: number; raw: string }
-  | { kind: 'failure'; id: number; cause: 'net' | 'rate' }
-  | { kind: 'capExhausted'; id: number; resumeAt: number }
+  | { kind: 'failure'; id: number; cause: 'net' | 'rate' | 'providers' }
+  /** server told us to stop for a while, and why */
+  | { kind: 'paused'; id: number; reason: 'cap' | 'disabled'; resumeAt: number }
   | { kind: 'accepted' }
   | { kind: 'dismissed' }
   | { kind: 'compositionStart' }
@@ -50,6 +65,9 @@ export type PolicyAction =
   | { kind: 'cancel'; id: number }
   | { kind: 'show'; text: string }
   | { kind: 'clear' }
+  /** a model answer the quality filter dropped — the user sees nothing, but
+   *  the rate is worth knowing, so it is reported rather than swallowed */
+  | { kind: 'rejected' }
 
 export class SuggestionPolicy {
   private cache: LruCache<string, string>
@@ -59,6 +77,8 @@ export class SuggestionPolicy {
   private nextId = 1
   private shown = false
   private pausedUntil = 0
+  /** why we are paused — null when running normally */
+  private pauseKind: 'cap' | 'disabled' | 'rate' | 'unreachable' | null = null
   private failures = 0
   private cooledHash: string | null = null
   private composing = false
@@ -80,9 +100,9 @@ export class SuggestionPolicy {
       case 'response':
         return this.onResponse(ev.id, ev.raw)
       case 'failure':
-        return this.onFailure(ev.id, now)
-      case 'capExhausted':
-        return this.onCap(ev.id, ev.resumeAt)
+        return this.onFailure(ev.id, ev.cause, now)
+      case 'paused':
+        return this.onPaused(ev.id, ev.reason, ev.resumeAt)
       case 'moved':
       case 'blur':
         return this.reset()
@@ -146,14 +166,20 @@ export class SuggestionPolicy {
     if (id !== this.inflightId || this.pendingContext === null) return []
     this.inflightId = null
     this.failures = 0
+    this.pauseKind = null
+    this.pausedUntil = 0
     const vetted = vetSuggestion(raw, this.pendingContext, this.cfg.maxSuggestionWords, this.isWord)
-    if (vetted === null) return []
+    if (vetted === null) return [{ kind: 'rejected' }]
     this.cache.set(fnv1a(this.pendingContext), vetted)
     this.shown = true
     return [{ kind: 'show', text: vetted }]
   }
 
-  private onFailure(id: number, now: number): PolicyAction[] {
+  private onFailure(
+    id: number,
+    cause: 'net' | 'rate' | 'providers',
+    now: number,
+  ): PolicyAction[] {
     if (id !== this.inflightId) return []
     this.inflightId = null
     this.failures += 1
@@ -162,13 +188,43 @@ export class SuggestionPolicy {
       this.cfg.backoffCapMs,
     )
     this.pausedUntil = now + delay
+    // 'providers' means every upstream model errored: from where the writer
+    // sits that is indistinguishable from the network being down, and it is
+    // equally not their fault.
+    this.pauseKind = cause === 'rate' ? 'rate' : 'unreachable'
     return []
   }
 
-  private onCap(id: number, resumeAt: number): PolicyAction[] {
+  private onPaused(
+    id: number,
+    reason: 'cap' | 'disabled',
+    resumeAt: number,
+  ): PolicyAction[] {
     if (id === this.inflightId) this.inflightId = null
     this.pausedUntil = resumeAt
+    this.pauseKind = reason
     return []
+  }
+
+  /**
+   * What the chrome should say right now. Pure read — no state change — so the
+   * UI can poll it without perturbing the machine.
+   */
+  statusAt(now: number): SuggestionStatus {
+    if (!this.enabled) return { kind: 'off' }
+    if (this.pauseKind === null || now >= this.pausedUntil) return { kind: 'ready' }
+    switch (this.pauseKind) {
+      case 'cap':
+        return { kind: 'exhausted', resumeAt: this.pausedUntil }
+      case 'disabled':
+        return { kind: 'disabled' }
+      case 'rate':
+        return { kind: 'rate-limited', retryAt: this.pausedUntil }
+      case 'unreachable':
+        return this.failures >= UNREACHABLE_AFTER_FAILURES
+          ? { kind: 'unreachable', retryAt: this.pausedUntil }
+          : { kind: 'ready' }
+    }
   }
 
   /** Cancel in-flight work and clear any shown suggestion. */

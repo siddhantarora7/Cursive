@@ -69,6 +69,24 @@ export function textBeforeCaret(editor: Editor): string {
   return state.doc.textBetween(0, state.selection.head, '\n', '\n')
 }
 
+/** Characters that end a word — the same rule autocorrect fires on. */
+const WORD_DELIMITER = /[\s.,;:!?)\]}"'—–]/
+
+/**
+ * The word the user just finished, when the last keystroke was a delimiter —
+ * otherwise null. Reads a short bounded window rather than the document, so it
+ * stays cheap enough to run on every transaction (see PERF.md).
+ */
+export function wordJustCompleted(editor: Editor): string | null {
+  const { selection, doc } = editor.state
+  if (!selection.empty) return null
+  const pos = selection.head
+  const tail = doc.textBetween(Math.max(0, pos - 48), pos, '\n', '\n')
+  if (!tail || !WORD_DELIMITER.test(tail[tail.length - 1]!)) return null
+  const m = tail.slice(0, -1).match(/[\p{L}\p{N}'’-]+$/u)
+  return m ? m[0] : null
+}
+
 /** True when the caret sits inside a code block (no suggestions there). */
 export function caretInCodeBlock(editor: Editor): boolean {
   const { $head } = editor.state.selection

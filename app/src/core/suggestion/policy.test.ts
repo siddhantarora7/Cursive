@@ -57,7 +57,10 @@ describe('SuggestionPolicy', () => {
     p.handle({ kind: 'typed', context: CTX }, 0)
     const [req] = p.handle({ kind: 'tick' }, 400)
     const id = req!.kind === 'request' ? req!.id : -1
-    expect(p.handle({ kind: 'response', id, raw: 'Sure, here you go:' }, 600)).toEqual([])
+    // nothing is rendered — but the drop is reported so the rate is knowable
+    expect(p.handle({ kind: 'response', id, raw: 'Sure, here you go:' }, 600)).toEqual([
+      { kind: 'rejected' },
+    ])
   })
 
   it('serves a cache hit without a request', () => {
@@ -91,7 +94,12 @@ describe('SuggestionPolicy', () => {
     p.handle({ kind: 'typed', context: CTX }, 0)
     const [req] = p.handle({ kind: 'tick' }, 400)
     p.handle(
-      { kind: 'capExhausted', id: req!.kind === 'request' ? req!.id : -1, resumeAt: 100_000 },
+      {
+        kind: 'paused',
+        id: req!.kind === 'request' ? req!.id : -1,
+        reason: 'cap',
+        resumeAt: 100_000,
+      },
       500,
     )
     p.handle({ kind: 'typed', context: CTX }, 600)
@@ -127,5 +135,81 @@ describe('SuggestionPolicy', () => {
     p.handle({ kind: 'setEnabled', enabled: false }, 0)
     p.handle({ kind: 'typed', context: CTX }, 100)
     expect(p.handle({ kind: 'tick' }, 500)).toEqual([])
+  })
+})
+
+/**
+ * The reported status is what the user reads, so it is tested as carefully as
+ * the request behaviour. The three failure kinds must stay distinguishable all
+ * the way from the wire to the status strip.
+ */
+describe('SuggestionPolicy.statusAt', () => {
+  /** drive the machine to an in-flight request and return its id */
+  function inflight(p: SuggestionPolicy, at = 400): number {
+    p.handle({ kind: 'typed', context: CTX }, at - 400)
+    const [req] = p.handle({ kind: 'tick' }, at)
+    return req!.kind === 'request' ? req!.id : -1
+  }
+
+  it('is ready by default and off when suggestions are switched off', () => {
+    const p = new SuggestionPolicy(cfg)
+    expect(p.statusAt(0)).toEqual({ kind: 'ready' })
+    p.handle({ kind: 'setEnabled', enabled: false }, 0)
+    expect(p.statusAt(0)).toEqual({ kind: 'off' })
+  })
+
+  it('reports the cap as exhausted, with the reset time, until it lapses', () => {
+    const p = new SuggestionPolicy(cfg)
+    const id = inflight(p)
+    p.handle({ kind: 'paused', id, reason: 'cap', resumeAt: 100_000 }, 500)
+    expect(p.statusAt(600)).toEqual({ kind: 'exhausted', resumeAt: 100_000 })
+    expect(p.statusAt(100_001)).toEqual({ kind: 'ready' })
+  })
+
+  it('reports the server kill switch as disabled, not as a spent allowance', () => {
+    const p = new SuggestionPolicy(cfg)
+    const id = inflight(p)
+    p.handle({ kind: 'paused', id, reason: 'disabled', resumeAt: 600_500 }, 500)
+    expect(p.statusAt(600)).toEqual({ kind: 'disabled' })
+  })
+
+  it('reports rate limiting immediately and separately from an outage', () => {
+    const p = new SuggestionPolicy(cfg)
+    const id = inflight(p)
+    p.handle({ kind: 'failure', id, cause: 'rate' }, 500)
+    expect(p.statusAt(600)).toEqual({ kind: 'rate-limited', retryAt: 1500 })
+  })
+
+  it('stays silent on a single blip and speaks up on the second failure', () => {
+    const p = new SuggestionPolicy(cfg)
+    const id1 = inflight(p)
+    p.handle({ kind: 'failure', id: id1, cause: 'net' }, 500)
+    expect(p.statusAt(600)).toEqual({ kind: 'ready' }) // one dropped request says nothing
+
+    const id2 = inflight(p, 2000)
+    p.handle({ kind: 'failure', id: id2, cause: 'net' }, 2100)
+    expect(p.statusAt(2200).kind).toBe('unreachable')
+  })
+
+  it('treats every-provider-failed as unreachable, not as a quota problem', () => {
+    const p = new SuggestionPolicy(cfg)
+    const id1 = inflight(p)
+    p.handle({ kind: 'failure', id: id1, cause: 'providers' }, 500)
+    const id2 = inflight(p, 2000)
+    p.handle({ kind: 'failure', id: id2, cause: 'providers' }, 2100)
+    expect(p.statusAt(2200).kind).toBe('unreachable')
+  })
+
+  it('clears the failure state as soon as a suggestion comes back', () => {
+    const p = new SuggestionPolicy(cfg)
+    const id1 = inflight(p)
+    p.handle({ kind: 'failure', id: id1, cause: 'net' }, 500)
+    const id2 = inflight(p, 2000)
+    p.handle({ kind: 'failure', id: id2, cause: 'net' }, 2100)
+    expect(p.statusAt(2200).kind).toBe('unreachable')
+
+    const id3 = inflight(p, 10_000)
+    p.handle({ kind: 'response', id: id3, raw: 'over the hill' }, 10_100)
+    expect(p.statusAt(10_200)).toEqual({ kind: 'ready' })
   })
 })

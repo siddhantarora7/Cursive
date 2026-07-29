@@ -1,4 +1,5 @@
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb'
+import type { DayAggregate } from '../core/stats/events'
 import type { Theme } from '../core/theme/types'
 
 /** ProseMirror document JSON — opaque to the store. */
@@ -69,7 +70,8 @@ interface CursiveDB extends DBSchema {
     indexes: { 'by-updated': number }
   }
   settings: { key: string; value: Settings }
-  stats: { key: string; value: Record<string, unknown> } // reserved for Phase 3
+  /** key: local `YYYY-MM-DD`; written by store/stats.ts, never sent anywhere */
+  stats: { key: string; value: DayAggregate }
 }
 
 let dbPromise: Promise<IDBPDatabase<CursiveDB>> | null = null

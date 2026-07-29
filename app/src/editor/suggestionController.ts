@@ -2,18 +2,22 @@ import type { Editor } from '@tiptap/core'
 import type { Transaction } from '@tiptap/pm/state'
 import {
   DEFAULT_POLICY,
+  DISABLED_RETRY_MS,
   SuggestionPolicy,
   type PolicyAction,
   type PolicyEvent,
 } from '../core/suggestion/policy'
+import type { SuggestionStatus } from '../core/suggestion/status'
 import { sliceContext } from '../core/text/context'
 import { getGhostRemainder } from './extensions/ghost-text'
 import { caretInCodeBlock, textBeforeCaret } from './setup'
 
+/** Why a completion did not arrive. Each one reads differently to the user. */
+export type CompletionFailure = 'net' | 'rate' | 'providers' | 'cap' | 'disabled'
+
 export type CompletionOutcome =
   | { ok: true; text: string; quota?: { used: number; limit: number } }
-  | { ok: false; cause: 'net' | 'rate' }
-  | { ok: false; cause: 'cap' }
+  | { ok: false; cause: CompletionFailure }
 
 export type CompletionFn = (req: {
   context: string
@@ -27,7 +31,12 @@ export interface SuggestionControllerOptions {
   /** dictionary check for mid-word tail joins in the quality filter */
   isWord?: (word: string) => boolean
   onQuota?: (quota: { used: number; limit: number }) => void
-  onCapExhausted?: () => void
+  /** fires only when the status actually changes, not on every keystroke */
+  onStatus?: (status: SuggestionStatus) => void
+  /** ghost text became visible — the acceptance-rate denominator */
+  onShown?: () => void
+  /** the model answered but the quality filter dropped it */
+  onRejected?: () => void
 }
 
 const MAX_CONTEXT_CHARS = 1000
@@ -42,6 +51,7 @@ export class SuggestionController {
   private timer = 0
   private aborters = new Map<number, AbortController>()
   private disposed = false
+  private lastStatusKey = ''
 
   constructor(
     private editor: Editor,
@@ -96,7 +106,22 @@ export class SuggestionController {
 
   private dispatch(ev: PolicyEvent): void {
     if (this.disposed) return
-    this.run(this.policy.handle(ev, Date.now()))
+    const now = Date.now()
+    this.run(this.policy.handle(ev, now))
+    this.publishStatus(now)
+  }
+
+  /**
+   * Status is derived, not stored, and republished only on change. Recomputing
+   * it on the existing event flow keeps us off the idle-timer budget in
+   * PERF.md — no polling loop just to keep a status line honest.
+   */
+  private publishStatus(now: number): void {
+    const status = this.policy.statusAt(now)
+    const key = JSON.stringify(status)
+    if (key === this.lastStatusKey) return
+    this.lastStatusKey = key
+    this.opts.onStatus?.(status)
   }
 
   private run(actions: PolicyAction[]): void {
@@ -118,9 +143,13 @@ export class SuggestionController {
         }
         case 'show':
           this.editor.commands.setGhostText(action.text)
+          this.opts.onShown?.()
           break
         case 'clear':
           this.editor.commands.clearGhostText()
+          break
+        case 'rejected':
+          this.opts.onRejected?.()
           break
       }
     }
@@ -145,8 +174,9 @@ export class SuggestionController {
       if (outcome.quota) this.opts.onQuota?.(outcome.quota)
       this.dispatch({ kind: 'response', id, raw: outcome.text })
     } else if (outcome.cause === 'cap') {
-      this.opts.onCapExhausted?.()
-      this.dispatch({ kind: 'capExhausted', id, resumeAt: nextLocalMidnight() })
+      this.dispatch({ kind: 'paused', id, reason: 'cap', resumeAt: nextLocalMidnight() })
+    } else if (outcome.cause === 'disabled') {
+      this.dispatch({ kind: 'paused', id, reason: 'disabled', resumeAt: Date.now() + DISABLED_RETRY_MS })
     } else {
       this.dispatch({ kind: 'failure', id, cause: outcome.cause })
     }

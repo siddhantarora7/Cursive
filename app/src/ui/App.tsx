@@ -3,12 +3,13 @@ import type { Editor } from '@tiptap/core'
 import { buildCompletionFn } from '../ai'
 import { parseDictionary, type Dictionary } from '../core/autocorrect/dictionary'
 import { LiveStats } from '../core/stats/live'
+import type { SuggestionStatus } from '../core/suggestion/status'
 import { wordCount } from '../core/text/context'
 import { FxLayer } from '../fx/engine'
 import { SoundEngine } from '../sound'
 import wordsUrl from '../assets/en-words.txt?url'
 import { SmoothCaret } from '../editor/caret'
-import { createCursiveEditor, deriveTitle } from '../editor/setup'
+import { createCursiveEditor, deriveTitle, wordJustCompleted } from '../editor/setup'
 import {
   SuggestionController,
   type CompletionFn,
@@ -16,6 +17,7 @@ import {
 import type { DocRecord, Settings } from '../store/db'
 import { createDoc, deleteDoc, getDoc, listDocs, saveDocContent, updateDocMeta } from '../store/docs'
 import { loadSettings, saveSettings } from '../store/settings'
+import { StatsRecorder } from '../store/stats'
 import { ensureFontLoaded, fontById } from '../themes/fonts'
 import { applyTheme, themeById } from '../themes'
 import { DemoOverlay } from './DemoOverlay'
@@ -25,6 +27,7 @@ import { MenuBar } from './MenuBar'
 import { SettingsPanel } from './SettingsPanel'
 import { StatusBar } from './StatusBar'
 import { Toolbar } from './Toolbar'
+import { WrappedPanel } from './WrappedPanel'
 import '../styles/chrome.css'
 
 export function App() {
@@ -34,9 +37,12 @@ export function App() {
   const [editor, setEditor] = useState<Editor | null>(null)
   const [intent, setIntent] = useState('')
   const [quota, setQuota] = useState<{ used: number; limit: number } | null>(null)
-  const [aiPaused, setAiPaused] = useState(false)
+  const [aiStatus, setAiStatus] = useState<SuggestionStatus>({ kind: 'ready' })
   const [findOpen, setFindOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [statsOpen, setStatsOpen] = useState(false)
+  /** which section Settings should land on when opened from a status CTA */
+  const [settingsFocus, setSettingsFocus] = useState<'byok' | undefined>(undefined)
   const [words, setWords] = useState(0)
   const [demo, setDemo] = useState(false)
 
@@ -45,6 +51,8 @@ export function App() {
   const fxCanvasRef = useRef<HTMLCanvasElement>(null)
   const fxRef = useRef<FxLayer | null>(null)
   const statsRef = useRef(new LiveStats())
+  const recorderRef = useRef<StatsRecorder | null>(null)
+  recorderRef.current ??= new StatsRecorder()
   const soundRef = useRef(new SoundEngine())
   const lastGeomRef = useRef({ x: 0, y: 0 })
   const caretRef = useRef<SmoothCaret | null>(null)
@@ -144,6 +152,11 @@ export function App() {
     setSettings((s) => (s ? { ...s, ...patch } : s))
   }, [])
 
+  const openSettings = useCallback((focus?: 'byok') => {
+    setSettingsFocus(focus)
+    setSettingsOpen(true)
+  }, [])
+
   /* ---------- editor lifecycle (recreated per document: clean undo history) ---------- */
   useEffect(() => {
     if (!activeId || !settings || !mountRef.current || !scrollRef.current) return
@@ -163,8 +176,14 @@ export function App() {
         content: doc.content,
         spellcheck: settings.spellcheck,
         ghost: {
-          onAccept: () => {
+          onAccept: (text, mode) => {
             controllerRef.current?.notifyAccepted()
+            recorderRef.current?.record({
+              kind: 'suggestionAccepted',
+              at: Date.now(),
+              mode,
+              words: wordCount(text),
+            })
             fxRef.current?.pushAccept(lastGeomRef.current.x, lastGeomRef.current.y)
           },
           onDismiss: () => controllerRef.current?.notifyDismissed(),
@@ -185,13 +204,15 @@ export function App() {
           if (tr.docChanged) {
             const now = Date.now()
             statsRef.current.record(now)
+            recorderRef.current?.record({ kind: 'keystroke', at: now })
+            const word = wordJustCompleted(e)
+            if (word) recorderRef.current?.record({ kind: 'word', at: now, word })
             const fx = fxRef.current
             if (fx) {
               fx.setCombo(statsRef.current.comboLevel(now))
               fx.pushKey(lastGeomRef.current.x, lastGeomRef.current.y)
             }
           }
-          void e
         },
       })
 
@@ -209,11 +230,12 @@ export function App() {
             : Promise.resolve({ ok: false as const, cause: 'net' as const }),
         getIntent: () => intentRef.current,
         isWord: (w) => dictRef.current?.has(w) ?? false,
-        onQuota: (q) => {
-          setQuota(q)
-          setAiPaused(false)
-        },
-        onCapExhausted: () => setAiPaused(true),
+        onQuota: setQuota,
+        onStatus: setAiStatus,
+        onShown: () =>
+          recorderRef.current?.record({ kind: 'suggestionShown', at: Date.now() }),
+        onRejected: () =>
+          recorderRef.current?.record({ kind: 'suggestionRejected', at: Date.now() }),
       })
       controller.setEnabled(buildCompletionFn(settings) !== null)
       caretRef.current = caret
@@ -237,6 +259,7 @@ export function App() {
 
     const flush = () => {
       window.clearTimeout(saveTimer.current)
+      void recorderRef.current?.flush()
       if (ed && !ed.isDestroyed) void persist(ed)
     }
     const onHide = () => {
@@ -345,7 +368,7 @@ export function App() {
       <header className="app-chrome-top">
         <div className="topbar">
           <a className="brand" href="/" title="Cursive home">
-            <img src="/cursive-logo.png" alt="" className="brand-mark" />
+            <span aria-hidden="true" className="brand-mark" />
             Cursive
           </a>
           <DocsPopover
@@ -367,7 +390,11 @@ export function App() {
             onToggleDemo={() => setDemo((v) => !v)}
             demo={demo}
             onSettingsChange={patchSettings}
-            onOpenSettings={() => setSettingsOpen(true)}
+            onOpenSettings={() => openSettings()}
+            onOpenStats={() => {
+              // bank what was just typed before the panel reads the store back
+              void recorderRef.current?.flush().then(() => setStatsOpen(true))
+            }}
           />
         </div>
         <Toolbar
@@ -376,7 +403,7 @@ export function App() {
           onSettingsChange={patchSettings}
           onToggleFind={() => setFindOpen((v) => !v)}
           onToggleZen={() => patchSettings({ zen: !settings.zen })}
-          onOpenSettings={() => setSettingsOpen(true)}
+          onOpenSettings={() => openSettings()}
           docTitle={activeDoc?.title ?? 'cursive'}
         />
         {findOpen && editor && <FindReplaceBar editor={editor} onClose={() => setFindOpen(false)} />}
@@ -397,8 +424,8 @@ export function App() {
           words={words}
           quota={quota}
           settings={settings}
-          aiPaused={aiPaused}
-          onOpenSettings={() => setSettingsOpen(true)}
+          status={aiStatus}
+          onOpenSettings={openSettings}
         />
       </footer>
 
@@ -409,9 +436,12 @@ export function App() {
           intent={intent}
           onIntentChange={changeIntent}
           quota={quota}
+          focus={settingsFocus}
           onClose={() => setSettingsOpen(false)}
         />
       )}
+
+      {statsOpen && <WrappedPanel onClose={() => setStatsOpen(false)} />}
     </div>
   )
 }

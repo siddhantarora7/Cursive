@@ -18,6 +18,7 @@ export function MenuBar({
   demo,
   onSettingsChange,
   onOpenSettings,
+  onOpenStats,
 }: {
   editor: Editor | null
   settings: Settings
@@ -29,6 +30,7 @@ export function MenuBar({
   demo: boolean
   onSettingsChange: (patch: Partial<Settings>) => void
   onOpenSettings: () => void
+  onOpenStats: () => void
 }) {
   useEditorTick(editor)
   if (!editor) return null
@@ -112,6 +114,7 @@ export function MenuBar({
             <Item label="Spellcheck" checked={settings.spellcheck}
               onClick={() => onSettingsChange({ spellcheck: !settings.spellcheck })} close={close} />
             <div className="docs-divider" />
+            <Item label="Your writing stats…" onClick={onOpenStats} close={close} />
             <Item label="Settings…" onClick={onOpenSettings} close={close} />
           </>
         )}

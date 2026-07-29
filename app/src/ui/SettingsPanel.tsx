@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { ByokProvider, Settings } from '../store/db'
 import { getByokKey, setByokKey } from '../store/settings'
 import { DEFAULT_MODELS } from '../ai/direct'
@@ -175,6 +175,7 @@ export function SettingsPanel({
   intent,
   onIntentChange,
   quota,
+  focus,
   onClose,
 }: {
   settings: Settings
@@ -182,10 +183,27 @@ export function SettingsPanel({
   intent: string
   onIntentChange: (intent: string) => void
   quota: { used: number; limit: number } | null
+  /** opened from a "use your own key" CTA — go straight to the key field */
+  focus?: 'byok'
   onClose: () => void
 }) {
   const [keyDraft, setKeyDraft] = useState(() => getByokKey(settings.byokProvider))
   const [builderOpen, setBuilderOpen] = useState(settings.themeId === 'custom')
+  const keyInputRef = useRef<HTMLInputElement>(null)
+
+  // Arriving from the exhausted-allowance CTA: the button said "use your own
+  // key", so switching the mode is what was asked for, not a surprise.
+  useEffect(() => {
+    if (focus === 'byok' && settings.aiMode !== 'byok') onChange({ aiMode: 'byok' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focus])
+
+  // …then land the caret in the field once the box exists.
+  useEffect(() => {
+    if (focus !== 'byok' || settings.aiMode !== 'byok') return
+    keyInputRef.current?.scrollIntoView({ block: 'center', behavior: 'auto' })
+    keyInputRef.current?.focus()
+  }, [focus, settings.aiMode])
 
   const pickProvider = (p: ByokProvider) => {
     onChange({ byokProvider: p, byokModel: '' })
@@ -330,7 +348,7 @@ export function SettingsPanel({
                 </select>
               </label>
               <label>API key
-                <input type="password" value={keyDraft} placeholder="sk-…" autoComplete="off"
+                <input ref={keyInputRef} type="password" value={keyDraft} placeholder="sk-…" autoComplete="off"
                   onChange={(e) => { setKeyDraft(e.target.value); setByokKey(settings.byokProvider, e.target.value.trim()) }} />
               </label>
               <label>Model
@@ -349,6 +367,16 @@ export function SettingsPanel({
             />
             <small className="field-hint">Sent with every suggestion for this document.</small>
           </label>
+        </section>
+
+        <section>
+          <h3>Your writing stats</h3>
+          <p className="field-hint">
+            Cursive keeps a daily tally in this browser — words, time at the keys, hours you write
+            in, how often you take a suggestion, and which words you reach for most. It is used
+            only to draw your monthly report, it is never sent anywhere, and it disappears when you
+            clear this site&rsquo;s data.
+          </p>
         </section>
 
         <section>

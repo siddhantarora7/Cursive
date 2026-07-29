@@ -21,9 +21,20 @@ export function proxyCompletion(): CompletionFn {
     }
     if (res.status === 429 || res.status === 503) {
       const body = (await res.json().catch(() => ({}))) as { reason?: string }
-      // cap / exhausted / disabled all mean "pause until tomorrow";
-      // transient per-IP rate limiting backs off instead
-      return body.reason === 'rate' ? { ok: false, cause: 'rate' } : { ok: false, cause: 'cap' }
+      // The proxy distinguishes four things and so do we — collapsing them is
+      // how "you hit your daily cap" gets shown for "our kill switch is on".
+      switch (body.reason) {
+        case 'rate':
+          return { ok: false, cause: 'rate' }
+        case 'cap':
+          return { ok: false, cause: 'cap' }
+        case 'disabled':
+          return { ok: false, cause: 'disabled' }
+        case 'exhausted':
+          return { ok: false, cause: 'providers' }
+        default:
+          return { ok: false, cause: 'net' }
+      }
     }
     if (!res.ok) return { ok: false, cause: 'net' }
     const body = (await res.json().catch(() => null)) as {
