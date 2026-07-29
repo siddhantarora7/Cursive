@@ -65,6 +65,12 @@ export function vetSuggestion(
       const run = body.match(/^[a-zA-Z]+/)
       if (isWord && run && isWord((partial + run[0]).toLowerCase())) {
         joined = body
+      } else if (isWord && isWord(partial.toLowerCase())) {
+        // The "partial" word is already a finished word ("worth", "the"), and
+        // the continuation does not extend it into another one. The model meant
+        // the next word and simply dropped the leading space, so supply it.
+        // Measured: this was the largest source of lost-but-good suggestions.
+        joined = ' ' + body
       } else {
         return null
       }
@@ -80,6 +86,12 @@ export function vetSuggestion(
   const tail = context.trim().slice(-64).toLowerCase()
   const j = joined.trim().toLowerCase()
   if (j.length >= 4 && tail.includes(j)) return null
+
+  // stutter at the seam: "…and" + "and then" reads as a typo the moment it
+  // renders. The tail check above misses it for words shorter than 4 letters.
+  const lastWord = context.trim().match(/[\p{L}\p{N}'’-]+$/u)?.[0]?.toLowerCase()
+  const firstWord = j.match(/^[\p{L}\p{N}'’-]+/u)?.[0]
+  if (lastWord && firstWord && lastWord === firstWord && !partial) return null
 
   // truncate to maxWords on a word boundary
   const words = joined.trim().split(/\s+/)

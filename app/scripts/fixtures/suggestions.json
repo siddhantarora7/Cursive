@@ -1,0 +1,300 @@
+[
+  {
+    "id": "nar-01-midword",
+    "register": "narrative",
+    "intent": "A short story about a woman returning to her childhood home",
+    "context": "The house was smaller than she remembered. Everything was: the gate, the gravel path, the window she had once climbed out of at night. She stood at the end of the drive for a long time before she could make herself walk up to the doo",
+    "note": "Should complete 'door' and continue the approach. Anything that answers her or comments on the scene is a failure."
+  },
+  {
+    "id": "nar-02-boundary",
+    "register": "narrative",
+    "intent": "A short story about a woman returning to her childhood home",
+    "context": "The house was smaller than she remembered. Everything was: the gate, the gravel path, the window she had once climbed out of at night. She stood at the end of the drive for a long time before she could make herself walk up to the door and ",
+    "note": "A verb phrase continuing the action — 'knock', 'press the bell', 'try the handle'. Should not restart the sentence."
+  },
+  {
+    "id": "nar-03-sentence-end",
+    "register": "narrative",
+    "intent": "",
+    "context": "Rain had been falling since before dawn, and the gutters had given up an hour ago. Water ran down the middle of the street in a single brown rope.",
+    "note": "A new sentence continuing the scene. Must start with a capital and a leading space."
+  },
+  {
+    "id": "nar-04-dialogue",
+    "register": "narrative",
+    "intent": "A short story",
+    "context": "\"You could have called,\" she said, not looking up from the sink.\n\n\"I did call.\"\n\n\"You called the house. Nobody has answered that phone in four ye",
+    "note": "Complete 'years' and finish the line of dialogue. Must not break character or answer as an assistant."
+  },
+  {
+    "id": "nar-05-longform",
+    "register": "narrative",
+    "intent": "A memoir chapter about learning to sail",
+    "context": "My father believed that the only way to learn a thing was to be slightly out of your depth in it. He taught me to swim by rowing us out past the buoys and waiting. He taught me to drive on a mountain road in the rain. So when he said he was going to teach me to sail, I already knew that the lesson would begin somewhere past the point where I would have chosen to start. We drove down to the marina on a Saturday in April, before the season had properly opened, and the water was the colour of a nickel. He handed me the tiller before we had cleared the",
+    "note": "Should continue with a nautical noun ('breakwater', 'moorings', 'harbour'). Rich voice context — a good test of whether the model matches the long-sentence register."
+  },
+  {
+    "id": "nar-06-midword-short",
+    "register": "narrative",
+    "intent": "",
+    "context": "She opened the letter on the train, which was a mist",
+    "note": "Should complete 'mistake'. Classic mid-word repetition test."
+  },
+  {
+    "id": "nar-07-list-in-prose",
+    "register": "narrative",
+    "intent": "A short story",
+    "context": "He packed the way he did everything: badly, and at the last minute. Two shirts, no socks, a paperback he had already read, and a torch with no ",
+    "note": "'batteries'. Should not switch to a markdown list."
+  },
+  {
+    "id": "nar-08-comma",
+    "register": "narrative",
+    "intent": "",
+    "context": "The dog had been waiting by the door since six, and when the key finally turned in the lock,",
+    "note": "Continuation after a comma — a clause, lowercase, with a leading space."
+  },
+  {
+    "id": "nar-09-para-start",
+    "register": "narrative",
+    "intent": "A novel set in a coastal town",
+    "context": "The season ended the way it always did, with the shutters going up one street at a time and the ice cream place turning its sign around for the last time until March.\n\nAfterwards the town belonged to the people who ",
+    "note": "Should continue the relative clause — 'lived there', 'never left'. Tests whether the model handles a paragraph break in context."
+  },
+  {
+    "id": "nar-10-name",
+    "register": "narrative",
+    "intent": "A short story about two brothers",
+    "context": "Daniel had always been the one who remembered birthdays. Michael was the one who showed up. Between them they made roughly one functional ",
+    "note": "'son', 'brother', 'adult' — a wry noun. Tests tone-matching on a joke."
+  },
+
+  {
+    "id": "tec-01-midword",
+    "register": "technical",
+    "intent": "Documentation for a caching library",
+    "context": "The cache is keyed on the full request URL, including the query string. This means that two requests that differ only in the order of their query parameters will produce two separate entr",
+    "note": "Complete 'entries' and continue the explanation."
+  },
+  {
+    "id": "tec-02-boundary",
+    "register": "technical",
+    "intent": "Documentation for a caching library",
+    "context": "The cache is keyed on the full request URL, including the query string. This means that two requests that differ only in the order of their query parameters will produce two separate entries. If that matters for your workload, normalise the query string ",
+    "note": "'before calling', 'in a middleware'. Should stay imperative and technical."
+  },
+  {
+    "id": "tec-03-sentence-end",
+    "register": "technical",
+    "intent": "A design document for a rate limiter",
+    "context": "We use a sliding window rather than a fixed window because fixed windows allow a burst of twice the limit across a boundary. The sliding implementation keeps a sorted set of request timestamps per key.",
+    "note": "New sentence continuing the design rationale — memory cost, eviction, or TTL."
+  },
+  {
+    "id": "tec-04-code-adjacent",
+    "register": "technical",
+    "intent": "A tutorial about async JavaScript",
+    "context": "The important thing to understand about `await` is that it does not block the thread. It suspends the async function and returns control to the event loop, which is free to ",
+    "note": "'run other work', 'process other tasks'. Must not emit code fences or backtick junk."
+  },
+  {
+    "id": "tec-05-enumeration",
+    "register": "technical",
+    "intent": "A postmortem",
+    "context": "There were three contributing factors. The first was that the health check tested only that the process was running, not that it could reach the database. The second was that the deploy pipeline treated a passing health check as sufficient to shift traffic. The third was that nobody was ",
+    "note": "'watching', 'paged', 'looking at the dashboards'. Tests parallel structure."
+  },
+  {
+    "id": "tec-06-precision",
+    "register": "technical",
+    "intent": "Documentation for an HTTP API",
+    "context": "Requests are limited to 20 per minute per IP address. Exceeding the limit returns a 429 with a `Retry-After` header. The limit is applied ",
+    "note": "'per IP', 'before authentication'. High risk of the model inventing specifics — a fact-invention test."
+  },
+  {
+    "id": "tec-07-midword-tail",
+    "register": "technical",
+    "intent": "A design document",
+    "context": "The system is designed to fail closed: if the policy service is unreachable, every request is denied rather than allowed. This is the safer default for an authorisation layer, though it does mean an outage in the policy service is effort",
+    "note": "Should complete to 'effortlessly' or 'effortful' — tests the dictionary-assisted tail join in the quality filter."
+  },
+  {
+    "id": "tec-08-comparison",
+    "register": "technical",
+    "intent": "A blog post comparing databases",
+    "context": "Postgres will happily store JSON, and for a long time that was enough for us. The trouble started when we needed to query inside those documents at scale. A GIN index helps, but it is not free: writes get slower, and the index itself grew to be larger than the ",
+    "note": "'table', 'data it indexed'. Tests whether it holds the comparison thread."
+  },
+  {
+    "id": "tec-09-colon",
+    "register": "technical",
+    "intent": "A README",
+    "context": "There are two ways to run the project locally:",
+    "note": "Risky: a model may emit a markdown list here. The quality filter should reject list syntax. Good rejection is a pass."
+  },
+  {
+    "id": "tec-10-longform",
+    "register": "technical",
+    "intent": "An architecture document for a local-first editor",
+    "context": "Everything the user writes stays in the browser. Documents live in IndexedDB, settings live in a single versioned object, and nothing is ever sent to a server except the small slice of context needed to produce a suggestion. That slice is capped at a thousand characters before the cursor, and it never includes anything after the cursor. The cap is not a policy we apply on the server; it is arithmetic performed in the client before the request is built, which means it cannot quietly widen without ",
+    "note": "'a code change', 'someone noticing'. Long voice-rich context in a distinctive register."
+  },
+
+  {
+    "id": "eml-01-opening",
+    "register": "email",
+    "intent": "An email to a colleague about rescheduling a meeting",
+    "context": "Hi Sam,\n\nThanks for putting the agenda together. I'm afraid something has come up on Thursday afternoon and I won't be able to ",
+    "note": "'make it', 'join'. Must stay in the email register, must not answer as an assistant."
+  },
+  {
+    "id": "eml-02-midword",
+    "register": "email",
+    "intent": "An email declining an invitation",
+    "context": "Hi Priya,\n\nThank you so much for the invitation — it sounds like a wonderful evening. Unfortunately I'm going to be travelling that week, so I'll have to decl",
+    "note": "Complete 'decline'. Mid-word in a polite register."
+  },
+  {
+    "id": "eml-03-question-trap",
+    "register": "email",
+    "intent": "An email to a supplier",
+    "context": "Hi,\n\nCould you let me know whether the March order has shipped yet?",
+    "note": "TRAP: the context ends in a question. The model must continue the EMAIL (e.g. ' We were expecting it...'), not answer the question. An answer starting 'Yes' or 'I'm' must be rejected by the filter."
+  },
+  {
+    "id": "eml-04-greeting-trap",
+    "register": "email",
+    "intent": "A message to a coworker",
+    "context": "Hey — quick one. How are you doing today?",
+    "note": "TRAP: assistant-mode bait. Must continue the message, not reply 'I'm doing well, thanks for asking'."
+  },
+  {
+    "id": "eml-05-signoff",
+    "register": "email",
+    "intent": "An email confirming a delivery date",
+    "context": "Hi Tom,\n\nConfirming that we can hit the 14th for the first batch. I'll send the tracking numbers as soon as they're issued.\n\nBest,\n",
+    "note": "Should stop or produce a name. A model that writes a whole new paragraph here is over-reaching."
+  },
+  {
+    "id": "eml-06-apology",
+    "register": "email",
+    "intent": "An email apologising for a delay",
+    "context": "Hi Ana,\n\nApologies for the slow reply — the last two weeks have been busier than expected. I've now had a chance to look through the draft you sent and I think it's ",
+    "note": "'in good shape', 'very close'. Tone-matching test."
+  },
+  {
+    "id": "eml-07-formal",
+    "register": "email",
+    "intent": "A formal letter to a landlord about a repair",
+    "context": "Dear Mr Whitfield,\n\nI am writing to follow up on my messages of 3 and 11 March regarding the leak in the bathroom ceiling. As of today the leak has not been ",
+    "note": "'repaired', 'addressed'. Must hold the formal register, not drift casual."
+  },
+  {
+    "id": "eml-08-list-prose",
+    "register": "email",
+    "intent": "An email summarising a meeting",
+    "context": "Hi all,\n\nQuick summary of this morning. We agreed to push the launch to the 20th, to cut the onboarding flow from five screens to three, and to ",
+    "note": "A third parallel item. Tests parallel structure without switching to a list."
+  },
+
+  {
+    "id": "arg-01-thesis",
+    "register": "argument",
+    "intent": "An opinion piece arguing that cities should remove minimum parking requirements",
+    "context": "Minimum parking requirements are one of those rules that everybody has lived under and almost nobody has examined. They were written into zoning codes in the middle of the last century on the assumption that every household would own a car and that the cost of storing it should be borne by ",
+    "note": "'everyone', 'the building', 'developers'. Should hold the argumentative thread."
+  },
+  {
+    "id": "arg-02-concession",
+    "register": "argument",
+    "intent": "An opinion piece about remote work",
+    "context": "It is true that some kinds of work are genuinely harder to do apart. Anything that depends on overhearing — a junior noticing how a difficult call gets handled — is thinner over video. But the honest version of that argument has to admit that most offices were not ",
+    "note": "'designed for that', 'places where that happened'. Tests concession-then-pivot structure."
+  },
+  {
+    "id": "arg-03-midword",
+    "register": "argument",
+    "intent": "An essay about attention and technology",
+    "context": "The problem is not that these products are addictive in some vague, metaphorical sense. The problem is that they are optimised, continuously and automatically, against a metric that is only loosely related to whether the time you spent was worth",
+    "note": "Mid-word or boundary: 'worthwhile', or ' anything'. Tests the partial-word join on a common word."
+  },
+  {
+    "id": "arg-04-sentence-end",
+    "register": "argument",
+    "intent": "An essay about public libraries",
+    "context": "A library is one of the last indoor public places where you are not expected to buy anything. That is not a small thing. It is, in fact, most of the point.",
+    "note": "New sentence extending the argument. Must not summarise or conclude prematurely."
+  },
+  {
+    "id": "arg-05-rhetorical",
+    "register": "argument",
+    "intent": "A column about school funding",
+    "context": "So we are left with the obvious question. If the money is not reaching the classrooms, where ",
+    "note": "'is it going'. Continuing a rhetorical question, not answering it."
+  },
+  {
+    "id": "arg-06-statistic-trap",
+    "register": "argument",
+    "intent": "An essay about housing costs",
+    "context": "Between 2010 and 2020, median rent in the city rose by ",
+    "note": "TRAP: invites a fabricated statistic. The ideal behaviour is a hedge or a vague continuation. A confident invented number is the worst outcome and worth counting separately."
+  },
+  {
+    "id": "arg-07-longform",
+    "register": "argument",
+    "intent": "A long essay arguing that software estimates are structurally unreliable",
+    "context": "Every estimate is a claim about a future you have not seen yet, made by a person who is being asked, implicitly, to be optimistic. That would be difficult enough on its own. What makes it worse is that the estimate becomes a commitment the moment it is spoken aloud, and from then on it is defended rather than revised. The engineer who said three weeks in March is, by April, arguing that the remaining work is nearly done, because the alternative is to admit that the number was never really a measurement in the first place. It was a guess wearing the ",
+    "note": "'clothes of a measurement', 'costume of a fact'. Tests whether the model can land a metaphor the passage has set up."
+  },
+  {
+    "id": "arg-08-semicolon",
+    "register": "argument",
+    "intent": "An essay about cycling infrastructure",
+    "context": "Painted lanes are not infrastructure; they are ",
+    "note": "'a suggestion', 'decoration'. A rhetorical construction with a strong expected shape."
+  },
+
+  {
+    "id": "edge-01-three-words",
+    "register": "narrative",
+    "intent": "",
+    "context": "It was raining ",
+    "note": "Minimum viable context (3 words). Tests behaviour at the request threshold."
+  },
+  {
+    "id": "edge-02-no-intent-technical",
+    "register": "technical",
+    "intent": "",
+    "context": "The migration runs in a single transaction, so if any statement fails the whole thing rolls back and the schema is left ",
+    "note": "'untouched', 'as it was'. Same shape as tec-* but with no intent line — the A/B for whether intent does anything."
+  },
+  {
+    "id": "edge-03-intent-mismatch",
+    "register": "technical",
+    "intent": "A wedding speech for my brother",
+    "context": "The migration runs in a single transaction, so if any statement fails the whole thing rolls back and the schema is left ",
+    "note": "DIAGNOSTIC: intent contradicts the text. Tests how heavily intent is weighted. Should follow the text, not the intent."
+  },
+  {
+    "id": "edge-04-all-caps",
+    "register": "technical",
+    "intent": "A README",
+    "context": "WARNING: running this command will delete every row in the table. There is no ",
+    "note": "'undo', 'confirmation'. Tests capitalisation-matching without shouting the continuation."
+  },
+  {
+    "id": "edge-05-british",
+    "register": "argument",
+    "intent": "An essay in British English",
+    "context": "The council has recognised that the current arrangement favours motorists over everyone else, and it has begun, slowly, to organise the streets around ",
+    "note": "'people', 'pedestrians'. Tests whether -ise spellings in context are preserved in the continuation."
+  },
+  {
+    "id": "edge-06-numbers",
+    "register": "email",
+    "intent": "An email about an invoice",
+    "context": "Hi — the invoice we received is for £4,320 but the agreed figure was £3,",
+    "note": "Tests numeric continuation mid-token. High risk of nonsense; silence is an acceptable outcome."
+  }
+]

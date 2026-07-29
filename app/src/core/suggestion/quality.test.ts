@@ -107,3 +107,47 @@ describe('vetSuggestion', () => {
     expect(vetSuggestion(' hello there   ', 'well then,', MAX)).toBe(' hello there')
   })
 })
+
+/*
+ * Cases found by the measurement harness (scripts/eval-suggestions.ts) against
+ * real Groq responses, rather than invented at the desk.
+ */
+describe('vetSuggestion — findings from the eval corpus', () => {
+  const dict = new Set(['worth', 'the', 'effort', 'effortless', 'door', 'doorstep', 'mist', 'misty'])
+  const isWord = (w: string) => dict.has(w)
+
+  it('rescues a continuation whose model dropped the leading space', () => {
+    // "…was worth" + "it to you" — previously dropped, because "worthit" is not
+    // a word. But "worth" is finished, so the model meant the next word.
+    expect(vetSuggestion('it to you as an individual user', 'whether the time you spent was worth', 12, isWord))
+      .toBe(' it to you as an individual user')
+  })
+
+  it('still completes a genuine mid-word tail', () => {
+    expect(vetSuggestion('less to maintain', 'the work is effort', 12, isWord))
+      .toBe('less to maintain')
+  })
+
+  it('stays silent when the fragment is neither a word nor completable', () => {
+    expect(vetSuggestion('quickly afterwards', 'an outage is xyzq', 12, isWord)).toBeNull()
+  })
+
+  it('rejects a stutter once the word boundary is already complete', () => {
+    // the space means "and" is finished; repeating it renders "and and"
+    expect(vetSuggestion('and then she left', 'she opened the door and ', 12, isWord)).toBeNull()
+    expect(vetSuggestion('to the station', 'she walked to ', 12, isWord)).toBeNull()
+  })
+
+  it('still strips the overlap when the word is mid-flight, not finished', () => {
+    // no trailing space: the model was told to repeat the partial word, so
+    // "and…" is the join contract working, not a stutter
+    expect(vetSuggestion('and then she left', 'she opened the door and', 12, isWord))
+      .toBe(' then she left')
+  })
+
+  it('does not mistake a real mid-word completion for a stutter', () => {
+    // "doo" + "doorstep" repeats the partial word, which is the join contract
+    expect(vetSuggestion('doorstep and knocked', 'she walked up to the doo', 12, isWord))
+      .toBe('rstep and knocked')
+  })
+})

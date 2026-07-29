@@ -1,0 +1,2271 @@
+[
+  {
+    "fixture": "nar-01-midword",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 636,
+    "raw": "r and insert the old familiar key into the lock slowly",
+    "vetted": "r and insert the old familiar key into the lock slowly"
+  },
+  {
+    "fixture": "nar-02-boundary",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 340,
+    "raw": "raise the old brass knocker and let it fall",
+    "vetted": "raise the old brass knocker and let it fall"
+  },
+  {
+    "fixture": "nar-03-sentence-end",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 529,
+    "raw": "cars splashed through it sending waves",
+    "vetted": " cars splashed through it sending waves"
+  },
+  {
+    "fixture": "nar-04-dialogue",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 449,
+    "raw": "ars since we moved and got new numbers",
+    "vetted": "ars since we moved and got new numbers"
+  },
+  {
+    "fixture": "nar-05-longform",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 323,
+    "raw": "dock and gave me a brief instruction",
+    "vetted": null
+  },
+  {
+    "fixture": "nar-06-midword-short",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 243,
+    "raw": "y morning commute through the English countryside slowly",
+    "vetted": "y morning commute through the English countryside slowly"
+  },
+  {
+    "fixture": "nar-07-list-in-prose",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 302,
+    "raw": "batteries were tossed into his old leather suitcase",
+    "vetted": "batteries were tossed into his old leather suitcase"
+  },
+  {
+    "fixture": "nar-08-comma",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 293,
+    "raw": "he immediately ran to greet his owner with excitement",
+    "vetted": " he immediately ran to greet his owner with excitement"
+  },
+  {
+    "fixture": "nar-09-para-start",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 674,
+    "raw": "lived there year round and knew its secrets",
+    "vetted": "lived there year round and knew its secrets"
+  },
+  {
+    "fixture": "nar-10-name",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 359,
+    "raw": "adult and their family had grown accustomed",
+    "vetted": "adult and their family had grown accustomed"
+  },
+  {
+    "fixture": "tec-01-midword",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 299,
+    "raw": "ies in the cache with different cache keys being used",
+    "vetted": "ies in the cache with different cache keys being used"
+  },
+  {
+    "fixture": "tec-02-boundary",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 278,
+    "raw": "before making the request to ensure consistency",
+    "vetted": "before making the request to ensure consistency"
+  },
+  {
+    "fixture": "tec-03-sentence-end",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 286,
+    "raw": "when a new request arrives it checks",
+    "vetted": " when a new request arrives it checks"
+  },
+  {
+    "fixture": "tec-04-code-adjacent",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 151,
+    "raw": "handle other tasks and continue executing",
+    "vetted": "handle other tasks and continue executing"
+  },
+  {
+    "fixture": "tec-05-enumeration",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 303,
+    "raw": "paying close attention to the application logs immediately afterwards",
+    "vetted": "paying close attention to the application logs immediately afterwards"
+  },
+  {
+    "fixture": "tec-06-precision",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 306,
+    "raw": "to all endpoints and is enforced strictly",
+    "vetted": "to all endpoints and is enforced strictly"
+  },
+  {
+    "fixture": "tec-07-midword-tail",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 235,
+    "raw": "intensive to recover from and resolve quickly afterwards",
+    "vetted": null
+  },
+  {
+    "fixture": "tec-08-comparison",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 310,
+    "raw": "actual data we were storing in the database itself",
+    "vetted": "actual data we were storing in the database itself"
+  },
+  {
+    "fixture": "tec-09-colon",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 273,
+    "raw": "using Docker or a virtual environment",
+    "vetted": " using Docker or a virtual environment"
+  },
+  {
+    "fixture": "tec-10-longform",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 199,
+    "raw": "the user noticing the change in behavior suddenly",
+    "vetted": "the user noticing the change in behavior suddenly"
+  },
+  {
+    "fixture": "eml-01-opening",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 313,
+    "raw": "make the meeting at the scheduled time",
+    "vetted": "make the meeting at the scheduled time"
+  },
+  {
+    "fixture": "eml-02-midword",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 310,
+    "raw": "ine your kind invitation and hope you understand",
+    "vetted": "ine your kind invitation and hope you understand"
+  },
+  {
+    "fixture": "eml-03-question-trap",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 371,
+    "raw": "I have not received any tracking information",
+    "vetted": " I have not received any tracking information"
+  },
+  {
+    "fixture": "eml-04-greeting-trap",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 286,
+    "raw": "I hope everything is going well and",
+    "vetted": " I hope everything is going well and"
+  },
+  {
+    "fixture": "eml-05-signoff",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 307,
+    "raw": "your name or the company name",
+    "vetted": "your name or the company name"
+  },
+  {
+    "fixture": "eml-06-apology",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 311,
+    "raw": "a great start and I have some feedback",
+    "vetted": "a great start and I have some feedback"
+  },
+  {
+    "fixture": "eml-07-formal",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 298,
+    "raw": "yet been repaired and water continues",
+    "vetted": "yet been repaired and water continues"
+  },
+  {
+    "fixture": "eml-08-list-prose",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 299,
+    "raw": "improve the overall user experience by adding",
+    "vetted": "improve the overall user experience by adding"
+  },
+  {
+    "fixture": "arg-01-thesis",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 294,
+    "raw": "the developer of the property rather than",
+    "vetted": "the developer of the property rather than"
+  },
+  {
+    "fixture": "arg-02-concession",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 317,
+    "raw": "great learning environments to begin with anyway",
+    "vetted": "great learning environments to begin with anyway"
+  },
+  {
+    "fixture": "arg-03-midword",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 300,
+    "raw": "it to you as an individual user",
+    "vetted": null
+  },
+  {
+    "fixture": "arg-04-sentence-end",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 190,
+    "raw": "a place where people can gather freely",
+    "vetted": " a place where people can gather freely"
+  },
+  {
+    "fixture": "arg-05-rhetorical",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 437,
+    "raw": "is it actually going and why is",
+    "vetted": "is it actually going and why is"
+  },
+  {
+    "fixture": "arg-06-statistic-trap",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 331,
+    "raw": "nearly twenty five percent due to various economic factors",
+    "vetted": "nearly twenty five percent due to various economic factors"
+  },
+  {
+    "fixture": "arg-07-longform",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 281,
+    "raw": "clothing of a scientific prediction and",
+    "vetted": "clothing of a scientific prediction and"
+  },
+  {
+    "fixture": "arg-08-semicolon",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 278,
+    "raw": "a temporary and often ineffective solution",
+    "vetted": "a temporary and often ineffective solution"
+  },
+  {
+    "fixture": "edge-01-three-words",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 281,
+    "raw": "heavily outside the small town",
+    "vetted": "heavily outside the small town"
+  },
+  {
+    "fixture": "edge-02-no-intent-technical",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 420,
+    "raw": "in its original state unchanged and intact",
+    "vetted": "in its original state unchanged and intact"
+  },
+  {
+    "fixture": "edge-03-intent-mismatch",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 300,
+    "raw": "in its original state unchanged and intact",
+    "vetted": "in its original state unchanged and intact"
+  },
+  {
+    "fixture": "edge-04-all-caps",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 298,
+    "raw": "going back or undoing the operation once it",
+    "vetted": "going back or undoing the operation once it"
+  },
+  {
+    "fixture": "edge-05-british",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 300,
+    "raw": "the needs of pedestrians and cyclists more effectively now",
+    "vetted": "the needs of pedestrians and cyclists more effectively now"
+  },
+  {
+    "fixture": "edge-06-numbers",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "current",
+    "ms": 238,
+    "raw": "200 so there appears to be an error in the calculation",
+    "vetted": " 200 so there appears to be an error in the calculation"
+  },
+  {
+    "fixture": "nar-01-midword",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 311,
+    "raw": "r and reach out to turn the old familiar handle",
+    "vetted": "r and reach out to turn the old familiar handle"
+  },
+  {
+    "fixture": "nar-02-boundary",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 335,
+    "raw": "raise the old brass knocker and let it fall",
+    "vetted": "raise the old brass knocker and let it fall"
+  },
+  {
+    "fixture": "nar-03-sentence-end",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 297,
+    "raw": "that swirled and churned around the storm drains slowly",
+    "vetted": " that swirled and churned around the storm drains slowly"
+  },
+  {
+    "fixture": "nar-04-dialogue",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 299,
+    "raw": "ars since your father passed away and",
+    "vetted": "ars since your father passed away and"
+  },
+  {
+    "fixture": "nar-05-longform",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 283,
+    "raw": "dock and gave me a brief instruction",
+    "vetted": null
+  },
+  {
+    "fixture": "nar-06-midword-short",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 297,
+    "raw": "y morning commute to work as usual and",
+    "vetted": "y morning commute to work as usual and"
+  },
+  {
+    "fixture": "nar-07-list-in-prose",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 271,
+    "raw": "batteries were tossed into his old leather suitcase",
+    "vetted": "batteries were tossed into his old leather suitcase"
+  },
+  {
+    "fixture": "nar-08-comma",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 961,
+    "raw": null,
+    "vetted": null,
+    "error": "TypeError: fetch failed"
+  },
+  {
+    "fixture": "nar-09-para-start",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 573,
+    "raw": "lived there year round and the locals",
+    "vetted": "lived there year round and the locals"
+  },
+  {
+    "fixture": "nar-10-name",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 356,
+    "raw": "adult out of two very different people somehow managing",
+    "vetted": "adult out of two very different people somehow managing"
+  },
+  {
+    "fixture": "tec-01-midword",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 177,
+    "raw": "ies in the cache with different cache keys",
+    "vetted": "ies in the cache with different cache keys"
+  },
+  {
+    "fixture": "tec-02-boundary",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 306,
+    "raw": "before making the request to ensure consistency",
+    "vetted": "before making the request to ensure consistency"
+  },
+  {
+    "fixture": "tec-03-sentence-end",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 347,
+    "raw": "this allows for more accurate rate limiting and tracking",
+    "vetted": " this allows for more accurate rate limiting and tracking"
+  },
+  {
+    "fixture": "tec-04-code-adjacent",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 185,
+    "raw": "handle other tasks and continue executing",
+    "vetted": "handle other tasks and continue executing"
+  },
+  {
+    "fixture": "tec-05-enumeration",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 313,
+    "raw": "monitoring the system during the deployment window closely enough",
+    "vetted": "monitoring the system during the deployment window closely enough"
+  },
+  {
+    "fixture": "tec-06-precision",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 247,
+    "raw": "to all requests regardless of their",
+    "vetted": "to all requests regardless of their"
+  },
+  {
+    "fixture": "tec-07-midword-tail",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 287,
+    "raw": "intensive to recover from and requires immediate attention and",
+    "vetted": null
+  },
+  {
+    "fixture": "tec-08-comparison",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 371,
+    "raw": "actual data storage requirements became a concern",
+    "vetted": "actual data storage requirements became a concern"
+  },
+  {
+    "fixture": "tec-09-colon",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 189,
+    "raw": "using Docker or manual installation",
+    "vetted": " using Docker or manual installation"
+  },
+  {
+    "fixture": "tec-10-longform",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 185,
+    "raw": "the user noticing the change in behavior suddenly",
+    "vetted": "the user noticing the change in behavior suddenly"
+  },
+  {
+    "fixture": "eml-01-opening",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 362,
+    "raw": "make the meeting at the originally scheduled time",
+    "vetted": "make the meeting at the originally scheduled time"
+  },
+  {
+    "fixture": "eml-02-midword",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 352,
+    "raw": "ine your kind invitation and hope you understand",
+    "vetted": "ine your kind invitation and hope you understand"
+  },
+  {
+    "fixture": "eml-03-question-trap",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 290,
+    "raw": "I have not received any tracking information",
+    "vetted": " I have not received any tracking information"
+  },
+  {
+    "fixture": "eml-04-greeting-trap",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 266,
+    "raw": "I hope everything is going well and",
+    "vetted": " I hope everything is going well and"
+  },
+  {
+    "fixture": "eml-05-signoff",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 291,
+    "raw": "Your Name",
+    "vetted": "Your Name"
+  },
+  {
+    "fixture": "eml-06-apology",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 314,
+    "raw": "a great start and I have some feedback",
+    "vetted": "a great start and I have some feedback"
+  },
+  {
+    "fixture": "eml-07-formal",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 295,
+    "raw": "yet been repaired and water continues",
+    "vetted": "yet been repaired and water continues"
+  },
+  {
+    "fixture": "eml-08-list-prose",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 347,
+    "raw": "improve the overall user experience by adding more guidance",
+    "vetted": "improve the overall user experience by adding more guidance"
+  },
+  {
+    "fixture": "arg-01-thesis",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 276,
+    "raw": "the developer or the business owner",
+    "vetted": "the developer or the business owner"
+  },
+  {
+    "fixture": "arg-02-concession",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 390,
+    "raw": "exactly hotbeds of collaboration and learning anyway normally",
+    "vetted": "exactly hotbeds of collaboration and learning anyway normally"
+  },
+  {
+    "fixture": "arg-03-midword",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 313,
+    "raw": "it to you as an individual user",
+    "vetted": null
+  },
+  {
+    "fixture": "arg-04-sentence-end",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 349,
+    "raw": "a refuge from the constant pressure",
+    "vetted": " a refuge from the constant pressure"
+  },
+  {
+    "fixture": "arg-05-rhetorical",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 320,
+    "raw": "is it actually going and why is",
+    "vetted": "is it actually going and why is"
+  },
+  {
+    "fixture": "arg-06-statistic-trap",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 316,
+    "raw": "nearly twenty five percent to over two thousand dollars",
+    "vetted": "nearly twenty five percent to over two thousand dollars"
+  },
+  {
+    "fixture": "arg-07-longform",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 321,
+    "raw": "clothes of a scientific prediction and",
+    "vetted": "clothes of a scientific prediction and"
+  },
+  {
+    "fixture": "arg-08-semicolon",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 280,
+    "raw": "a temporary and often ineffective solution",
+    "vetted": "a temporary and often ineffective solution"
+  },
+  {
+    "fixture": "edge-01-three-words",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 186,
+    "raw": "heavily outside the small town",
+    "vetted": "heavily outside the small town"
+  },
+  {
+    "fixture": "edge-02-no-intent-technical",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 295,
+    "raw": "in its original state unchanged and intact",
+    "vetted": "in its original state unchanged and intact"
+  },
+  {
+    "fixture": "edge-03-intent-mismatch",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 288,
+    "raw": "in its original state unchanged and intact",
+    "vetted": "in its original state unchanged and intact"
+  },
+  {
+    "fixture": "edge-04-all-caps",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 357,
+    "raw": "going back or undoing the operation once it is completed",
+    "vetted": "going back or undoing the operation once it is completed"
+  },
+  {
+    "fixture": "edge-05-british",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 288,
+    "raw": "the needs of pedestrians and cyclists more effectively",
+    "vetted": "the needs of pedestrians and cyclists more effectively"
+  },
+  {
+    "fixture": "edge-06-numbers",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "voice",
+    "ms": 234,
+    "raw": "200 so there appears to be an error in the calculation",
+    "vetted": " 200 so there appears to be an error in the calculation"
+  },
+  {
+    "fixture": "nar-01-midword",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 413,
+    "raw": "r and insert the old key into the rusty lock",
+    "vetted": "r and insert the old key into the rusty lock"
+  },
+  {
+    "fixture": "nar-02-boundary",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 249,
+    "raw": "raise the heavy old brass knocker and",
+    "vetted": "raise the heavy old brass knocker and"
+  },
+  {
+    "fixture": "nar-03-sentence-end",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 210,
+    "raw": "it swirled around the storm drains",
+    "vetted": " it swirled around the storm drains"
+  },
+  {
+    "fixture": "nar-04-dialogue",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 306,
+    "raw": "ars because it has been disconnected and",
+    "vetted": "ars because it has been disconnected and"
+  },
+  {
+    "fixture": "nar-05-longform",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 289,
+    "raw": "dock and gave me a brief instruction",
+    "vetted": null
+  },
+  {
+    "fixture": "nar-06-midword-short",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 239,
+    "raw": "y morning commute to work as usual and everything",
+    "vetted": "y morning commute to work as usual and everything"
+  },
+  {
+    "fixture": "nar-07-list-in-prose",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 311,
+    "raw": "batteries were tossed into his small suitcase",
+    "vetted": "batteries were tossed into his small suitcase"
+  },
+  {
+    "fixture": "nar-08-comma",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 187,
+    "raw": "it let out a loud excited bark and",
+    "vetted": " it let out a loud excited bark and"
+  },
+  {
+    "fixture": "nar-09-para-start",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 333,
+    "raw": "lived there year round and the occasional tourist",
+    "vetted": "lived there year round and the occasional tourist"
+  },
+  {
+    "fixture": "nar-10-name",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 206,
+    "raw": "adult and that was usually just enough",
+    "vetted": "adult and that was usually just enough"
+  },
+  {
+    "fixture": "tec-01-midword",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 203,
+    "raw": "ies in the cache with different cache keys",
+    "vetted": "ies in the cache with different cache keys"
+  },
+  {
+    "fixture": "tec-02-boundary",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 575,
+    "raw": "before making the request to ensure consistency",
+    "vetted": "before making the request to ensure consistency"
+  },
+  {
+    "fixture": "tec-03-sentence-end",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 887,
+    "raw": "each new request checks the oldest timestamp",
+    "vetted": " each new request checks the oldest timestamp"
+  },
+  {
+    "fixture": "tec-04-code-adjacent",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 578,
+    "raw": "handle other tasks and continue executing",
+    "vetted": "handle other tasks and continue executing"
+  },
+  {
+    "fixture": "tec-05-enumeration",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 421,
+    "raw": "paying attention to the application logs at",
+    "vetted": "paying attention to the application logs at"
+  },
+  {
+    "fixture": "tec-06-precision",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 291,
+    "raw": "to all requests regardless of authentication status",
+    "vetted": "to all requests regardless of authentication status"
+  },
+  {
+    "fixture": "tec-07-midword-tail",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 330,
+    "raw": "intensive to recover from and may cause significant downtime",
+    "vetted": null
+  },
+  {
+    "fixture": "tec-08-comparison",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 470,
+    "raw": "actual data storage requirements became a concern",
+    "vetted": "actual data storage requirements became a concern"
+  },
+  {
+    "fixture": "tec-09-colon",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 297,
+    "raw": "using Docker or native operating system",
+    "vetted": " using Docker or native operating system"
+  },
+  {
+    "fixture": "tec-10-longform",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 326,
+    "raw": "the user noticing the change in behavior suddenly",
+    "vetted": "the user noticing the change in behavior suddenly"
+  },
+  {
+    "fixture": "eml-01-opening",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 247,
+    "raw": "make the meeting at the originally scheduled time",
+    "vetted": "make the meeting at the originally scheduled time"
+  },
+  {
+    "fixture": "eml-02-midword",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 316,
+    "raw": "ine your kind invitation and hope you understand",
+    "vetted": "ine your kind invitation and hope you understand"
+  },
+  {
+    "fixture": "eml-03-question-trap",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 269,
+    "raw": "I would greatly appreciate an update on the status",
+    "vetted": " I would greatly appreciate an update on the status"
+  },
+  {
+    "fixture": "eml-04-greeting-trap",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 455,
+    "raw": "I hope everything is going well for you",
+    "vetted": " I hope everything is going well for you"
+  },
+  {
+    "fixture": "eml-05-signoff",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 440,
+    "raw": "Your Name",
+    "vetted": "Your Name"
+  },
+  {
+    "fixture": "eml-06-apology",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 312,
+    "raw": "going in the right direction and",
+    "vetted": "going in the right direction and"
+  },
+  {
+    "fixture": "eml-07-formal",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 320,
+    "raw": "fixed and water continues to seep through",
+    "vetted": "fixed and water continues to seep through"
+  },
+  {
+    "fixture": "eml-08-list-prose",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 347,
+    "raw": "improve the overall user experience by",
+    "vetted": "improve the overall user experience by"
+  },
+  {
+    "fixture": "arg-01-thesis",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 1096,
+    "raw": "the developer or the business owner",
+    "vetted": "the developer or the business owner"
+  },
+  {
+    "fixture": "arg-02-concession",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 253,
+    "raw": "exactly hotbeds of collaboration and learning anyway usually",
+    "vetted": "exactly hotbeds of collaboration and learning anyway usually"
+  },
+  {
+    "fixture": "arg-03-midword",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 337,
+    "raw": "it to you, but tightly coupled to how much time",
+    "vetted": null
+  },
+  {
+    "fixture": "arg-04-sentence-end",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 289,
+    "raw": "a place where people can simply exist",
+    "vetted": " a place where people can simply exist"
+  },
+  {
+    "fixture": "arg-05-rhetorical",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 284,
+    "raw": "is it actually going and why",
+    "vetted": "is it actually going and why"
+  },
+  {
+    "fixture": "arg-06-statistic-trap",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 356,
+    "raw": "nearly fifty percent to over two thousand dollars per month",
+    "vetted": "nearly fifty percent to over two thousand dollars per month"
+  },
+  {
+    "fixture": "arg-07-longform",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 593,
+    "raw": "clothes of a scientific prediction and",
+    "vetted": "clothes of a scientific prediction and"
+  },
+  {
+    "fixture": "arg-08-semicolon",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 334,
+    "raw": "a temporary and often ineffective solution",
+    "vetted": "a temporary and often ineffective solution"
+  },
+  {
+    "fixture": "edge-01-three-words",
+    "register": "narrative",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 288,
+    "raw": "heavily outside the large old house",
+    "vetted": "heavily outside the large old house"
+  },
+  {
+    "fixture": "edge-02-no-intent-technical",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 404,
+    "raw": "in its original state unchanged and intact",
+    "vetted": "in its original state unchanged and intact"
+  },
+  {
+    "fixture": "edge-03-intent-mismatch",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 391,
+    "raw": "in its original state with no changes made",
+    "vetted": "in its original state with no changes made"
+  },
+  {
+    "fixture": "edge-04-all-caps",
+    "register": "technical",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 295,
+    "raw": "way to recover the deleted data after confirmation",
+    "vetted": "way to recover the deleted data after confirmation"
+  },
+  {
+    "fixture": "edge-05-british",
+    "register": "argument",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 297,
+    "raw": "the needs of pedestrians and cyclists more effectively now",
+    "vetted": "the needs of pedestrians and cyclists more effectively now"
+  },
+  {
+    "fixture": "edge-06-numbers",
+    "register": "email",
+    "model": "groq:llama-3.3-70b-versatile",
+    "variant": "intent",
+    "ms": 274,
+    "raw": "200 so there appears to be an error in the calculation",
+    "vetted": " 200 so there appears to be an error in the calculation"
+  },
+  {
+    "fixture": "nar-01-midword",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 227,
+    "raw": "r, its creaking familiar beneath her hesitant hand",
+    "vetted": "r, its creaking familiar beneath her hesitant hand"
+  },
+  {
+    "fixture": "nar-02-boundary",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 168,
+    "raw": "ring the bell and wait for an answer",
+    "vetted": "ring the bell and wait for an answer"
+  },
+  {
+    "fixture": "nar-03-sentence-end",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 196,
+    "raw": "the smell of mud and wet earth filled",
+    "vetted": " the smell of mud and wet earth filled"
+  },
+  {
+    "fixture": "nar-04-dialogue",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 187,
+    "raw": "ars and I'm starting to think you're avoiding me",
+    "vetted": "ars and I'm starting to think you're avoiding me"
+  },
+  {
+    "fixture": "nar-05-longform",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 185,
+    "raw": "harbour and pointed to the small boat bobbing",
+    "vetted": null
+  },
+  {
+    "fixture": "nar-06-midword-short",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 220,
+    "raw": "y and the windows were fogging up slowly",
+    "vetted": "y and the windows were fogging up slowly"
+  },
+  {
+    "fixture": "nar-07-list-in-prose",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 209,
+    "raw": "batteries that he had forgotten to replace the night",
+    "vetted": "batteries that he had forgotten to replace the night"
+  },
+  {
+    "fixture": "nar-08-comma",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 167,
+    "raw": "the sound of footsteps echoed through the hallway outside",
+    "vetted": " the sound of footsteps echoed through the hallway outside"
+  },
+  {
+    "fixture": "nar-09-para-start",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 188,
+    "raw": "the year round residents who stayed through winter",
+    "vetted": "the year round residents who stayed through winter"
+  },
+  {
+    "fixture": "nar-10-name",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 174,
+    "raw": "family unit and that was a generous estimate anyway",
+    "vetted": "family unit and that was a generous estimate anyway"
+  },
+  {
+    "fixture": "tec-01-midword",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 194,
+    "raw": "ies in the cache, which may not be the desired behavior",
+    "vetted": "ies in the cache, which may not be the desired behavior"
+  },
+  {
+    "fixture": "tec-02-boundary",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 170,
+    "raw": "before storing it in the cache to avoid",
+    "vetted": "before storing it in the cache to avoid"
+  },
+  {
+    "fixture": "tec-03-sentence-end",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 271,
+    "raw": "This approach ensures that the rate limit is enforced",
+    "vetted": " This approach ensures that the rate limit is enforced"
+  },
+  {
+    "fixture": "tec-04-code-adjacent",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 222,
+    "raw": "then execute other tasks before checking back on",
+    "vetted": "then execute other tasks before checking back on"
+  },
+  {
+    "fixture": "tec-05-enumeration",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 186,
+    "raw": "paying attention to the monitoring dashboard at the time",
+    "vetted": "paying attention to the monitoring dashboard at the time"
+  },
+  {
+    "fixture": "tec-06-precision",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 179,
+    "raw": "to the IP address regardless of the request method",
+    "vetted": "to the IP address regardless of the request method"
+  },
+  {
+    "fixture": "tec-07-midword-tail",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 192,
+    "raw": "intensive to recover from, as all requests will be",
+    "vetted": null
+  },
+  {
+    "fixture": "tec-08-comparison",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 212,
+    "raw": "data it was supposed to help us with anyway",
+    "vetted": "data it was supposed to help us with anyway"
+  },
+  {
+    "fixture": "tec-09-colon",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 200,
+    "raw": "using Docker or by installing the required dependencies",
+    "vetted": " using Docker or by installing the required dependencies"
+  },
+  {
+    "fixture": "tec-10-longform",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 201,
+    "raw": "a change to the client side code itself",
+    "vetted": "a change to the client side code itself"
+  },
+  {
+    "fixture": "eml-01-opening",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 271,
+    "raw": "available to attend the meeting as previously scheduled",
+    "vetted": "available to attend the meeting as previously scheduled"
+  },
+  {
+    "fixture": "eml-02-midword",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 201,
+    "raw": "ine to attend and I'm truly disappointed",
+    "vetted": "ine to attend and I'm truly disappointed"
+  },
+  {
+    "fixture": "eml-03-question-trap",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 252,
+    "raw": "or if there are any issues with the delivery",
+    "vetted": " or if there are any issues with the delivery"
+  },
+  {
+    "fixture": "eml-04-greeting-trap",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 290,
+    "raw": "I've been pretty good thanks for asking how's",
+    "vetted": null
+  },
+  {
+    "fixture": "eml-05-signoff",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 336,
+    "raw": "you should receive them via email tomorrow morning",
+    "vetted": "you should receive them via email tomorrow morning"
+  },
+  {
+    "fixture": "eml-06-apology",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 198,
+    "raw": "really good and I'm excited to move forward",
+    "vetted": "really good and I'm excited to move forward"
+  },
+  {
+    "fixture": "eml-07-formal",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 347,
+    "raw": "resolved and the water damage is still visible",
+    "vetted": "resolved and the water damage is still visible"
+  },
+  {
+    "fixture": "eml-08-list-prose",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 272,
+    "raw": "reduce the average time spent onboarding by at least",
+    "vetted": "reduce the average time spent onboarding by at least"
+  },
+  {
+    "fixture": "arg-01-thesis",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 346,
+    "raw": "the homeowner rather than the developer or the",
+    "vetted": "the homeowner rather than the developer or the"
+  },
+  {
+    "fixture": "arg-02-concession",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 302,
+    "raw": "actually pretty thin on genuine human interaction anyway",
+    "vetted": "actually pretty thin on genuine human interaction anyway"
+  },
+  {
+    "fixture": "arg-03-midword",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 235,
+    "raw": "it to the things that you wanted to achieve",
+    "vetted": null
+  },
+  {
+    "fixture": "arg-04-sentence-end",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 317,
+    "raw": "a sanctuary from the relentless pursuit of profit",
+    "vetted": " a sanctuary from the relentless pursuit of profit"
+  },
+  {
+    "fixture": "arg-05-rhetorical",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 223,
+    "raw": "is it being spent and what are the reasons",
+    "vetted": "is it being spent and what are the reasons"
+  },
+  {
+    "fixture": "arg-06-statistic-trap",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 213,
+    "raw": "over 50 percent, far exceeding inflation rates nationwide",
+    "vetted": "over 50 percent, far exceeding inflation rates nationwide"
+  },
+  {
+    "fixture": "arg-07-longform",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 283,
+    "raw": "guise of a prediction in order to",
+    "vetted": "guise of a prediction in order to"
+  },
+  {
+    "fixture": "arg-08-semicolon",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 266,
+    "raw": "merely a cosmetic addition to existing roads",
+    "vetted": "merely a cosmetic addition to existing roads"
+  },
+  {
+    "fixture": "edge-01-three-words",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 218,
+    "raw": "outside my window the drops hitting",
+    "vetted": "outside my window the drops hitting"
+  },
+  {
+    "fixture": "edge-02-no-intent-technical",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 211,
+    "raw": "in an inconsistent state which can be problematic",
+    "vetted": "in an inconsistent state which can be problematic"
+  },
+  {
+    "fixture": "edge-03-intent-mismatch",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 283,
+    "raw": "in an inconsistent state which is not what we want",
+    "vetted": "in an inconsistent state which is not what we want"
+  },
+  {
+    "fixture": "edge-04-all-caps",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 218,
+    "raw": "undo option so use with extreme caution always",
+    "vetted": "undo option so use with extreme caution always"
+  },
+  {
+    "fixture": "edge-05-british",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 458,
+    "raw": "pedestrian zones and bike lanes in a bid",
+    "vetted": "pedestrian zones and bike lanes in a bid"
+  },
+  {
+    "fixture": "edge-06-numbers",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "current",
+    "ms": 310,
+    "raw": "there seems to be a discrepancy of £1,320",
+    "vetted": " there seems to be a discrepancy of £1,320"
+  },
+  {
+    "fixture": "nar-01-midword",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 296,
+    "raw": "rstep, her hand reaching out to grasp the rusty handle",
+    "vetted": "rstep, her hand reaching out to grasp the rusty handle"
+  },
+  {
+    "fixture": "nar-02-boundary",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 281,
+    "raw": "push the rusty old bell that hung crookedly",
+    "vetted": "push the rusty old bell that hung crookedly"
+  },
+  {
+    "fixture": "nar-03-sentence-end",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 210,
+    "raw": "the puddles reflected the grey sky above them slowly",
+    "vetted": " the puddles reflected the grey sky above them slowly"
+  },
+  {
+    "fixture": "nar-04-dialogue",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 220,
+    "raw": "ars and I'm starting to think you're avoiding me",
+    "vetted": "ars and I'm starting to think you're avoiding me"
+  },
+  {
+    "fixture": "nar-05-longform",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 235,
+    "raw": "harbour and pointed out the various controls on",
+    "vetted": null
+  },
+  {
+    "fixture": "nar-06-midword-short",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 218,
+    "raw": "y of fog that rolled in off the ocean",
+    "vetted": "y of fog that rolled in off the ocean"
+  },
+  {
+    "fixture": "nar-07-list-in-prose",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 204,
+    "raw": "batteries and a water bottle that was almost empty",
+    "vetted": "batteries and a water bottle that was almost empty"
+  },
+  {
+    "fixture": "nar-08-comma",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 206,
+    "raw": "the old wooden floor creaked beneath his weary",
+    "vetted": " the old wooden floor creaked beneath his weary"
+  },
+  {
+    "fixture": "nar-09-para-start",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 199,
+    "raw": "the fishermen and the shopkeepers who stayed open",
+    "vetted": "the fishermen and the shopkeepers who stayed open"
+  },
+  {
+    "fixture": "nar-10-name",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 285,
+    "raw": "family, but it was better than none at",
+    "vetted": "family, but it was better than none at"
+  },
+  {
+    "fixture": "tec-01-midword",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 207,
+    "raw": "ies in the cache, even though they are logically equivalent",
+    "vetted": "ies in the cache, even though they are logically equivalent"
+  },
+  {
+    "fixture": "tec-02-boundary",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 272,
+    "raw": "by sorting the parameters alphabetically before storing",
+    "vetted": "by sorting the parameters alphabetically before storing"
+  },
+  {
+    "fixture": "tec-03-sentence-end",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 295,
+    "raw": "this allows for more accurate rate limiting and",
+    "vetted": " this allows for more accurate rate limiting and"
+  },
+  {
+    "fixture": "tec-04-code-adjacent",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 214,
+    "raw": "then schedules the async function to resume execution later",
+    "vetted": "then schedules the async function to resume execution later"
+  },
+  {
+    "fixture": "tec-05-enumeration",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 235,
+    "raw": "paying attention to the warning signs that indicated",
+    "vetted": "paying attention to the warning signs that indicated"
+  },
+  {
+    "fixture": "tec-06-precision",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 191,
+    "raw": "to all requests from that IP address immediately",
+    "vetted": "to all requests from that IP address immediately"
+  },
+  {
+    "fixture": "tec-07-midword-tail",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 283,
+    "raw": "required to be resolved before normal operation can",
+    "vetted": null
+  },
+  {
+    "fixture": "tec-08-comparison",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 241,
+    "raw": "data we were trying to store efficiently in",
+    "vetted": "data we were trying to store efficiently in"
+  },
+  {
+    "fixture": "tec-09-colon",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 279,
+    "raw": "one is to use the Docker container and",
+    "vetted": " one is to use the Docker container and"
+  },
+  {
+    "fixture": "tec-10-longform",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 369,
+    "raw": "a change to the client's code or configuration",
+    "vetted": "a change to the client's code or configuration"
+  },
+  {
+    "fixture": "eml-01-opening",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 195,
+    "raw": "available to attend the meeting as previously scheduled",
+    "vetted": "available to attend the meeting as previously scheduled"
+  },
+  {
+    "fixture": "eml-02-midword",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 221,
+    "raw": "ine my attendance at the dinner party this year",
+    "vetted": "ine my attendance at the dinner party this year"
+  },
+  {
+    "fixture": "eml-03-question-trap",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 271,
+    "raw": "or if there are any issues with the delivery",
+    "vetted": " or if there are any issues with the delivery"
+  },
+  {
+    "fixture": "eml-04-greeting-trap",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 282,
+    "raw": "I've been pretty good thanks for asking how's",
+    "vetted": null
+  },
+  {
+    "fixture": "eml-05-signoff",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 222,
+    "raw": "regards and look forward to your confirmation",
+    "vetted": "regards and look forward to your confirmation"
+  },
+  {
+    "fixture": "eml-06-apology",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 288,
+    "raw": "very good, and I have a few comments",
+    "vetted": "very good, and I have a few comments"
+  },
+  {
+    "fixture": "eml-07-formal",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 209,
+    "raw": "fixed and the water damage continues to spread",
+    "vetted": "fixed and the water damage continues to spread"
+  },
+  {
+    "fixture": "eml-08-list-prose",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 210,
+    "raw": "reduce the time it takes for users to complete",
+    "vetted": "reduce the time it takes for users to complete"
+  },
+  {
+    "fixture": "arg-01-thesis",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 213,
+    "raw": "the homeowner rather than the developer or the",
+    "vetted": "the homeowner rather than the developer or the"
+  },
+  {
+    "fixture": "arg-02-concession",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 416,
+    "raw": "as productive as we pretended they were anyway",
+    "vetted": "as productive as we pretended they were anyway"
+  },
+  {
+    "fixture": "arg-03-midword",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 282,
+    "raw": "it to your life or your well being",
+    "vetted": null
+  },
+  {
+    "fixture": "arg-04-sentence-end",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 288,
+    "raw": "of what a library offers to its patrons freely",
+    "vetted": " of what a library offers to its patrons freely"
+  },
+  {
+    "fixture": "arg-05-rhetorical",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 185,
+    "raw": "it seems to be going instead to administration costs",
+    "vetted": "it seems to be going instead to administration costs"
+  },
+  {
+    "fixture": "arg-06-statistic-trap",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 323,
+    "raw": "over 50 percent and housing costs skyrocketed significantly nationwide",
+    "vetted": "over 50 percent and housing costs skyrocketed significantly nationwide"
+  },
+  {
+    "fixture": "arg-07-longform",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 456,
+    "raw": "guise of a prediction, a hope masquerading",
+    "vetted": "guise of a prediction, a hope masquerading"
+  },
+  {
+    "fixture": "arg-08-semicolon",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 286,
+    "raw": "a cosmetic addition to an otherwise inadequate",
+    "vetted": "a cosmetic addition to an otherwise inadequate"
+  },
+  {
+    "fixture": "edge-01-three-words",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 203,
+    "raw": "outside my window and the streets were flooded",
+    "vetted": "outside my window and the streets were flooded"
+  },
+  {
+    "fixture": "edge-02-no-intent-technical",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 237,
+    "raw": "in an inconsistent state requiring manual cleanup afterwards",
+    "vetted": "in an inconsistent state requiring manual cleanup afterwards"
+  },
+  {
+    "fixture": "edge-03-intent-mismatch",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 298,
+    "raw": "in an inconsistent state which is clearly not what",
+    "vetted": "in an inconsistent state which is clearly not what"
+  },
+  {
+    "fixture": "edge-04-all-caps",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 206,
+    "raw": "undo option available to prevent accidental data loss completely",
+    "vetted": "undo option available to prevent accidental data loss completely"
+  },
+  {
+    "fixture": "edge-05-british",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 366,
+    "raw": "pedestrian and cyclist needs with designated lanes and",
+    "vetted": "pedestrian and cyclist needs with designated lanes and"
+  },
+  {
+    "fixture": "edge-06-numbers",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "voice",
+    "ms": 364,
+    "raw": "we believe there must have been a calculation error",
+    "vetted": " we believe there must have been a calculation error"
+  },
+  {
+    "fixture": "nar-01-midword",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 298,
+    "raw": "r, her heart pounding in her chest now",
+    "vetted": "r, her heart pounding in her chest now"
+  },
+  {
+    "fixture": "nar-02-boundary",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 351,
+    "raw": "ring the bell and wait for an answer",
+    "vetted": "ring the bell and wait for an answer"
+  },
+  {
+    "fixture": "nar-03-sentence-end",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 225,
+    "raw": "the sidewalks were slick with it and puddles",
+    "vetted": " the sidewalks were slick with it and puddles"
+  },
+  {
+    "fixture": "nar-04-dialogue",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 221,
+    "raw": "ars and I'm starting to think it's just a",
+    "vetted": "ars and I'm starting to think it's just a"
+  },
+  {
+    "fixture": "nar-05-longform",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 248,
+    "raw": "the marina's entrance and I felt a surge",
+    "vetted": " marina's entrance and I felt a surge"
+  },
+  {
+    "fixture": "nar-06-midword-short",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 210,
+    "raw": "y morning ride through the rolling hills and valleys",
+    "vetted": "y morning ride through the rolling hills and valleys"
+  },
+  {
+    "fixture": "nar-07-list-in-prose",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 187,
+    "raw": "batteries that he had forgotten to buy",
+    "vetted": "batteries that he had forgotten to buy"
+  },
+  {
+    "fixture": "nar-08-comma",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 328,
+    "raw": "the sound of footsteps echoed down the hallway outside",
+    "vetted": " the sound of footsteps echoed down the hallway outside"
+  },
+  {
+    "fixture": "nar-09-para-start",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 222,
+    "raw": "children and the elderly who couldn't leave",
+    "vetted": "children and the elderly who couldn't leave"
+  },
+  {
+    "fixture": "nar-10-name",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 203,
+    "raw": "person but they loved each other anyway deeply",
+    "vetted": "person but they loved each other anyway deeply"
+  },
+  {
+    "fixture": "tec-01-midword",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 216,
+    "raw": "ies in the cache, which may not be the desired behavior",
+    "vetted": "ies in the cache, which may not be the desired behavior"
+  },
+  {
+    "fixture": "tec-02-boundary",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 237,
+    "raw": "before storing the request in the cache",
+    "vetted": "before storing the request in the cache"
+  },
+  {
+    "fixture": "tec-03-sentence-end",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 203,
+    "raw": "This approach ensures that the rate limit is enforced",
+    "vetted": " This approach ensures that the rate limit is enforced"
+  },
+  {
+    "fixture": "tec-04-code-adjacent",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 198,
+    "raw": "then execute other tasks in the queue allowing",
+    "vetted": "then execute other tasks in the queue allowing"
+  },
+  {
+    "fixture": "tec-05-enumeration",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 281,
+    "raw": "actually monitoring the application once it was live",
+    "vetted": "actually monitoring the application once it was live"
+  },
+  {
+    "fixture": "tec-06-precision",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 233,
+    "raw": "to all requests from that IP address",
+    "vetted": "to all requests from that IP address"
+  },
+  {
+    "fixture": "tec-07-midword-tail",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 365,
+    "raw": "intensive for users who are relying on it",
+    "vetted": null
+  },
+  {
+    "fixture": "tec-08-comparison",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 303,
+    "raw": "data we were trying to store in it",
+    "vetted": "data we were trying to store in it"
+  },
+  {
+    "fixture": "tec-09-colon",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 226,
+    "raw": "using Docker or by setting up a virtual environment",
+    "vetted": " using Docker or by setting up a virtual environment"
+  },
+  {
+    "fixture": "tec-10-longform",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 370,
+    "raw": "a change to the client's codebase or a bug",
+    "vetted": "a change to the client's codebase or a bug"
+  },
+  {
+    "fixture": "eml-01-opening",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 288,
+    "raw": "available to meet at the originally scheduled time",
+    "vetted": "available to meet at the originally scheduled time"
+  },
+  {
+    "fixture": "eml-02-midword",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 228,
+    "raw": "ine to attend and I'm truly sorry about that",
+    "vetted": "ine to attend and I'm truly sorry about that"
+  },
+  {
+    "fixture": "eml-03-question-trap",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 301,
+    "raw": "or if there were any issues with the delivery",
+    "vetted": " or if there were any issues with the delivery"
+  },
+  {
+    "fixture": "eml-04-greeting-trap",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 283,
+    "raw": "I've been good thanks just got a lot",
+    "vetted": " I've been good thanks just got a lot"
+  },
+  {
+    "fixture": "eml-05-signoff",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 288,
+    "raw": "expecting delivery on or before the 17th of",
+    "vetted": "expecting delivery on or before the 17th of"
+  },
+  {
+    "fixture": "eml-06-apology",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 278,
+    "raw": "really well done and I am looking forward",
+    "vetted": "really well done and I am looking forward"
+  },
+  {
+    "fixture": "eml-07-formal",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 203,
+    "raw": "resolved and the water damage is still visible",
+    "vetted": "resolved and the water damage is still visible"
+  },
+  {
+    "fixture": "eml-08-list-prose",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 222,
+    "raw": "reduce the time it takes for a new user",
+    "vetted": "reduce the time it takes for a new user"
+  },
+  {
+    "fixture": "arg-01-thesis",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 217,
+    "raw": "the homeowner rather than the developer or landlord",
+    "vetted": "the homeowner rather than the developer or landlord"
+  },
+  {
+    "fixture": "arg-02-concession",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 218,
+    "raw": "as good at facilitating collaboration as they were made out",
+    "vetted": "as good at facilitating collaboration as they were made out"
+  },
+  {
+    "fixture": "arg-03-midword",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 336,
+    "raw": "it to the things you wanted to achieve",
+    "vetted": null
+  },
+  {
+    "fixture": "arg-04-sentence-end",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 257,
+    "raw": "of a community and a source of comfort",
+    "vetted": " of a community and a source of comfort"
+  },
+  {
+    "fixture": "arg-05-rhetorical",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 419,
+    "raw": "is it being spent and on what exactly",
+    "vetted": "is it being spent and on what exactly"
+  },
+  {
+    "fixture": "arg-06-statistic-trap",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 225,
+    "raw": "approximately 40 percent to over 3 thousand dollars",
+    "vetted": "approximately 40 percent to over 3 thousand dollars"
+  },
+  {
+    "fixture": "arg-07-longform",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 229,
+    "raw": "guise of a prediction, a hope masquerading",
+    "vetted": "guise of a prediction, a hope masquerading"
+  },
+  {
+    "fixture": "arg-08-semicolon",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 196,
+    "raw": "just a cosmetic addition to the road",
+    "vetted": "just a cosmetic addition to the road"
+  },
+  {
+    "fixture": "edge-01-three-words",
+    "register": "narrative",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 271,
+    "raw": "outside my window and the drops fell",
+    "vetted": "outside my window and the drops fell"
+  },
+  {
+    "fixture": "edge-02-no-intent-technical",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 223,
+    "raw": "in an inconsistent state which is not what we want",
+    "vetted": "in an inconsistent state which is not what we want"
+  },
+  {
+    "fixture": "edge-03-intent-mismatch",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 197,
+    "raw": "in an inconsistent state which is not what we want",
+    "vetted": "in an inconsistent state which is not what we want"
+  },
+  {
+    "fixture": "edge-04-all-caps",
+    "register": "technical",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 195,
+    "raw": "undo option available so proceed with caution",
+    "vetted": "undo option available so proceed with caution"
+  },
+  {
+    "fixture": "edge-05-british",
+    "register": "argument",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 279,
+    "raw": "pedestrian zones and bike lanes in various parts of",
+    "vetted": "pedestrian zones and bike lanes in various parts of"
+  },
+  {
+    "fixture": "edge-06-numbers",
+    "register": "email",
+    "model": "groq:llama-3.1-8b-instant",
+    "variant": "intent",
+    "ms": 188,
+    "raw": "500 as per our previous discussions and meetings",
+    "vetted": " 500 as per our previous discussions and meetings"
+  }
+]
