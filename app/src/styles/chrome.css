@@ -16,9 +16,9 @@
   user-select: none;
   text-decoration: none;
 }
-.brand-mark { width: 20px; height: 20px; border-radius: 5px; }
-/* the mark is ink-on-black; flip it on dark themes so it stays visible */
-[data-dark='1'] .brand-mark { filter: invert(1); }
+/* shape and colour live in base.css, which the landing loads too; it inverts
+   with the theme on its own, so the old dark-theme filter is gone */
+.brand-mark { width: 20px; height: 20px; }
 .doc-title {
   display: inline-flex;
   align-items: center;
@@ -298,15 +298,28 @@
   overflow: hidden;
 }
 .quota-fill { display: block; height: 100%; background: var(--c-accent); transition: width 300ms ease; }
-.status-notice {
-  border: none;
-  background: transparent;
-  color: var(--c-muted);
-  font-size: 0.75rem;
-  cursor: pointer;
+/* Suggestion downtime. `quiet` = transient and self-healing, so it recedes;
+   `notice` = the user can actually do something, so it reads at full strength. */
+.status-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-style: italic;
 }
-.status-notice:hover { color: var(--c-accent); }
+.status-note.quiet { color: var(--c-faint); }
+.status-note.notice { color: var(--c-muted); }
+.status-cta {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: var(--c-accent);
+  font: inherit;
+  font-style: normal;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.status-cta:hover { text-decoration-thickness: 2px; }
 
 /* ============ settings panel ============ */
 .settings-scrim {
@@ -574,6 +587,82 @@
   75% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-4px); }
 }
+
+/* ============ wrapped / stats ============ */
+
+.wrapped-panel { width: min(34rem, 96vw); }
+.wrapped-empty { color: var(--c-muted); font-size: 0.85rem; line-height: 1.6; margin-top: 1.4rem; }
+
+.wrapped-months { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 1rem; }
+.wrapped-month {
+  border: 1px solid var(--c-border);
+  background: transparent;
+  color: var(--c-muted);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.wrapped-month.selected {
+  background: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-bg);
+}
+
+.wrapped-persona { margin-top: 1.6rem; }
+.wrapped-persona h3 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
+}
+.wrapped-persona p { color: var(--c-muted); font-style: italic; margin-top: 0.3rem; font-size: 0.9rem; }
+
+.wrapped-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem 0.6rem;
+  margin-top: 1.6rem;
+}
+.wrapped-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+.ws-value { font-size: 1.5rem; font-weight: 700; color: var(--c-ink); line-height: 1.1; }
+.ws-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--c-faint); }
+
+.wrapped-words { margin-top: 1.8rem; }
+.wrapped-words h4 {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--c-faint);
+  font-weight: 600;
+}
+.wrapped-words ul { list-style: none; margin: 0.6rem 0 0; padding: 0; }
+.wrapped-words li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.28rem 0;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 0.85rem;
+}
+.ww-word { color: var(--c-ink); }
+.ww-count { color: var(--c-faint); font-variant-numeric: tabular-nums; }
+
+.wrapped-note { margin-top: 1.4rem; font-size: 0.8rem; color: var(--c-muted); line-height: 1.6; }
+
+.wrapped-actions { margin-top: 1.8rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.wrapped-save {
+  border: none;
+  background: var(--c-ink);
+  color: var(--c-bg);
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.wrapped-save:hover { background: var(--c-accent); }
+.wrapped-privacy { font-size: 0.7rem; color: var(--c-faint); }
 
 @media (prefers-reduced-motion: reduce) {
   .dropdown-panel, .settings-scrim, .settings-panel { animation: none; }

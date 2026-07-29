@@ -21,6 +21,39 @@ button, input, select, textarea { font: inherit; color: inherit; }
   --chrome-fade: 180ms;
 }
 
+/* ============ brand mark ============ */
+/*
+ * The mark is drawn rather than shipped as a picture: a rounded square in the
+ * ink colour with the C laid over it in the page colour. That is what makes it
+ * invert — on a dark theme `--c-ink` is light and `--c-bg` is dark, so the
+ * square goes white and the C goes dark on its own, in the theme's actual
+ * colours rather than a filter's guess at them.
+ *
+ * `cursive-c.png` is an alpha mask of the glyph alone, trimmed to its bounding
+ * box, so `mask-position: center` centres the letter. The old artwork had the C
+ * sitting left of and above the middle of its artboard, which no amount of CSS
+ * on the whole image could correct.
+ *
+ * Size is deliberately not set here: the app sizes it in chrome.css and the
+ * landing with its own utility classes. base.css is unlayered, so a width here
+ * would out-rank Tailwind's and silently win.
+ */
+.brand-mark {
+  display: block;
+  flex: none;
+  position: relative;
+  border-radius: 25%;
+  background: var(--c-ink);
+}
+.brand-mark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c-bg);
+  -webkit-mask: url('/cursive-c.png') center / auto 52% no-repeat;
+  mask: url('/cursive-c.png') center / auto 52% no-repeat;
+}
+
 /* ============ app shell ============ */
 .app {
   height: 100%;

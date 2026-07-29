@@ -51,7 +51,7 @@ export default function Privacy() {
           href="/"
           className="flex items-center gap-2 no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
         >
-          <img src="/cursive-logo.png" alt="" width={22} height={22} className="h-[22px] w-[22px]" />
+          <span aria-hidden="true" className="brand-mark h-[22px] w-[22px]" />
           <span className="font-display text-xl leading-none text-ink">Cursive</span>
         </a>
         <a
