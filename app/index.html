@@ -12,9 +12,10 @@
     <link rel="apple-touch-icon" href="/cursive-logo.png" />
     <meta name="theme-color" content="#FDFCF0" />
 
-    <!-- Open Graph / Twitter. og:image should become an absolute URL
-         (https://<production-domain>/og.png) once the domain is settled;
-         several crawlers ignore relative image paths. -->
+    <!-- Open Graph / Twitter. The image paths are rewritten to absolute URLs at
+         build time (see absoluteSocialImages in vite.config.ts) from SITE_URL
+         or Vercel's production domain; several crawlers ignore relative ones.
+         Keep them root-relative here so local builds still resolve. -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Cursive" />
     <meta property="og:title" content="Cursive · Type half. Tab the rest." />
